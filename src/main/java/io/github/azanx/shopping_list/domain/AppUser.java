@@ -1,52 +1,62 @@
 package io.github.azanx.shopping_list.domain;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
-import net.minidev.json.annotate.JsonIgnore;
+import org.hibernate.annotations.GenericGenerator;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
+@Table(name = "app_user") // without this annotation it would be mapped to table
+							// "AppUser"
 public class AppUser {
 
 	@Id
-	@GeneratedValue
-	private Long ID;
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+	@GenericGenerator(name = "native", strategy = "native")
+	private Long id;
 
-	@OneToMany(mappedBy = "owner")
-	private Set<ShoppingList> userLists = new HashSet<>();
+	@Column(name = "user_name", unique = true, nullable = false)
+	private String userName;
 
-	private String name;
+	@Column(nullable = false)
 	private String email;
+
+//	@JsonIgnore
+	@OneToMany(mappedBy = "owner", cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
+	private List<ShoppingList> shoppingList = new ArrayList<>();
+
 	@JsonIgnore
-	private String password; // probably to change while securing app
+	@Column(name = "user_password", nullable = false)
+	private String password; // probably to change when properly securing the
+								// app
 
-	public Long getID() {
-		return ID;
+	protected AppUser() {
+	} // JPA use
+
+	public Long getId() {
+		return id;
 	}
 
-	public void setID(Long iD) {
-		ID = iD;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
-	public Set<ShoppingList> getUserLists() {
-		return userLists;
+	public String getUserName() {
+		return userName;
 	}
 
-	public void setUserLists(Set<ShoppingList> userLists) {
-		this.userLists = userLists;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	public String getEmail() {
@@ -63,5 +73,13 @@ public class AppUser {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public List<ShoppingList> getShoppingList() {
+		return shoppingList;
+	}
+
+	public void setShoppingList(List<ShoppingList> shoppingList) {
+		this.shoppingList = shoppingList;
 	}
 }

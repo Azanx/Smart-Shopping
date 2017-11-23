@@ -1,57 +1,58 @@
 package io.github.azanx.shopping_list.domain;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
-import net.minidev.json.annotate.JsonIgnore;
+import org.hibernate.annotations.GenericGenerator;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
+@Table(name = "shopping_list")
 public class ShoppingList {
 
 	@Id
-	@GeneratedValue
-	private Long ID;
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+	@GenericGenerator(name = "native", strategy = "native")
+	private Long id;
 
-	private String Name;
-	@OneToMany(mappedBy = "parentList")
-	private Set<Item> items = new HashSet<>();
+	@Column(name = "list_name", nullable = false)
+	private String listName;
 
 	@JsonIgnore
 	@ManyToOne
 	private AppUser owner;
+	
+	@OneToMany(mappedBy = "parentList", cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)	
+	List<ListItem> listItems = new ArrayList<>();
 
-	// empty constructor for DAO
-	public ShoppingList() {
+	// empty constructor for JPA
+	protected ShoppingList() {
 	}
 
-	public String getName() {
-		return Name;
+	public Long getId() {
+		return id;
 	}
 
-	public void setName(String name) {
-		Name = name;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
-	public Set<Item> getItems() {
-		return items;
+	public String getListName() {
+		return listName;
 	}
 
-	public void setItems(Set<Item> items) {
-		this.items = items;
-	}
-
-	public Long getID() {
-		return ID;
-	}
-
-	public void setID(Long iD) {
-		ID = iD;
+	public void setListName(String listName) {
+		this.listName = listName;
 	}
 
 	public AppUser getOwner() {
@@ -60,6 +61,14 @@ public class ShoppingList {
 
 	public void setOwner(AppUser owner) {
 		this.owner = owner;
+	}
+
+	public List<ListItem> getListItems() {
+		return listItems;
+	}
+
+	public void setListItems(List<ListItem> listItems) {
+		this.listItems = listItems;
 	}
 
 }
