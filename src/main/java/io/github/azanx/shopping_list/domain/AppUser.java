@@ -16,7 +16,7 @@ import org.hibernate.annotations.GenericGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "app_user") // without this annotation it would be mapped to table
+@Table(name = "app_user") // without this annotation parameter it would be mapped to table
 							// "AppUser"
 public class AppUser {
 
