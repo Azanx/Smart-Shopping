@@ -7,4 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/api")
 public class RestApiController {
 
+//	@Autowired
+//	private AppUserRepository appUserRepository;
 }
