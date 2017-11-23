@@ -39,6 +39,13 @@ public class ShoppingList {
 	protected ShoppingList() {
 	}
 
+	public ShoppingList(String listName, AppUser owner, List<ListItem> listItems) {
+		super();
+		this.listName = listName;
+		this.owner = owner;
+		this.listItems = listItems;
+	}
+
 	public Long getId() {
 		return id;
 	}

@@ -31,6 +31,12 @@ public class ListItem {
 	protected ListItem() {
 	} 
 
+	public ListItem(String itemname, ShoppingList parentList) {
+		super();
+		this.itemname = itemname;
+		this.parentList = parentList;
+	}
+
 	public Long getId() {
 		return id;
 	}

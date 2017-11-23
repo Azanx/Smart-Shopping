@@ -43,6 +43,14 @@ public class AppUser {
 	protected AppUser() {
 	} // JPA use
 
+	public AppUser(String userName, String email, List<ShoppingList> shoppingList, String password) {
+		super();
+		this.userName = userName;
+		this.email = email;
+		this.shoppingList = shoppingList;
+		this.password = password;
+	}
+
 	public Long getId() {
 		return id;
 	}
