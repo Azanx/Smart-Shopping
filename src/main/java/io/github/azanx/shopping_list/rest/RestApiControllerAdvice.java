@@ -11,6 +11,6 @@ public class RestApiControllerAdvice {
 	@ExceptionHandler(UserNotFoundException.class)
 	public ResponseEntity<UserNotFoundResponse> UserNotFound(final UserNotFoundException e) {
 		//ClientErrorInformation error = new ClientErrorInformation(e.toString());
-		return new ResponseEntity<UserNotFoundResponse>(new UserNotFoundResponse(404, e.getMessage()), HttpStatus.NOT_FOUND);
+		return new ResponseEntity<UserNotFoundResponse>(new UserNotFoundResponse(e.getCode(), e.getMessage()), HttpStatus.NOT_FOUND);
 	}
 }
