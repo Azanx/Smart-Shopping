@@ -1,4 +1,4 @@
-package io.github.azanx.shopping_list.rest;
+package io.github.azanx.shopping_list.rest.exception;
 
 public class UserNotFoundResponse {
 

@@ -1,4 +1,4 @@
-package io.github.azanx.shopping_list.rest;
+package io.github.azanx.shopping_list.rest.exception;
 
 //@ResponseStatus(value=HttpStatus.NOT_FOUND,reason="Could not find requested user")
 public class UserNotFoundException extends RuntimeException {

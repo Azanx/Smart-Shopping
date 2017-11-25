@@ -5,12 +5,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import io.github.azanx.shopping_list.rest.exception.ListNotFoundException;
+import io.github.azanx.shopping_list.rest.exception.UserNotFoundException;
+import io.github.azanx.shopping_list.rest.exception.UserNotFoundResponse;
+
 @RestControllerAdvice("io.github.azanx.shopping_list.rest")
 public class RestApiControllerAdvice {
 
 	@ExceptionHandler(UserNotFoundException.class)
-	public ResponseEntity<UserNotFoundResponse> UserNotFound(final UserNotFoundException e) {
+	public ResponseEntity<UserNotFoundResponse> userNotFound(final UserNotFoundException e) {
 		//ClientErrorInformation error = new ClientErrorInformation(e.toString());
 		return new ResponseEntity<UserNotFoundResponse>(new UserNotFoundResponse(e.getCode(), e.getMessage()), HttpStatus.NOT_FOUND);
+	}
+	
+	@ExceptionHandler(ListNotFoundException.class)
+	public ResponseEntity<ListNotFoundException> listNotFoud(final ListNotFoundException e) {
+		return new ResponseEntity<ListNotFoundException>(e, HttpStatus.NOT_FOUND);
 	}
 }
