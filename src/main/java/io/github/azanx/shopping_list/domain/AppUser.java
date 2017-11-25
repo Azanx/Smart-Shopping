@@ -31,7 +31,7 @@ public class AppUser {
 	@Column(nullable = false)
 	private String email;
 
-//	@JsonIgnore
+	@JsonIgnore
 	@OneToMany(mappedBy = "owner", cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
 	private List<ShoppingList> shoppingList = new ArrayList<>();
 
@@ -48,6 +48,15 @@ public class AppUser {
 		this.userName = userName;
 		this.email = email;
 		this.shoppingList = shoppingList;
+		this.password = password;
+	}
+
+
+
+	public AppUser(String userName, String password, String email){
+		super();
+		this.userName = userName;
+		this.email = email;
 		this.password = password;
 	}
 

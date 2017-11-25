@@ -11,59 +11,42 @@ import org.springframework.web.bind.annotation.RestController;
 import io.github.azanx.shopping_list.domain.AppUser;
 import io.github.azanx.shopping_list.domain.ListItem;
 import io.github.azanx.shopping_list.domain.ShoppingList;
-import io.github.azanx.shopping_list.repository.AppUserRepository;
 import io.github.azanx.shopping_list.repository.ListItemRepository;
 import io.github.azanx.shopping_list.repository.ShoppingListRepository;
+import io.github.azanx.shopping_list.service.UserService;
 
 @RestController
 @RequestMapping(value = "/api/{userName}")
 public class RestApiController {
 
-	private final AppUserRepository appUserRepository;
-
-	private final ListItemRepository listItemRepository;
-
-	private final ShoppingListRepository shoppingListRepository;
+	private final UserService userService;
 
 	@Autowired
-	public RestApiController(AppUserRepository appUserRepository, ListItemRepository listItemRepository,
+	public RestApiController( UserService userService, ListItemRepository listItemRepository,
 			ShoppingListRepository shoppingListRepository) {
 		super();
-		this.appUserRepository = appUserRepository;
-		this.listItemRepository = listItemRepository;
-		this.shoppingListRepository = shoppingListRepository;
+		this.userService = userService;
 	}
 
 	@RequestMapping
 	AppUser getUserInformation(@PathVariable String userName) {
-		return getUserIfExistsElseThrow(userName); //if user doesn't exist method throws exception
+		return userService.getUserIfExistsElseThrow(userName); //if user doesn't exist method throws exception
 										//caught by RestControllerAdvice - hence no need for
 										// return value and checking it's success
 	}
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	Collection<ShoppingList> getShoppingListsForUserName(@PathVariable String userName) {
-		getUserIfExistsElseThrow(userName); // method throws exception caught by
+		userService.getUserIfExistsElseThrow(userName); // method throws exception caught by
 											// RestControllerAdvice
-		return shoppingListRepository.findByOwnerUserName(userName);
+		//return shoppingListRepository.findByOwnerUserName(userName);
+		return userService.getShoppingListsForUser(userName);
 	}
 	
 	@RequestMapping(value = "/list/{id}")
 	Collection<ListItem> geItemsForListId(@PathVariable String userName, @PathVariable Long id) {
-		return listItemRepository.findByParentListId(id);
+		return userService.getItemsForUsersListId(userName, id);
 	}
 
-	/**
-	 * Returns AppUser instance if user with userName exists
-	 * 
-	 * @throws UserNotFoundException if user with 'userName' doesn't exist
-	 * 
-	 */
-	//throws clause not necessarry as it's an unchecked exception
-	AppUser getUserIfExistsElseThrow(String userName) {
-		return appUserRepository.findByUserName(userName)
-				.orElseThrow(
-				() -> new UserNotFoundException(userName)
-				);
-	}
+
 }

@@ -22,14 +22,6 @@ import org.springframework.web.servlet.view.UrlBasedViewResolver;
  */
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
-//	@Bean
-//	public DataSource dataSource() {
-//		final JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
-//		dsLookup.setResourceRef(true);
-//		DataSource dataSource = dsLookup.getDataSource("jdbc/springdb");
-//		return dataSource;
-//	}
-
 	@Bean
 	public UrlBasedViewResolver urlBasedViewResolver() {
 		UrlBasedViewResolver resolver = new UrlBasedViewResolver();

@@ -32,6 +32,7 @@ public class ShoppingList {
 	@ManyToOne
 	private AppUser owner;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "parentList", cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)	
 	List<ListItem> listItems = new ArrayList<>();
 
