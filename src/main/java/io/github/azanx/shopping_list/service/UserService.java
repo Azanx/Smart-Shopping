@@ -13,8 +13,9 @@ import io.github.azanx.shopping_list.domain.ShoppingList;
 import io.github.azanx.shopping_list.repository.AppUserRepository;
 import io.github.azanx.shopping_list.repository.ListItemRepository;
 import io.github.azanx.shopping_list.repository.ShoppingListRepository;
-import io.github.azanx.shopping_list.rest.exception.ListNotFoundException;
-import io.github.azanx.shopping_list.rest.exception.UserNotFoundException;
+import io.github.azanx.shopping_list.service.exception.DuplicateUserException;
+import io.github.azanx.shopping_list.service.exception.ListNotFoundException;
+import io.github.azanx.shopping_list.service.exception.UserNotFoundException;
 
 //used to separate repository usage and exception management for database access (user not found etc) from RestApiController
 
@@ -82,4 +83,10 @@ public class UserService {
 			
 			return items;
 		}
+	
+	public void addUser(AppUser newUser) {
+		if ( !appUserRepository.findByUserName(newUser.getUserName()).isPresent() )
+			appUserRepository.save(newUser);
+		else throw new DuplicateUserException(newUser.getUserName());
+	}
 }

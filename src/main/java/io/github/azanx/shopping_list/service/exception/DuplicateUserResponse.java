@@ -1,19 +1,16 @@
-package io.github.azanx.shopping_list.rest.exception;
+package io.github.azanx.shopping_list.service.exception;
 
-public class ListNotFoundResponse {
+public class DuplicateUserResponse {
 
 	private int errorCode;
 	private String userName;
-	private long listId;
 	private String message;
-
 	
-	public ListNotFoundResponse(int errorCode, String userName, long listId, String message) {
+	public DuplicateUserResponse(int errorCode, String userName, String message) {
 		super();
 		this.errorCode = errorCode;
 		this.message = message;
 		this.userName = userName;
-		this.listId = listId;
 	}
 	public int getErrorCode() {
 		return errorCode;
@@ -23,8 +20,5 @@ public class ListNotFoundResponse {
 	}
 	public String getUserName() {
 		return userName;
-	}
-	public long getListId() {
-		return listId;
 	}
 }
