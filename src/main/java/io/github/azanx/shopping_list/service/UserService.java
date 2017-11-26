@@ -40,7 +40,13 @@ public class UserService {
 	@PostConstruct
 	public void init() {
 		if (!appUserRepository.findByUserName("admin").isPresent()) {
-			appUserRepository.save(new AppUser("admin", "admin", "admin@temp.pl"));
+			AppUser newAdmin = new AppUser("admin", "admin", "admin@temp.pl");
+			ShoppingList shopList = new ShoppingList("admin shopping", newAdmin);
+			ListItem listItem1 = new ListItem("mleko", shopList);
+			shopList.addListItem(listItem1);
+			newAdmin.addShoppingList(shopList);
+			newAdmin.addShoppingList("second list").addListItem("mleko z drugiej listy");
+			appUserRepository.save(newAdmin);
 			;
 
 		}

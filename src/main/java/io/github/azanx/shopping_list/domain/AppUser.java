@@ -96,7 +96,17 @@ public class AppUser {
 		return shoppingList;
 	}
 
-	public void setShoppingList(List<ShoppingList> shoppingList) {
-		this.shoppingList = shoppingList;
+//	public void setShoppingList(List<ShoppingList> shoppingList) {
+//		this.shoppingList = shoppingList;
+//	}
+	public void addShoppingList(ShoppingList newShoppingList) {
+		this.getShoppingList().add(newShoppingList);
 	}
+	
+	public ShoppingList addShoppingList(String listName) {
+		ShoppingList newShoppingList = new ShoppingList(listName, this);
+		this.getShoppingList().add(newShoppingList);
+		return newShoppingList;
+	}
+	
 }

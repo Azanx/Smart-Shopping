@@ -47,6 +47,12 @@ public class ShoppingList {
 		this.listItems = listItems;
 	}
 
+	public ShoppingList(String listName, AppUser owner) {
+		super();
+		this.listName = listName;
+		this.owner = owner;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -75,8 +81,17 @@ public class ShoppingList {
 		return listItems;
 	}
 
-	public void setListItems(List<ListItem> listItems) {
-		this.listItems = listItems;
+//	public void setListItems(List<ListItem> listItems) {
+//		this.listItems = listItems;
+//	}
+	
+	public void addListItem(ListItem newItem) {
+		this.getListItems().add(newItem);
 	}
-
+	
+	public ListItem addListItem(String itemName) {
+		ListItem newItem = new ListItem(itemName, this);
+		this.getListItems().add(newItem);
+		return newItem;
+	}
 }
