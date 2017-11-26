@@ -43,16 +43,6 @@ public class AppUser {
 	protected AppUser() {
 	} // JPA use
 
-	public AppUser(String userName, String email, List<ShoppingList> shoppingList, String password) {
-		super();
-		this.userName = userName;
-		this.email = email;
-		this.shoppingList = shoppingList;
-		this.password = password;
-	}
-
-
-
 	public AppUser(String userName, String password, String email){
 		super();
 		this.userName = userName;
@@ -96,11 +86,8 @@ public class AppUser {
 		return shoppingList;
 	}
 
-//	public void setShoppingList(List<ShoppingList> shoppingList) {
-//		this.shoppingList = shoppingList;
-//	}
-	public void addShoppingList(ShoppingList newShoppingList) {
-		this.getShoppingList().add(newShoppingList);
+	public boolean addShoppingList(ShoppingList newShoppingList) {
+		return this.getShoppingList().add(newShoppingList);
 	}
 	
 	public ShoppingList addShoppingList(String listName) {
