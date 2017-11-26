@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import io.github.azanx.shopping_list.rest.exception.ListNotFoundException;
+import io.github.azanx.shopping_list.rest.exception.ListNotFoundResponse;
 import io.github.azanx.shopping_list.rest.exception.UserNotFoundException;
 import io.github.azanx.shopping_list.rest.exception.UserNotFoundResponse;
 
@@ -19,7 +20,7 @@ public class RestApiControllerAdvice {
 	}
 	
 	@ExceptionHandler(ListNotFoundException.class)
-	public ResponseEntity<ListNotFoundException> listNotFoud(final ListNotFoundException e) {
-		return new ResponseEntity<ListNotFoundException>(e, HttpStatus.NOT_FOUND);
+	public ResponseEntity<ListNotFoundResponse> listNotFoud(final ListNotFoundException e) {
+		return new ResponseEntity<ListNotFoundResponse>(new ListNotFoundResponse(e.getCode(), e.getUserName(), e.getListId(), e.getMessage()), HttpStatus.NOT_FOUND);
 	}
 }

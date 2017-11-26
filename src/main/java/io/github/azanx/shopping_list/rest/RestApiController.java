@@ -37,10 +37,8 @@ public class RestApiController {
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	Collection<ShoppingList> getShoppingListsForUserName(@PathVariable String userName) {
-		userService.getUserIfExistsElseThrow(userName); // method throws exception caught by
-											// RestControllerAdvice
-		//return shoppingListRepository.findByOwnerUserName(userName);
-		return userService.getShoppingListsForUser(userName);
+		return userService.getShoppingListsForUser(userName);// method throws exception caught by
+										// RestControllerAdvice
 	}
 	
 	@RequestMapping(value = "/list/{id}")
