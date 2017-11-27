@@ -6,6 +6,7 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.github.azanx.shopping_list.domain.AppUser;
 import io.github.azanx.shopping_list.domain.ListItem;
@@ -17,7 +18,7 @@ import io.github.azanx.shopping_list.service.exception.DuplicateUserException;
 import io.github.azanx.shopping_list.service.exception.ListNotFoundException;
 import io.github.azanx.shopping_list.service.exception.UserNotFoundException;
 
-//used to separate repository usage and exception management for database access (user not found etc) from RestApiController
+//used to separate repository usage and exception management for database access (user not found etc) from controllers
 
 @Service
 public class UserService {
@@ -39,8 +40,10 @@ public class UserService {
 
 	// temporary for test use
 	@PostConstruct
+	@Transactional(readOnly = false)
 	public void init() {
 		if (!appUserRepository.findByUserName("admin").isPresent()) {
+			// check if admin exists, else create one and log
 			AppUser newAdmin = new AppUser("admin", "admin", "admin@temp.pl");
 			ShoppingList shopList = new ShoppingList("admin shopping", newAdmin);
 			ListItem listItem1 = new ListItem("mleko", shopList);
@@ -48,8 +51,6 @@ public class UserService {
 			newAdmin.addShoppingList(shopList);
 			newAdmin.addShoppingList("second list").addListItem("mleko z drugiej listy");
 			appUserRepository.save(newAdmin);
-			;
-
 		}
 	}
 
@@ -61,10 +62,15 @@ public class UserService {
 	 * 
 	 */
 	// throws clause not necessarry as it's an unchecked exception
+	@Transactional(readOnly = true)
 	public AppUser getUserIfExistsElseThrow(String userName) {
-		return appUserRepository.findByUserName(userName).orElseThrow(() -> new UserNotFoundException(userName));
+		return appUserRepository//
+				.findByUserName(userName) //
+				.orElseThrow( //
+						() -> new UserNotFoundException(userName)); //
 	}
 
+	@Transactional(readOnly = true)
 	public Collection<ShoppingList> getShoppingListsForUser(String userName) {
 		getUserIfExistsElseThrow(userName); // check if user exists
 		Collection<ShoppingList> lists = shoppingListRepository.findByOwnerUserName(userName);
@@ -73,20 +79,24 @@ public class UserService {
 		return lists;
 	}
 
+	@Transactional(readOnly = true)
 	public Collection<ListItem> getItemsForUsersListId(String userName, Long listId) {
-			try{
-				getShoppingListsForUser(userName); //check if user exists and has lists
-			}catch(ListNotFoundException lnfe) {
-				throw new ListNotFoundException(listId, userName);
-			}
-			Collection<ListItem> items = listItemRepository.findByParentListId(listId);
-			
-			return items;
+		try {
+			getShoppingListsForUser(userName); // check if user exists and has
+												// lists
+		} catch (ListNotFoundException lnfe) {
+			throw new ListNotFoundException(listId, userName);
 		}
-	
+		Collection<ListItem> items = listItemRepository.findByParentListId(listId);
+
+		return items;
+	}
+
+	@Transactional(readOnly = false)
 	public void addUser(AppUser newUser) {
-		if ( !appUserRepository.findByUserName(newUser.getUserName()).isPresent() )
+		if (!appUserRepository.findByUserName(newUser.getUserName()).isPresent())
 			appUserRepository.save(newUser);
-		else throw new DuplicateUserException(newUser.getUserName());
+		else
+			throw new DuplicateUserException(newUser.getUserName());
 	}
 }
