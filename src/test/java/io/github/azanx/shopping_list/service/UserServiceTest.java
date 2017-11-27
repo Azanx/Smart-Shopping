@@ -18,6 +18,7 @@ import io.github.azanx.shopping_list.domain.AppUser;
 import io.github.azanx.shopping_list.repository.AppUserRepository;
 import io.github.azanx.shopping_list.repository.ListItemRepository;
 import io.github.azanx.shopping_list.repository.ShoppingListRepository;
+import io.github.azanx.shopping_list.service.exception.DuplicateUserException;
 import io.github.azanx.shopping_list.service.exception.UserNotFoundException;
 
 /**
@@ -38,7 +39,7 @@ public class UserServiceTest {
 
 	UserService userService;
 
-	// clean repositories
+	// clean repositories, create fresh userService instance
 	@Before
 	public void setup() throws Exception {
 
@@ -52,25 +53,26 @@ public class UserServiceTest {
 
 	}
 
-	//admin should be present after initialising the database during userService construction
+	// admin should be present after initialising the database during
+	// userService construction
 	@Test
-	 public void isAdminPresent() {
-	 AppUser userUnderTest = userService.getUserIfExistsElseThrow("admin");
-	 assertNotNull(userUnderTest);
-	 }
+	public void isAdminPresent() {
+		AppUser userUnderTest = userService.getUserIfExistsElseThrow("admin");
+		assertNotNull(userUnderTest);
+	}
 
-	@Test(expected = UserNotFoundException.class )
-	 public void throwsExceptionForNonExistingUser() {
+	@Test(expected = UserNotFoundException.class)
+	public void throwsExceptionForNonExistingUser() {
 		userService.getUserIfExistsElseThrow("fake_accout");
 	}
-	
+
 	@Test
 	public void addUserSuccessfull() {
 		AppUser userUnderTest = new AppUser("User1", "password", "email@test.com");
 		userService.addUser(userUnderTest);
 	}
-	
-	@Test
+
+	@Test(expected = DuplicateUserException.class)
 	public void addDuplicateUserFails() {
 		AppUser userUnderTest = new AppUser("User1", "password", "email@test.com");
 		userService.addUser(userUnderTest);
