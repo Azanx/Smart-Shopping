@@ -3,30 +3,38 @@
  */
 package io.github.azanx.shopping_list.service.exception;
 
+import java.util.HashMap;
+
+import io.github.azanx.shopping_list.exception.MessageableException;
+
 /**
  * @author Kamil Piwowarski
  *
  */
-public class DuplicateUserException extends RuntimeException {
+public class DuplicateUserException extends RuntimeException implements MessageableException {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6515080916120186375L;
-	private final int code;
 	private final String userName;
+	private final HashMap<String, String> parameters;
 	
 	public DuplicateUserException(String userName) {
 		super("Cannot add user '" + userName + "' as user with this name already exists");
-		code = 404;
 		this.userName = userName;
-	}
 
-	public int getCode() {
-		return code;
+		parameters = new HashMap<>();
+		parameters.put("userName", userName);
+		parameters.put("message", this.getMessage());
 	}
 
 	public String getUserName() {
 		return userName;
+	}
+
+	@Override
+	public HashMap<String, String> getParameters() {
+		return this.parameters;
 	}
 }

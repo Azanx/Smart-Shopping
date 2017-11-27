@@ -1,29 +1,38 @@
 package io.github.azanx.shopping_list.service.exception;
 
+import java.util.HashMap;
+
+import io.github.azanx.shopping_list.exception.MessageableException;
+
 /**
  * @author Kamil Piwowarski
  *
  */
-public class UserNotFoundException extends RuntimeException {
+public class UserNotFoundException extends RuntimeException implements MessageableException {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -4321875051376072725L;
-	private final int code;
+
 	private final String userName;
+	private final HashMap<String, String> parameters;
 
 	public UserNotFoundException(String userName) {
 		super("Couldn't find user: '" + userName + "'");
-		code = 404;
 		this.userName = userName;
-	}
-
-	public int getCode() {
-		return code;
+		
+		parameters = new HashMap<>();
+		parameters.put("userName", userName);
+		parameters.put("message", this.getMessage());
 	}
 
 	public String getUserName() {
 		return userName;
+	}
+
+	@Override
+	public HashMap<String, String> getParameters() {
+		return this.parameters;
 	}
 }
