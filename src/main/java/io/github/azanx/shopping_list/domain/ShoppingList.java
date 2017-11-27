@@ -1,7 +1,7 @@
 package io.github.azanx.shopping_list.domain;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,13 +34,13 @@ public class ShoppingList {
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "parentList", cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)	
-	List<ListItem> listItems = new ArrayList<>();
+	Set<ListItem> listItems = new HashSet<>();
 
 	// empty constructor for JPA
 	protected ShoppingList() {
 	}
 
-	public ShoppingList(String listName, AppUser owner, List<ListItem> listItems) {
+	public ShoppingList(String listName, AppUser owner, Set<ListItem> listItems) {
 		super();
 		this.listName = listName;
 		this.owner = owner;
@@ -77,19 +77,21 @@ public class ShoppingList {
 		this.owner = owner;
 	}
 
-	public List<ListItem> getListItems() {
+	public Set<ListItem> getListItems() {
 		return listItems;
 	}
-
-//	public void setListItems(List<ListItem> listItems) {
-//		this.listItems = listItems;
-//	}
 	
 	public void addListItem(ListItem newItem) {
 		this.getListItems().add(newItem);
 	}
 	
 	public ListItem addListItem(String itemName) {
+		ListItem newItem = new ListItem(itemName, this);
+		this.getListItems().add(newItem);
+		return newItem;
+	}
+
+	public ListItem addItem(String itemName) {
 		ListItem newItem = new ListItem(itemName, this);
 		this.getListItems().add(newItem);
 		return newItem;

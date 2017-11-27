@@ -1,7 +1,7 @@
 package io.github.azanx.shopping_list.domain;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,7 +16,8 @@ import org.hibernate.annotations.GenericGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "app_user") // without this annotation parameter it would be mapped to table
+@Table(name = "app_user") // without this annotation parameter it would be
+							// mapped to table
 							// "AppUser"
 public class AppUser {
 
@@ -33,17 +34,16 @@ public class AppUser {
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "owner", cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
-	private List<ShoppingList> shoppingList = new ArrayList<>();
+	private Set<ShoppingList> shoppingList = new HashSet<>();
 
 	@JsonIgnore
 	@Column(name = "user_password", nullable = false)
-	private String password; // probably to change when properly securing the
-								// app
+	private String password; // probably to change when properly securing theapp
 
 	protected AppUser() {
 	} // JPA use
 
-	public AppUser(String userName, String password, String email){
+	public AppUser(String userName, String password, String email) {
 		super();
 		this.userName = userName;
 		this.email = email;
@@ -82,18 +82,18 @@ public class AppUser {
 		this.password = password;
 	}
 
-	public List<ShoppingList> getShoppingList() {
+	public Set<ShoppingList> getShoppingList() {
 		return shoppingList;
 	}
 
 	public boolean addShoppingList(ShoppingList newShoppingList) {
 		return this.getShoppingList().add(newShoppingList);
 	}
-	
+
 	public ShoppingList addShoppingList(String listName) {
 		ShoppingList newShoppingList = new ShoppingList(listName, this);
 		this.getShoppingList().add(newShoppingList);
 		return newShoppingList;
 	}
-	
+
 }
