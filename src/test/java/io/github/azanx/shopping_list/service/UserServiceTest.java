@@ -78,4 +78,12 @@ public class UserServiceTest {
 		userService.addUser(userUnderTest);
 		userService.addUser(userUnderTest);
 	}
+	
+	@Test(expected = DuplicateUserException.class)
+	public void addDuplicateUserWithDifferentObjectsFails() {
+		AppUser userUnderTest1 = new AppUser("User1", "password", "email@test.com");
+		AppUser userUnderTest2 = new AppUser("User1", "password", "email@test.com");
+		userService.addUser(userUnderTest1);
+		userService.addUser(userUnderTest2);
+	}
 }
