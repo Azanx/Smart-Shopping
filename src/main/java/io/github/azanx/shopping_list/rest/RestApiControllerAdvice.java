@@ -9,6 +9,7 @@ import io.github.azanx.shopping_list.domain.exception.ListTooLongException;
 import io.github.azanx.shopping_list.exception.MessageableException;
 import io.github.azanx.shopping_list.exception.MessageableExceptionResponse;
 import io.github.azanx.shopping_list.service.exception.DuplicateUserException;
+import io.github.azanx.shopping_list.service.exception.ItemNotFoundException;
 import io.github.azanx.shopping_list.service.exception.ListNotFoundException;
 import io.github.azanx.shopping_list.service.exception.UserNotFoundException;
 
@@ -27,6 +28,11 @@ public class RestApiControllerAdvice {
 
 	@ExceptionHandler(ListNotFoundException.class)
 	public ResponseEntity<MessageableExceptionResponse> listNotFoud(final ListNotFoundException e) {
+		return response(e, HttpStatus.NOT_FOUND);
+	}
+	
+	@ExceptionHandler(ItemNotFoundException.class)
+	public ResponseEntity<MessageableExceptionResponse> itemNotFoud(final ItemNotFoundException e) {
 		return response(e, HttpStatus.NOT_FOUND);
 	}
 
