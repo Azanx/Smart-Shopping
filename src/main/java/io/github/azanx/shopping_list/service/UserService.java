@@ -24,15 +24,15 @@ import io.github.azanx.shopping_list.service.exception.UserNotFoundException;
 //
 
 /**
- * Service used to separate repository usage and exception management (user not found etc) for
- * database access from controllers
+ * Service used to separate repository usage and exception management (user not
+ * found etc) for database access from controllers
  * 
  * @author Kamil Piwowarski
  */
 @Service
 public class UserService {
 
-	private static Logger LOGGER = LoggerFactory.getLogger("---UserService LOGGER---");
+	private static final Logger LOGGER = LoggerFactory.getLogger("---UserService LOGGER---");
 
 	private final AppUserRepository appUserRepository;
 
@@ -127,11 +127,15 @@ public class UserService {
 		if (items.isEmpty()) {
 			throw new ItemNotFoundException(userName);
 		}
+		LOGGER.debug("Returning ListItem's with ID's: {}", //
+				items.stream()//
+						.map(ListItem::getId)//
+		);
 		return items;
 	}
 
 	/**
-	 * Add new user if there is none user with same name
+	 * Add new user if there is no user with same name
 	 * 
 	 * @param newUser
 	 *            AppUser instance of the new user to create
@@ -140,9 +144,10 @@ public class UserService {
 	 */
 	@Transactional(readOnly = false)
 	public void addUser(AppUser newUser) {
-		if (!appUserRepository.findByUserName(newUser.getUserName()).isPresent())
+		if (!appUserRepository.findByUserName(newUser.getUserName()).isPresent()) {
 			appUserRepository.save(newUser);
-		else {
+			LOGGER.info("addUser: Created new user: {}", newUser);
+		} else {
 			throw new DuplicateUserException(newUser.getUserName());
 		}
 	}
