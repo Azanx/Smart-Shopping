@@ -4,12 +4,10 @@
 package io.github.azanx.shopping_list.domain;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import io.github.azanx.shopping_list.domain.ListItem;
-import io.github.azanx.shopping_list.domain.ShoppingList;
 
 /**
  * @author Kamil Piwowarski
@@ -19,16 +17,19 @@ import io.github.azanx.shopping_list.domain.ShoppingList;
 public class ShoppingListTest {
 
 	private ShoppingList listUnderTest;
+	private AppUser testUser;
+	
 	@Before
 	public void setup() {
-		//setting owner as null, we won't be using the owner it isolated tests for ShoppingList class anyway
-		listUnderTest = new ShoppingList("Test shopping list", null); 
+		testUser = new AppUser("test_user", "123", "test@test.com");
+		listUnderTest = new ShoppingList("Test shopping list", testUser); 
+		testUser.addShoppingList(listUnderTest);
 	}
 	
 	@Test
 	public void addItemByName() {
 		String itemName = "Test item 1";
-		ListItem newItem = listUnderTest.addItem(itemName);
+		ListItem newItem = listUnderTest.addListItem(itemName);
 		assertEquals(itemName, newItem.getItemname());
 	}
 	
@@ -40,7 +41,14 @@ public class ShoppingListTest {
 		assertEquals(itemName, newItem.getItemname());
 	}
 	
-	@Test void addTwoItems() {
+	@Test
+	public void twoSimilarListsNotEqual() {
+		ShoppingList list2 = new ShoppingList("Test shopping list", testUser); 
+		testUser.addShoppingList(list2);
+		assertNotEquals(list2, listUnderTest);
+	}
+	
+	@Test public void addTwoItems() {
 		
 	}
 
