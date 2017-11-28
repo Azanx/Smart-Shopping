@@ -8,6 +8,11 @@ import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
+/**
+ * Configuration class for ServletContext
+ * @author Kamil Piwowarski
+ *
+ */
 public class WebMvcInitialiser implements WebApplicationInitializer {
 
 	@Override

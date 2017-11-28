@@ -18,6 +18,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.github.azanx.shopping_list.domain.exception.ListTooLongException;
 
+/**
+ * Domain Class representing shopping list
+ * @author Kamil Piwowarski
+ *
+ */
 @Entity
 @Table(name = "shopping_list")
 public class ShoppingList {
@@ -131,7 +136,7 @@ public class ShoppingList {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((itemNo == null) ? 0 : itemNo.hashCode());
-		//no need for null checks as owner cannot be null
+		//no need for null checks as owner cannot be null, if it is - better to get NullPointerException
 		result = prime * result + owner.hashCode();
 		return result;
 	}

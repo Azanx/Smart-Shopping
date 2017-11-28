@@ -9,6 +9,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.view.JstlView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
+/**
+ * Configuration class for Spring MVC
+ * @author Kamil Piwowarski
+ *
+ */
 @Configuration
 @ComponentScan("io.github.azanx.shopping_list")
 @EnableWebMvc

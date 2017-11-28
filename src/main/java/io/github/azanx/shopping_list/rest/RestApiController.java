@@ -15,6 +15,11 @@ import io.github.azanx.shopping_list.repository.ListItemRepository;
 import io.github.azanx.shopping_list.repository.ShoppingListRepository;
 import io.github.azanx.shopping_list.service.UserService;
 
+/**
+ * Controller for the REST API
+ * @author Kamil Piwowarski
+ *
+ */
 @RestController
 @RequestMapping(value = "/api/{userName}")
 public class RestApiController {
@@ -28,6 +33,11 @@ public class RestApiController {
 		this.userService = userService;
 	}
 
+	/**
+	 * Retrieves basic information about the user which can be used to create AppUser instance 
+	 * @param userName name of the user to retrieve
+	 *
+	 */
 	@RequestMapping
 	AppUser getUserInformation(@PathVariable String userName) {
 		return userService.getUserIfExistsElseThrow(userName); //if user doesn't exist method throws exception
@@ -35,12 +45,23 @@ public class RestApiController {
 										// return value and checking it's success
 	}
 
+	/**
+	 * Retrieves lists belonging to the user
+	 * @param userName name of the user whose lists to retrieve
+	 * 
+	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	Collection<ShoppingList> getShoppingListsForUserName(@PathVariable String userName) {
 		return userService.getShoppingListsForUser(userName);// method throws exception caught by
 										// RestControllerAdvice
 	}
 	
+	/**
+	 * Retrieves Items belonging to the list
+	 * @param userName name of the user whose listItems to retrieve
+	 * @param id of the shopping list whose listItems to retrieve 
+	 * 
+	 */
 	@RequestMapping(value = "/list/{id}")
 	Collection<ListItem> geItemsForListId(@PathVariable String userName, @PathVariable Long id) {
 		return userService.getItemsForUsersListId(userName, id);

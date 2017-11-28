@@ -8,6 +8,7 @@ import java.util.HashMap;
 import io.github.azanx.shopping_list.exception.MessageableException;
 
 /**
+ * Thrown if trying to add user with already used name
  * @author Kamil Piwowarski
  *
  */

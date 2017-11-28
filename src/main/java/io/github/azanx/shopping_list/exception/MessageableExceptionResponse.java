@@ -6,6 +6,7 @@ package io.github.azanx.shopping_list.exception;
 import java.util.HashMap;
 
 /**
+ * 
  * @author Kamil Piwowarski
  *
  */
@@ -20,10 +21,17 @@ public class MessageableExceptionResponse {
 		this.error_code = status;
 	}
 
+	/**
+	 * @return error code for this exception, mainly HttpStatus number
+	 */
 	public int getError_code() {
 		return error_code;
 	}
 	
+	/**
+	 * Get Parameters of this exception
+	 * @return Map of exception parameters and their values
+	 */
 	public HashMap<String, String> getParameters() {
 		return parameters;
 	}

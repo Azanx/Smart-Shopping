@@ -4,7 +4,11 @@ import java.util.HashMap;
 
 import io.github.azanx.shopping_list.exception.MessageableException;
 
-//@ResponseStatus(value=HttpStatus.NOT_FOUND,reason="Could not find requested user")
+/**
+ * Thrown if cannot find given item, it may have been removed
+ * @author Kamil Piwowarski
+ *
+ */
 public class ItemNotFoundException extends RuntimeException implements MessageableException {
 
 	/**

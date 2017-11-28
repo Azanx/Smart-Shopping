@@ -15,6 +15,11 @@ import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+/**
+ * Domain Class representing application user
+ * @author Kamil Piwowarski
+ *
+ */
 @Entity
 @Table(name = "app_user") // without this annotation parameter it would be
 							// mapped to table
@@ -87,6 +92,7 @@ public class AppUser {
 	}
 
 	/**
+	 * Add given shopping list to this user
 	 * @param newShoppingList instance of ShoppingList to be add for this user
 	 * @return true if list added succesfully, false otherwise (couldn't add to the underlying collection)
 	 * @throw IllegalArgumentException if ShoppingList isn't owned by this user instance
@@ -98,6 +104,7 @@ public class AppUser {
 	}
 
 	/**
+	 * Add shopping list of given name to this user
 	 * @param listName name of the new list to be created for this user
 	 * @return reference to the new ShoppngList instance
 	 */
@@ -107,9 +114,6 @@ public class AppUser {
 		return newShoppingList;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -117,9 +121,6 @@ public class AppUser {
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

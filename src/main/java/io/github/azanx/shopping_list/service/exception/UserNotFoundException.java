@@ -5,6 +5,7 @@ import java.util.HashMap;
 import io.github.azanx.shopping_list.exception.MessageableException;
 
 /**
+ * Thrown if cannot find given user, it may have been removed
  * @author Kamil Piwowarski
  *
  */

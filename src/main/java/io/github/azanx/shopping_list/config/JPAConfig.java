@@ -20,11 +20,14 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+/**
+ * Configuration class for database and Hibernate
+ * @author Kamil Piwowarski
+ */
 @Configuration
 @EnableJpaRepositories(basePackages = "io.github.azanx.shopping_list.repository")
 @PropertySource("classpath:db.properties")
 @EnableTransactionManagement
-//@ComponentScan
 public class JPAConfig {
 
 	@Autowired

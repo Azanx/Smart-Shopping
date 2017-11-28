@@ -8,6 +8,7 @@ import java.util.HashMap;
 import io.github.azanx.shopping_list.exception.MessageableException;
 
 /**
+ * Thrown if collection exceeds set limit for the application (set in domain classes)
  * @author Kamil Piwowarski
  *
  */
