@@ -32,9 +32,9 @@ public class ShoppingList {
 	@GenericGenerator(name = "native", strategy = "native")
 	private Long id;
 
-	//number of the item inside of list, used for equals, hashcode. There rather won't be lists longer than 2^15-1 elements
+	//number of the list inside of user, used for equals, hashcode. There rather won't be lists longer than 2^15-1 elements
 	@Column(nullable = false)
-	private Short itemNo;
+	private Short listNo;
 	
 	@Column(name = "list_name", nullable = false)
 	private String listName;
@@ -60,11 +60,11 @@ public class ShoppingList {
 		super();
 		this.listName = listName;
 		this.owner = owner;
-		//check if collection won't grow over allowed limit (max value for itemNo)  
+		//check if collection won't grow over allowed limit (max value for listNo)  
 		if (owner.getShoppingList().size()+1 > Short.MAX_VALUE) {
 			throw new ListTooLongException(ListTooLongException.listType.ITEM_LIST, owner.getId());
 		} else
-		this.itemNo = (short) (owner.getShoppingList().size()+1);
+		this.listNo = (short) (owner.getShoppingList().size()+1);
 	}
 
 	public Long getId() {
@@ -120,12 +120,12 @@ public class ShoppingList {
 		return newItem;
 	}
 
-	public Short getItemNo() {
-		return itemNo;
+	public Short getListNo() {
+		return listNo;
 	}
 
-	public void setItemNo(Short itemNo) {
-		this.itemNo = itemNo;
+	public void setListNo(Short listNo) {
+		this.listNo = listNo;
 	}
 
 	/* (non-Javadoc)
@@ -135,7 +135,7 @@ public class ShoppingList {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((itemNo == null) ? 0 : itemNo.hashCode());
+		result = prime * result + ((listNo == null) ? 0 : listNo.hashCode());
 		//no need for null checks as owner cannot be null, if it is - better to get NullPointerException
 		result = prime * result + owner.hashCode();
 		return result;
@@ -153,10 +153,10 @@ public class ShoppingList {
 		if (!(obj instanceof ShoppingList))
 			return false;
 		ShoppingList other = (ShoppingList) obj;
-		if (itemNo == null) {
-			if (other.itemNo != null)
+		if (listNo == null) {
+			if (other.listNo != null)
 				return false;
-		} else if (!itemNo.equals(other.itemNo))
+		} else if (!listNo.equals(other.listNo))
 			return false;
 		if (owner == null) {
 			if (other.owner != null)
@@ -168,6 +168,6 @@ public class ShoppingList {
 
 	@Override
 	public String toString() {
-		return "ShoppingList [itemNo=" + itemNo + ", listName=" + listName + ", owner=" + owner + "]";
+		return "ShoppingList [listNo=" + listNo + ", listName=" + listName + ", owner=" + owner + "]";
 	}
 }
