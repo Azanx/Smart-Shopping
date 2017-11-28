@@ -21,12 +21,13 @@ import io.github.azanx.shopping_list.service.exception.ItemNotFoundException;
 import io.github.azanx.shopping_list.service.exception.ListNotFoundException;
 import io.github.azanx.shopping_list.service.exception.UserNotFoundException;
 
-//used to separate repository usage and exception management for database access (user not found etc) from controllers
+//
 
 /**
+ * Service used to separate repository usage and exception management (user not found etc) for
+ * database access from controllers
+ * 
  * @author Kamil Piwowarski
- *
- *         Service for managing users, shoppingLists and Item repositories
  */
 @Service
 public class UserService {
@@ -131,8 +132,11 @@ public class UserService {
 
 	/**
 	 * Add new user if there is none user with same name
-	 * @param newUser AppUser instance of the new user to create
-	 * @throws DuplicateUserException if user with same name already exists
+	 * 
+	 * @param newUser
+	 *            AppUser instance of the new user to create
+	 * @throws DuplicateUserException
+	 *             if user with same name already exists
 	 */
 	@Transactional(readOnly = false)
 	public void addUser(AppUser newUser) {
