@@ -140,6 +140,6 @@ public class AppUser {
 
 	@Override
 	public String toString() {
-		return "AppUser [userName=" + userName + ", email=" + email + ", password=" + password + "]";
+		return "AppUser [userName=" + userName + ", email=" + email + "]";
 	}
 }
