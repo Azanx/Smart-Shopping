@@ -16,6 +16,8 @@ import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import io.github.azanx.shopping_list.domain.exception.ListTooLongException;
+
 @Entity
 @Table(name = "shopping_list")
 public class ShoppingList {
@@ -25,6 +27,10 @@ public class ShoppingList {
 	@GenericGenerator(name = "native", strategy = "native")
 	private Long id;
 
+	//number of the item inside of list, used for equals, hashcode. There rather won't be lists longer than 2^15-1 elements
+	@Column(nullable = false, unique = true)
+	private Short itemNo;
+	
 	@Column(name = "list_name", nullable = false)
 	private String listName;
 
@@ -40,17 +46,15 @@ public class ShoppingList {
 	protected ShoppingList() {
 	}
 
-	public ShoppingList(String listName, AppUser owner, Set<ListItem> listItems) {
-		super();
-		this.listName = listName;
-		this.owner = owner;
-		this.listItems = listItems;
-	}
-
 	public ShoppingList(String listName, AppUser owner) {
 		super();
 		this.listName = listName;
 		this.owner = owner;
+		//check if collection won't grow over allowed limit (max value for itemNo)  
+		if (owner.getShoppingList().size()+1 > Short.MAX_VALUE) {
+			throw new ListTooLongException(ListTooLongException.listType.ITEM_LIST, owner.getId());
+		} else
+		this.itemNo = (short) (owner.getShoppingList().size()+1);
 	}
 
 	public Long getId() {
@@ -81,6 +85,10 @@ public class ShoppingList {
 		return listItems;
 	}
 	
+	public void setListItems(Set<ListItem> listItems) {
+		this.listItems = listItems;
+	}	
+
 	public void addListItem(ListItem newItem) {
 		this.getListItems().add(newItem);
 	}
@@ -91,9 +99,48 @@ public class ShoppingList {
 		return newItem;
 	}
 
-	public ListItem addItem(String itemName) {
-		ListItem newItem = new ListItem(itemName, this);
-		this.getListItems().add(newItem);
-		return newItem;
+	public Short getItemNo() {
+		return itemNo;
+	}
+
+	public void setItemNo(Short itemNo) {
+		this.itemNo = itemNo;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((itemNo == null) ? 0 : itemNo.hashCode());
+		//no need for null checks as owner cannot be null
+		result = prime * result + owner.hashCode();
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof ShoppingList))
+			return false;
+		ShoppingList other = (ShoppingList) obj;
+		if (itemNo == null) {
+			if (other.itemNo != null)
+				return false;
+		} else if (!itemNo.equals(other.itemNo))
+			return false;
+		if (owner == null) {
+			if (other.owner != null)
+				return false;
+		} else if (!owner.equals(other.owner))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "ShoppingList [itemNo=" + itemNo + ", listName=" + listName + ", owner=" + owner + "]";
 	}
 }

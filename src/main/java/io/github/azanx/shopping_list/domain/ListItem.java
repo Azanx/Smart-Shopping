@@ -12,6 +12,8 @@ import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import io.github.azanx.shopping_list.domain.exception.ListTooLongException;
+
 @Entity
 @Table(name = "list_item")
 public class ListItem {
@@ -20,6 +22,10 @@ public class ListItem {
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
 	@GenericGenerator(name = "native", strategy = "native")
 	private Long id;
+	
+	@Column(nullable = false)
+	//number of the item inside of list, used for equals, hashcode. There rather won't be lists longer than 2^15-1 elements
+	private Short itemNo;
 
 	@Column(name = "item_name", nullable = false)
 	private String itemname;
@@ -35,6 +41,11 @@ public class ListItem {
 		super();
 		this.itemname = itemname;
 		this.parentList = parentList;
+		//check if collection won't grow over allowed limit (max value for itemNo)  
+		if (parentList.getListItems().size()+1 > Short.MAX_VALUE) {
+			throw new ListTooLongException(ListTooLongException.listType.ITEM_LIST, parentList.getId());
+		} else
+		this.itemNo = (short) (parentList.getListItems().size()+1);
 	}
 
 	public Long getId() {
@@ -60,4 +71,51 @@ public class ListItem {
 	public void setParentList(ShoppingList parentList) {
 		this.parentList = parentList;
 	}
+	
+	public Short getItemNo() {
+		return itemNo;
+	}
+
+	public void setItemNo(Short itemNo) {
+		this.itemNo = itemNo;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((itemNo == null) ? 0 : itemNo.hashCode());
+		//no need for null checks as parentList cannot be null
+		result = prime * result + parentList.hashCode();
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof ListItem))
+			return false;
+		ListItem other = (ListItem) obj;
+		if (itemNo == null) {
+			if (other.itemNo != null)
+				return false;
+		} else if (!itemNo.equals(other.itemNo))
+			return false;
+		if (parentList == null) {
+			if (other.parentList != null)
+				return false;
+		} else if (!parentList.equals(other.parentList))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "ListItem [itemNo=" + itemNo + ", itemname=" + itemname + ", parentList=" + parentList + "]";
+	}
+
+	
 }
