@@ -28,7 +28,7 @@ public class ShoppingList {
 	private Long id;
 
 	//number of the item inside of list, used for equals, hashcode. There rather won't be lists longer than 2^15-1 elements
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false)
 	private Short itemNo;
 	
 	@Column(name = "list_name", nullable = false)
@@ -46,6 +46,11 @@ public class ShoppingList {
 	protected ShoppingList() {
 	}
 
+	/**
+	 * if invoking this constructor directly remember to use parents {@link AppUser#addShoppingList(ShoppingList)} method immediately afterwards
+	 * @param listName name of the new list
+	 * @param owner AppUser owning the list
+	 */
 	public ShoppingList(String listName, AppUser owner) {
 		super();
 		this.listName = listName;
@@ -89,10 +94,21 @@ public class ShoppingList {
 		this.listItems = listItems;
 	}	
 
-	public void addListItem(ListItem newItem) {
-		this.getListItems().add(newItem);
+	/**
+	 * @param newItem
+	 * @return true if ListItem added succesfully, false otherwise (couldn't add to the underlying collection)
+	 * throws IllegalArgumentException if ListItem isn't owned by this ShoppingList
+	 */
+	public boolean addListItem(ListItem newItem) {
+		if(!newItem.getParentList().equals(this))
+			throw new IllegalArgumentException("list isn't owned by this AppUser instance!");
+		return this.getListItems().add(newItem);
 	}
 	
+	/**
+	 * @param itemName name of the item to add into the list
+	 * @return reference to the new item
+	 */
 	public ListItem addListItem(String itemName) {
 		ListItem newItem = new ListItem(itemName, this);
 		this.getListItems().add(newItem);
@@ -107,6 +123,9 @@ public class ShoppingList {
 		this.itemNo = itemNo;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -117,6 +136,9 @@ public class ShoppingList {
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

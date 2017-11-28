@@ -37,6 +37,11 @@ public class ListItem {
 	protected ListItem() {
 	} 
 
+	/**
+	 * if invoking this constructor directly remember to use parents {@link ShoppingList#addListItem(ListItem)} method immediately afterwards
+	 * @param itemname name of the new list item
+	 * @param parentList list owning this item
+	 */
 	public ListItem(String itemname, ShoppingList parentList) {
 		super();
 		this.itemname = itemname;
