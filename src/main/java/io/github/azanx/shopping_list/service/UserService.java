@@ -4,6 +4,8 @@ import java.util.Collection;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,13 +17,21 @@ import io.github.azanx.shopping_list.repository.AppUserRepository;
 import io.github.azanx.shopping_list.repository.ListItemRepository;
 import io.github.azanx.shopping_list.repository.ShoppingListRepository;
 import io.github.azanx.shopping_list.service.exception.DuplicateUserException;
+import io.github.azanx.shopping_list.service.exception.ItemNotFoundException;
 import io.github.azanx.shopping_list.service.exception.ListNotFoundException;
 import io.github.azanx.shopping_list.service.exception.UserNotFoundException;
 
 //used to separate repository usage and exception management for database access (user not found etc) from controllers
 
+/**
+ * @author Kamil Piwowarski
+ *
+ *         Service for managing users, shoppingLists and Item repositories
+ */
 @Service
 public class UserService {
+
+	private static Logger LOGGER = LoggerFactory.getLogger("---UserService LOGGER---");
 
 	private final AppUserRepository appUserRepository;
 
@@ -38,28 +48,37 @@ public class UserService {
 		this.shoppingListRepository = shoppingListRepository;
 	}
 
-	// temporary for test use
+	/**
+	 * Checks if database has admin account configured, if not - creates it with
+	 * default password 'admin' and generate WARNING in log
+	 */
 	@PostConstruct
 	@Transactional(readOnly = false)
 	public void init() {
 		if (!appUserRepository.findByUserName("admin").isPresent()) {
 			// check if admin exists, else create one and log
+			LOGGER.warn("No 'admin' account found in DB, creating 'admin' account with password defaulting to 'admin'");
 			AppUser newAdmin = new AppUser("admin", "admin", "admin@temp.pl");
-			ShoppingList shopList = new ShoppingList("admin shopping", newAdmin);
-			ListItem listItem1 = new ListItem("mleko", shopList);
-			shopList.addListItem(listItem1);
-			newAdmin.addShoppingList(shopList);
-			newAdmin.addShoppingList("second list").addListItem("mleko z drugiej listy");
+			/*
+			 * ShoppingList shopList = new ShoppingList("admin shopping",
+			 * newAdmin); ListItem listItem1 = new ListItem("mleko", shopList);
+			 * shopList.addListItem(listItem1);
+			 * newAdmin.addShoppingList(shopList);
+			 * newAdmin.addShoppingList("second list").
+			 * addListItem("mleko z drugiej listy");
+			 */
 			appUserRepository.save(newAdmin);
 		}
 	}
 
 	/**
-	 * Returns AppUser instance if user with userName exists
+	 * Returns AppUser instance if user with given userName exists
 	 * 
+	 * @param userName
+	 *            name of the user to retrieve from the database
+	 * @return AppUser
 	 * @throws UserNotFoundException
 	 *             if user with 'userName' doesn't exist
-	 * 
 	 */
 	// throws clause not necessarry as it's an unchecked exception
 	@Transactional(readOnly = true)
@@ -70,33 +89,57 @@ public class UserService {
 						() -> new UserNotFoundException(userName)); //
 	}
 
+	/**
+	 * Retrieve shopping lists of an user from the database
+	 * 
+	 * @param userName
+	 *            name of the user whose lists to retrieve from the database
+	 * @return collection containing all of the ShoppingLists belonging to this
+	 *         user
+	 * @throws ListNotFoundException
+	 *             if user doesn't have any lists
+	 */
 	@Transactional(readOnly = true)
 	public Collection<ShoppingList> getShoppingListsForUser(String userName) {
-		getUserIfExistsElseThrow(userName); // check if user exists
 		Collection<ShoppingList> lists = shoppingListRepository.findByOwnerUserName(userName);
-		if (lists.isEmpty())
+		if (lists.isEmpty()) {
 			throw new ListNotFoundException(userName);
+		}
 		return lists;
 	}
 
+	/**
+	 * Retrieve ListItems of particular user's ShoppingList
+	 * 
+	 * @param userName
+	 *            name of the user whose ListItems to retrieve from the database
+	 * @param listId
+	 *            id (as in: primary key in DB) of the list to retrieve
+	 * @return collection containing all of the ListItems belonging to this
+	 *         ShoppingList
+	 * @throws ListNotFoundException
+	 *             if user doesn't have list with this ID
+	 */
 	@Transactional(readOnly = true)
 	public Collection<ListItem> getItemsForUsersListId(String userName, Long listId) {
-		try {
-			getShoppingListsForUser(userName); // check if user exists and has
-												// lists
-		} catch (ListNotFoundException lnfe) {
-			throw new ListNotFoundException(listId, userName);
+		Collection<ListItem> items = listItemRepository.findByParentListIdAndParentListOwnerUserName(listId, userName);
+		if (items.isEmpty()) {
+			throw new ItemNotFoundException(userName);
 		}
-		Collection<ListItem> items = listItemRepository.findByParentListId(listId);
-
 		return items;
 	}
 
+	/**
+	 * Add new user if there is none user with same name
+	 * @param newUser AppUser instance of the new user to create
+	 * @throws DuplicateUserException if user with same name already exists
+	 */
 	@Transactional(readOnly = false)
 	public void addUser(AppUser newUser) {
 		if (!appUserRepository.findByUserName(newUser.getUserName()).isPresent())
 			appUserRepository.save(newUser);
-		else
+		else {
 			throw new DuplicateUserException(newUser.getUserName());
+		}
 	}
 }
