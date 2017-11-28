@@ -12,7 +12,7 @@ public class ItemNotFoundException extends RuntimeException implements Messageab
 	 */
 	private static final long serialVersionUID = -4321875051376072725L;
 	private final String userName;
-	private final long itemId; //-1 if there are no lists
+	private final long itemId; //-1 if there are no items
 	private final HashMap<String, String> parameters;
 
 	public ItemNotFoundException(long itemId, String userName) {
