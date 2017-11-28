@@ -37,6 +37,7 @@ public class RestApiControllerAdvice {
 	}
 
 	/**
+	 * Format response message for encountered exception
 	 * @param e
 	 *            - Exception from which to exctract parameters, must implement
 	 *            MessageableException interface
