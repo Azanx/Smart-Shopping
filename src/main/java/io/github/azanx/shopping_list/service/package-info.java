@@ -2,6 +2,7 @@
  * 
  */
 /**
+ * Services used by other packages to perform tasks
  * @author Kamil Piwowarski
  *
  */

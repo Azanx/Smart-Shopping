@@ -2,6 +2,7 @@
  * 
  */
 /**
+ * Spring Configuration classes for the project
  * @author Kamil Piwowarski
  *
  */

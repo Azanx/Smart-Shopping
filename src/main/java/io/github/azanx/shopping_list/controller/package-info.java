@@ -2,6 +2,7 @@
  * 
  */
 /**
+ * Controllers for REST and Web frontend
  * @author Kamil Piwowarski
  *
  */

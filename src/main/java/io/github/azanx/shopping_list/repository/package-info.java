@@ -2,6 +2,7 @@
  * 
  */
 /**
+ * Database repositories for domain classes
  * @author Kamil Piwowarski
  *
  */
