@@ -89,7 +89,7 @@ public class RestApiController {
 	}
 	
 	@RequestMapping(value = "/list/{listId}", method = RequestMethod.POST)
-	Collection<ListItem> addListItemsToList(@PathVariable String userName, @PathVariable Short listId, @RequestBody Collection<ListItem> newItems) {
+	ResponseEntity<?> addListItemsToList(@PathVariable String userName, @PathVariable Short listId, @RequestBody Collection<ListItem> newItems) {
 		//TODO implement
 		return null;
 	}
@@ -101,25 +101,25 @@ public class RestApiController {
 	}
 	
 	@RequestMapping(value = "/list/{listId}", method = RequestMethod.PUT)
-	Collection<ListItem> updateListItemsOnList(@PathVariable String userName, @PathVariable Short listId, @RequestBody Collection<ListItem> updatedItems) {
+	ResponseEntity<?> updateListItemsOnList(@PathVariable String userName, @PathVariable Short listId, @RequestBody Collection<ListItem> updatedItems) {
 		//TODO implement
 		return null;
 	}
 	
 	@RequestMapping(value = "/list/{listId}/remove", method = RequestMethod.PUT)
-	Collection<ListItem> removeMultipleListItemsFromList(@PathVariable String userName, @PathVariable Short listId, @RequestBody Collection<ListItem> updatedItems) {
+	ResponseEntity<?> removeMultipleListItemsFromList(@PathVariable String userName, @PathVariable Short listId, @RequestBody Collection<ListItem> updatedItems) {
 		//TODO implement
 		return null;
 	}
 	
 	@RequestMapping(value = "/list/{listId}", method = RequestMethod.DELETE)
-	Collection<ListItem> removeList(@PathVariable String userName, @PathVariable Short listId) {
+	ResponseEntity<?> removeList(@PathVariable String userName, @PathVariable Short listId) {
 		//TODO implement
 		return null;
 	}
 	
 	@RequestMapping(value = "list/{listId}/{itemId}", method = RequestMethod.DELETE)
-	ListItem removeSingleItemFromList(@PathVariable String userName, @PathVariable Short listId, @PathVariable Short itemId) {
+	ResponseEntity<?> removeSingleItemFromList(@PathVariable String userName, @PathVariable Short listId, @PathVariable Short itemId) {
 		//TODO implement
 		return null;
 	}
