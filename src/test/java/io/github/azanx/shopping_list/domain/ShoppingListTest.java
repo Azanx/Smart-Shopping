@@ -49,11 +49,11 @@ public class ShoppingListTest {
 	}
 	
 	@Test public void addTwoItems() {
-		
+		//TODO implement
 	}
 
 	@Test public void removeItem() {
-		//TODO
+		//TODO implement
 	}
 
 }

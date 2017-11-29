@@ -8,8 +8,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import io.github.azanx.shopping_list.domain.AppUser;
-
 /**
  * @author Kamil Piwowarski
  *
@@ -31,6 +29,6 @@ public class AppUserTest {
 	}
 
 	@Test public void removeList() {
-		//TODO
+		//TODO implement
 	}
 }
