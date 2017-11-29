@@ -1,6 +1,6 @@
 package io.github.azanx.shopping_list.domain;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -39,7 +40,8 @@ public class AppUser {
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "owner", cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
-	private Set<ShoppingList> shoppingList = new HashSet<>();
+	@OrderBy("listNo")
+	private Set<ShoppingList> shoppingList = new LinkedHashSet<>();
 
 	@JsonIgnore
 	@Column(name = "user_password", nullable = false)

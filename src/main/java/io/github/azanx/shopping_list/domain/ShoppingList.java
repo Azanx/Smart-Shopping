@@ -1,6 +1,6 @@
 package io.github.azanx.shopping_list.domain;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -45,7 +46,8 @@ public class ShoppingList {
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "parentList", cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)	
-	Set<ListItem> listItems = new HashSet<>();
+	@OrderBy("itemNo")
+	Set<ListItem> listItems = new LinkedHashSet<>();
 
 	// empty constructor for JPA
 	protected ShoppingList() {
