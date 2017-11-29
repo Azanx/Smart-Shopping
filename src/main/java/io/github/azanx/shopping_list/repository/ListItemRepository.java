@@ -1,6 +1,6 @@
 package io.github.azanx.shopping_list.repository;
 
-import java.util.Collection;
+import java.util.Set;
 
 import org.springframework.data.repository.CrudRepository;
 
@@ -11,7 +11,7 @@ import io.github.azanx.shopping_list.domain.ListItem;
  *
  */
 public interface ListItemRepository extends CrudRepository<ListItem, Long> {
-	Collection<ListItem> findByParentListId(Long parentListId);
-	Collection<ListItem> findByParentListAndParentListOwnerUserName(Long parentListId, String parentListOwnerUserName);
-	Collection<ListItem> findByParentListOwnerUserNameAndParentListListNo(String parentListOwnerUserName, Short parentListListNo);
+	Set<ListItem> findByParentListId(Long parentListId);
+	Set<ListItem> findByParentListAndParentListOwnerUserName(Long parentListId, String parentListOwnerUserName);
+	Set<ListItem> findByParentListOwnerUserNameAndParentListListNo(String parentListOwnerUserName, Short parentListListNo);
 }
