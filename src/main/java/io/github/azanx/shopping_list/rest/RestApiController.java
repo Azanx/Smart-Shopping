@@ -59,12 +59,12 @@ public class RestApiController {
 	/**
 	 * Retrieves Items belonging to the list
 	 * @param userName name of the user whose listItems to retrieve
-	 * @param id of the shopping list whose listItems to retrieve 
+	 * @param listId of the shopping list whose listItems to retrieve (listId field, not Id used as primary key in database) 
 	 * 
 	 */
 	@RequestMapping(value = "/list/{id}")
-	Collection<ListItem> geItemsForListId(@PathVariable String userName, @PathVariable Long id) {
-		return userService.getItemsForUsersListId(userName, id);
+	Collection<ListItem> geItemsForListId(@PathVariable String userName, @PathVariable Short listId) {
+		return userService.getItemsForUsersListId(userName, listId);
 	}
 
 
