@@ -3,6 +3,8 @@
  */
 package io.github.azanx.shopping_list.controller;
 
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import io.github.azanx.shopping_list.domain.ShoppingList;
 import io.github.azanx.shopping_list.service.UserService;
 
 /**
@@ -35,7 +38,7 @@ public class MvcController {
 	public ModelAndView home(@PathVariable String userName) {
 		ModelAndView mav = new ModelAndView("showAllLists");
 		mav.addObject("userName", userName);
-		//TODO implement
+		Set<ShoppingList> shoppingLists = userService.getShoppingListsForUser(userName);
 		return mav;
 	}
 	

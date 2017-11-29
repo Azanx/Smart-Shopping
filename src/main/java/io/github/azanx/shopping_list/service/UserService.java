@@ -1,6 +1,6 @@
 package io.github.azanx.shopping_list.service;
 
-import java.util.Collection;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
@@ -101,8 +101,8 @@ public class UserService {
 	 *             if user doesn't have any lists
 	 */
 	@Transactional(readOnly = true)
-	public Collection<ShoppingList> getShoppingListsForUser(String userName) {
-		Collection<ShoppingList> lists = shoppingListRepository.findByOwnerUserName(userName);
+	public Set<ShoppingList> getShoppingListsForUser(String userName) {
+		Set<ShoppingList> lists = shoppingListRepository.findByOwnerUserName(userName);
 		if (lists.isEmpty()) {
 			throw new ListNotFoundException(userName);
 		}
@@ -122,8 +122,8 @@ public class UserService {
 	 *             if user doesn't have list with this ID
 	 */
 	@Transactional(readOnly = true)
-	public Collection<ListItem> getItemsForUsersListId(String userName, Short listId) {
-		Collection<ListItem> items = listItemRepository.findByParentListOwnerUserNameAndParentListListNo(userName, listId);
+	public Set<ListItem> getItemsForUsersListId(String userName, Short listId) {
+		Set<ListItem> items = listItemRepository.findByParentListOwnerUserNameAndParentListListNo(userName, listId);
 		if (items.isEmpty()) {
 			throw new ItemNotFoundException(userName);
 		}

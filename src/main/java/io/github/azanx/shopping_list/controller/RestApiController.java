@@ -1,6 +1,6 @@
 package io.github.azanx.shopping_list.controller;
 
-import java.util.Collection;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -50,7 +50,7 @@ public class RestApiController {
 	 * 
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	Collection<ShoppingList> getShoppingListsForUserName(@PathVariable String userName) {
+	Set<ShoppingList> getShoppingListsForUserName(@PathVariable String userName) {
 		return userService.getShoppingListsForUser(userName);// method throws exception caught by
 										// RestControllerAdvice
 	}
@@ -62,7 +62,7 @@ public class RestApiController {
 	 * 
 	 */
 	@RequestMapping(value = "/list/{listId}", method = RequestMethod.GET)
-	Collection<ListItem> getAllItemsFromList(@PathVariable String userName, @PathVariable Short listId) {
+	Set<ListItem> getAllItemsFromList(@PathVariable String userName, @PathVariable Short listId) {
 		return userService.getItemsForUsersListId(userName, listId);
 	}
 	
@@ -86,7 +86,7 @@ public class RestApiController {
 	}
 	
 	@RequestMapping(value = "/list/{listId}", method = RequestMethod.POST)
-	ResponseEntity<?> addListItemsToList(@PathVariable String userName, @PathVariable Short listId, @RequestBody Collection<ListItem> newItems) {
+	ResponseEntity<?> addListItemsToList(@PathVariable String userName, @PathVariable Short listId, @RequestBody Set<ListItem> newItems) {
 		//TODO implement
 		return null;
 	}
@@ -98,13 +98,13 @@ public class RestApiController {
 	}
 	
 	@RequestMapping(value = "/list/{listId}", method = RequestMethod.PUT)
-	ResponseEntity<?> updateListItemsOnList(@PathVariable String userName, @PathVariable Short listId, @RequestBody Collection<ListItem> updatedItems) {
+	ResponseEntity<?> updateListItemsOnList(@PathVariable String userName, @PathVariable Short listId, @RequestBody Set<ListItem> updatedItems) {
 		//TODO implement
 		return null;
 	}
 	
 	@RequestMapping(value = "/list/{listId}/remove", method = RequestMethod.PUT)
-	ResponseEntity<?> removeMultipleListItemsFromList(@PathVariable String userName, @PathVariable Short listId, @RequestBody Collection<ListItem> updatedItems) {
+	ResponseEntity<?> removeMultipleListItemsFromList(@PathVariable String userName, @PathVariable Short listId, @RequestBody Set<ListItem> updatedItems) {
 		//TODO implement
 		return null;
 	}
