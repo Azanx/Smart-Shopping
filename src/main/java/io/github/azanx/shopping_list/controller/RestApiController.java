@@ -3,7 +3,9 @@ package io.github.azanx.shopping_list.controller;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -57,13 +59,68 @@ public class RestApiController {
 	}
 	
 	/**
-	 * Retrieves Items belonging to the list
+	 * Retrieves all Items belonging to the list
 	 * @param userName name of the user whose listItems to retrieve
 	 * @param listId of the shopping list whose listItems to retrieve (listId field, not Id used as primary key in database) 
 	 * 
 	 */
 	@RequestMapping(value = "/list/{listId}", method = RequestMethod.GET)
-	Collection<ListItem> geItemsForListId(@PathVariable String userName, @PathVariable Short listId) {
+	Collection<ListItem> getAllItemsFromList(@PathVariable String userName, @PathVariable Short listId) {
 		return userService.getItemsForUsersListId(userName, listId);
+	}
+	
+	/**
+	 * Retrieves single item from the list
+	 * @param userName name of the user whose listItems to retrieve
+	 * @param listId of the shopping list whose listItems to retrieve (listId field, not Id used as primary key in database)
+	 * @param itemId of the item we wan't to retrieve (itemId field, not Id used as primary key in database)
+	 * 
+	 */
+	@RequestMapping(value = "list/{listId}/{itemId}", method = RequestMethod.GET)
+	ListItem getSingleItemFromList(@PathVariable String userName, @PathVariable Short listId, @PathVariable Short itemId) {
+		//TODO implement
+		return null;
+	}
+
+	@RequestMapping(value = "/list", method = RequestMethod.POST)
+	ResponseEntity<?> addList(@PathVariable String userName, @RequestBody ShoppingList newList) {
+		//TODO implement
+		return null;
+	}
+	
+	@RequestMapping(value = "/list/{listId}", method = RequestMethod.POST)
+	Collection<ListItem> addListItemsToList(@PathVariable String userName, @PathVariable Short listId, @RequestBody Collection<ListItem> newItems) {
+		//TODO implement
+		return null;
+	}
+	
+	@RequestMapping(value = "/list", method = RequestMethod.PUT)
+	ResponseEntity<?> updateList(@PathVariable String userName, @RequestBody ShoppingList updatedList) {
+		//TODO implement
+		return null;
+	}
+	
+	@RequestMapping(value = "/list/{listId}", method = RequestMethod.PUT)
+	Collection<ListItem> updateListItemsOnList(@PathVariable String userName, @PathVariable Short listId, @RequestBody Collection<ListItem> updatedItems) {
+		//TODO implement
+		return null;
+	}
+	
+	@RequestMapping(value = "/list/{listId}/remove", method = RequestMethod.PUT)
+	Collection<ListItem> removeMultipleListItemsFromList(@PathVariable String userName, @PathVariable Short listId, @RequestBody Collection<ListItem> updatedItems) {
+		//TODO implement
+		return null;
+	}
+	
+	@RequestMapping(value = "/list/{listId}", method = RequestMethod.DELETE)
+	Collection<ListItem> removeList(@PathVariable String userName, @PathVariable Short listId) {
+		//TODO implement
+		return null;
+	}
+	
+	@RequestMapping(value = "list/{listId}/{itemId}", method = RequestMethod.DELETE)
+	ListItem removeSingleItemFromList(@PathVariable String userName, @PathVariable Short listId, @PathVariable Short itemId) {
+		//TODO implement
+		return null;
 	}
 }
