@@ -38,7 +38,7 @@ public class RestApiController {
 	 * @param userName name of the user to retrieve
 	 *
 	 */
-	@RequestMapping
+	@RequestMapping(method = RequestMethod.GET)
 	AppUser getUserInformation(@PathVariable String userName) {
 		return userService.getUserIfExistsElseThrow(userName); //if user doesn't exist method throws exception
 										//caught by RestControllerAdvice - hence no need for
@@ -62,10 +62,8 @@ public class RestApiController {
 	 * @param listId of the shopping list whose listItems to retrieve (listId field, not Id used as primary key in database) 
 	 * 
 	 */
-	@RequestMapping(value = "/list/{id}")
+	@RequestMapping(value = "/list/{listId}", method = RequestMethod.GET)
 	Collection<ListItem> geItemsForListId(@PathVariable String userName, @PathVariable Short listId) {
 		return userService.getItemsForUsersListId(userName, listId);
 	}
-
-
 }
