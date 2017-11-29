@@ -1,4 +1,4 @@
-package io.github.azanx.shopping_list.rest;
+package io.github.azanx.shopping_list.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
