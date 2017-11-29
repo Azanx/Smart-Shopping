@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,7 +40,15 @@ public class MvcController {
 		ModelAndView mav = new ModelAndView("showAllLists");
 		mav.addObject("userName", userName);
 		Set<ShoppingList> shoppingLists = userService.getShoppingListsForUser(userName);
+		mav.addObject("shoppingLists", shoppingLists);
 		return mav;
+	}
+	
+	@RequestMapping(value="list", method = RequestMethod.POST)
+	public ModelAndView addList(@PathVariable String userName, @ModelAttribute("newListName") String newListName) {
+		userService.addShoppingListToUserByName(userName, newListName);
+		//TODO implement
+		return null;
 	}
 	
 	/**
