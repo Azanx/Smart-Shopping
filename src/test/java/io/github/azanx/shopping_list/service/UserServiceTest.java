@@ -5,6 +5,7 @@ package io.github.azanx.shopping_list.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +17,8 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import io.github.azanx.shopping_list.config.JPAConfig;
 import io.github.azanx.shopping_list.domain.AppUser;
+import io.github.azanx.shopping_list.domain.ListItem;
+import io.github.azanx.shopping_list.domain.ShoppingList;
 import io.github.azanx.shopping_list.repository.AppUserRepository;
 import io.github.azanx.shopping_list.repository.ListItemRepository;
 import io.github.azanx.shopping_list.repository.ShoppingListRepository;
@@ -109,7 +112,7 @@ public class UserServiceTest {
 	 * Using separate AppUser instance to separate this test from methods like "update" "addList" etc
 	 */
 	@Test
-	public void getShoppingListsForUserWhithOneList() {
+	public void getShoppingListsForUserWithOneList() {
 		String userName = "Test2"; //hiding class field with the same name
 		AppUser userUnderTest = new AppUser(userName, "password", "email@test.com"); //hiding class field with the same name
 		userUnderTest.addShoppingList("test list");
@@ -118,7 +121,7 @@ public class UserServiceTest {
 	}
 	
 	@Test
-	public void getShoppingListsForUserWhithMultipleLists() {
+	public void getShoppingListsForUserWithMultipleListsHasCorrectCollectionLength() {
 		String userName = "Test2"; //hiding class field with the same name
 		AppUser userUnderTest = new AppUser(userName, "password", "email@test.com"); //hiding class field with the same name
 		int amount = 3; //how many lists to add
@@ -127,6 +130,28 @@ public class UserServiceTest {
 		userService.addUser(userUnderTest);
 		assertEquals(amount, userService.getShoppingListsForUser(userName).size());
 	}
+	
+	/**
+	 * Add list for user1, then list for user2. Get list of user2 and check if the item in it is correct
+	 * checks if getting list uses listNo and not Id
+	 */
+	@Test
+	public void getShoppingListsForSecondUserListContainsCorrectItem() {
+		AppUser user1 = new AppUser("User1", "password", "email@test.com");
+		user1.addShoppingList("user1list");
+		userService.addUser(user1);
+		String user2Name = "User2";
+		AppUser user2 = new AppUser(user2Name, "password", "email@test.com");
+		ShoppingList user2list = new ShoppingList("user2list", user2);
+		String itemName = "Some Item";
+		ListItem item = new ListItem(itemName, user2list);
+		user2list.addListItem(item);
+		user2.addShoppingList(user2list);
+		userService.addUser(user2);
+		
+		//get Items from user2 list number one and check if they contain inserted item u
+		assertTrue(userService.getItemsForUsersListId(user2Name, (short)1).contains(item));
+	}
 //getShoppingListsForUser
-//getItemsForUsersListI
+//getItemsForUsersListId
 }
