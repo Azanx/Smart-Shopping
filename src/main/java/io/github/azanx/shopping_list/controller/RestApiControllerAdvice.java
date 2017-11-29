@@ -13,7 +13,7 @@ import io.github.azanx.shopping_list.service.exception.ItemNotFoundException;
 import io.github.azanx.shopping_list.service.exception.ListNotFoundException;
 import io.github.azanx.shopping_list.service.exception.UserNotFoundException;
 
-@RestControllerAdvice("io.github.azanx.shopping_list.rest")
+@RestControllerAdvice(basePackageClasses = {io.github.azanx.shopping_list.controller.RestApiController.class})
 public class RestApiControllerAdvice {
 
 	@ExceptionHandler(UserNotFoundException.class)
