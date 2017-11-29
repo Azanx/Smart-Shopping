@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import io.github.azanx.shopping_list.domain.AppUser;
 import io.github.azanx.shopping_list.domain.ListItem;
 import io.github.azanx.shopping_list.domain.ShoppingList;
-import io.github.azanx.shopping_list.repository.ListItemRepository;
-import io.github.azanx.shopping_list.repository.ShoppingListRepository;
 import io.github.azanx.shopping_list.service.UserService;
 
 /**
@@ -29,8 +27,7 @@ public class RestApiController {
 	private final UserService userService;
 
 	@Autowired
-	public RestApiController( UserService userService, ListItemRepository listItemRepository,
-			ShoppingListRepository shoppingListRepository) {
+	public RestApiController( UserService userService) {
 		super();
 		this.userService = userService;
 	}
