@@ -7,6 +7,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import javax.transaction.Transactional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -151,6 +153,19 @@ public class UserServiceTest {
 		
 		//get Items from user2 list number one and check if they contain inserted item u
 		assertTrue(userService.getItemsForUsersListId(user2Name, (short)1).contains(item));
+	}
+		
+	@Test(expected = UserNotFoundException.class)
+	public void addShoppingListToUserByName_FailsIfNonExistentUser() {
+		userService.addShoppingListToUserByName("fake_user", userName);
+	}
+	
+	@Test
+	@Transactional //LazyInitializationException thrown without it at second asssert
+	public void addShoppingListToUserByName_succeedsForExistingUser() {
+		ShoppingList list = userService.addShoppingListToUserByName(userUnderTest.getUserName(), userName);
+		assertNotNull(list);
+		assertTrue( userService.getShoppingListsForUser(userName).contains(list));
 	}
 //getShoppingListsForUser
 //getItemsForUsersListId

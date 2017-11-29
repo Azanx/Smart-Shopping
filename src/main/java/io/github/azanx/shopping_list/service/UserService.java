@@ -60,14 +60,13 @@ public class UserService {
 			// check if admin exists, else create one and log
 			LOGGER.warn("No 'admin' account found in DB, creating 'admin' account with password defaulting to 'admin'");
 			AppUser newAdmin = new AppUser("admin", "admin", "admin@temp.pl");
-			
-/*			 ShoppingList shopList = new ShoppingList("admin shopping",
-			 newAdmin); ListItem listItem1 = new ListItem("mleko", shopList);
-			 shopList.addListItem(listItem1);
-			 newAdmin.addShoppingList(shopList);
-			 newAdmin.addShoppingList("second list").
-			 addListItem("mleko z drugiej listy");*/
-			 
+
+			ShoppingList shopList = new ShoppingList("admin shopping", newAdmin);
+			ListItem listItem1 = new ListItem("mleko", shopList);
+			shopList.addListItem(listItem1);
+			newAdmin.addShoppingList(shopList);
+			newAdmin.addShoppingList("second list").addListItem("mleko z drugiej listy");
+
 			appUserRepository.save(newAdmin);
 		}
 	}
@@ -151,9 +150,31 @@ public class UserService {
 			throw new DuplicateUserException(newUser.getUserName());
 		}
 	}
-	
-//	@Transactional(readOnly = false)
-//	public void removeShoppingList( listId) {
-//		
-//	}
+
+	/**
+	 * 
+	 */
+	/**
+	 * Add new shopping list for a given user
+	 * @param userName name of the user for which to create the new list
+	 * @param newListName name of the new list
+	 * @return newly created list
+	 * @throws UserNotFoundException if user with given name doesn't exist
+	 */
+	@Transactional(readOnly = false)
+	public ShoppingList addShoppingListToUserByName(String userName, String newListName) {
+		AppUser user = appUserRepository.findByUserName(userName)//
+				.orElseThrow(//
+						() -> new UserNotFoundException(userName));
+		
+		ShoppingList list = new ShoppingList(newListName, user);
+		list = shoppingListRepository.save(list);
+		LOGGER.info("Created new list: {}", list);
+		return list;
+	}
+
+	// @Transactional(readOnly = false)
+	// public void removeShoppingList( listId) {
+	//
+	// }
 }
