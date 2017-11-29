@@ -60,14 +60,14 @@ public class UserService {
 			// check if admin exists, else create one and log
 			LOGGER.warn("No 'admin' account found in DB, creating 'admin' account with password defaulting to 'admin'");
 			AppUser newAdmin = new AppUser("admin", "admin", "admin@temp.pl");
-			/*
-			 * ShoppingList shopList = new ShoppingList("admin shopping",
-			 * newAdmin); ListItem listItem1 = new ListItem("mleko", shopList);
-			 * shopList.addListItem(listItem1);
-			 * newAdmin.addShoppingList(shopList);
-			 * newAdmin.addShoppingList("second list").
-			 * addListItem("mleko z drugiej listy");
-			 */
+			
+/*			 ShoppingList shopList = new ShoppingList("admin shopping",
+			 newAdmin); ListItem listItem1 = new ListItem("mleko", shopList);
+			 shopList.addListItem(listItem1);
+			 newAdmin.addShoppingList(shopList);
+			 newAdmin.addShoppingList("second list").
+			 addListItem("mleko z drugiej listy");*/
+			 
 			appUserRepository.save(newAdmin);
 		}
 	}
