@@ -30,7 +30,7 @@ public class ShoppingListTest {
 	public void addItemByName() {
 		String itemName = "Test item 1";
 		ListItem newItem = listUnderTest.addListItem(itemName);
-		assertEquals(itemName, newItem.getItemname());
+		assertEquals(itemName, newItem.getItemName());
 	}
 	
 	@Test
@@ -38,7 +38,7 @@ public class ShoppingListTest {
 		String itemName = "Test item 1";
 		ListItem newItem = new ListItem(itemName, this.listUnderTest);
 		this.listUnderTest.addListItem(newItem);
-		assertEquals(itemName, newItem.getItemname());
+		assertEquals(itemName, newItem.getItemName());
 	}
 	
 	@Test

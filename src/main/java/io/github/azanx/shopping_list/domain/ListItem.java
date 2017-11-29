@@ -33,7 +33,7 @@ public class ListItem {
 	private Short itemNo;
 
 	@Column(name = "item_name", nullable = false)
-	private String itemname;
+	private String itemName;
 	
 	@JsonIgnore
 	@ManyToOne
@@ -49,7 +49,7 @@ public class ListItem {
 	 */
 	public ListItem(String itemname, ShoppingList parentList) {
 		super();
-		this.itemname = itemname;
+		this.itemName = itemname;
 		this.parentList = parentList;
 		//check if collection won't grow over allowed limit (max value for itemNo)  
 		if (parentList.getListItems().size()+1 > Short.MAX_VALUE) {
@@ -66,12 +66,12 @@ public class ListItem {
 		this.id = id;
 	}
 
-	public String getItemname() {
-		return itemname;
+	public String getItemName() {
+		return itemName;
 	}
 
-	public void setItemname(String itemname) {
-		this.itemname = itemname;
+	public void setItemName(String itemname) {
+		this.itemName = itemname;
 	}
 
 	public ShoppingList getParentList() {
@@ -124,7 +124,7 @@ public class ListItem {
 
 	@Override
 	public String toString() {
-		return "ListItem [itemNo=" + itemNo + ", itemname=" + itemname + ", parentList=" + parentList + "]";
+		return "ListItem [itemNo=" + itemNo + ", itemname=" + itemName + ", parentList=" + parentList + "]";
 	}
 
 	
