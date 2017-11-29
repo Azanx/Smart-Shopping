@@ -122,8 +122,8 @@ public class UserService {
 	 *             if user doesn't have list with this ID
 	 */
 	@Transactional(readOnly = true)
-	public Collection<ListItem> getItemsForUsersListId(String userName, Long listId) {
-		Collection<ListItem> items = listItemRepository.findByParentListIdAndParentListOwnerUserName(listId, userName);
+	public Collection<ListItem> getItemsForUsersListId(String userName, Short listId) {
+		Collection<ListItem> items = listItemRepository.findByParentListOwnerUserNameAndParentListListNo(userName, listId);
 		if (items.isEmpty()) {
 			throw new ItemNotFoundException(userName);
 		}
@@ -151,4 +151,9 @@ public class UserService {
 			throw new DuplicateUserException(newUser.getUserName());
 		}
 	}
+	
+//	@Transactional(readOnly = false)
+//	public void removeShoppingList( listId) {
+//		
+//	}
 }
