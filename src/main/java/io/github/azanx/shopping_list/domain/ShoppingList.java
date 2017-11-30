@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "shopping_list")
-public class ShoppingList {
+public class ShoppingList{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")

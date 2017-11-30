@@ -13,7 +13,7 @@ import io.github.azanx.shopping_list.domain.ShoppingList;
  */
 public interface ShoppingListRepository extends CrudRepository<ShoppingList, Long> {
 	Optional<ShoppingList> findById(Long Id);
-	Optional<ShoppingList> findByIdAndOwnerUserName(Long id, String userName);
-	Set<ShoppingList> findByOwnerUserName(String ownerUserName);
-	Short countByOwnerUserName(String ownerUserName);
+	Optional<ShoppingList> findByIdAndOwnerName(Long id, String OwnerName);
+	Set<ShoppingList> findByOwnerName(String ownerName);
+	Short countByOwnerName(String ownerName);
 }

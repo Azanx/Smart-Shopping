@@ -103,7 +103,7 @@ public class UserService {
 	 */
 	@Transactional(readOnly = true)
 	public Set<ShoppingList> getShoppingListsForUser(String userName) {
-		Set<ShoppingList> lists = shoppingListRepository.findByOwnerUserName(userName);
+		Set<ShoppingList> lists = shoppingListRepository.findByOwnerName(userName);
 		if (lists.isEmpty()) {
 			throw new ListNotFoundException(userName);
 		}
@@ -128,8 +128,8 @@ public class UserService {
 	 *             if user doesn't have list with this ID
 	 */
 	@Transactional(readOnly = true)
-	public Set<ListItem> getItemsForUsersListId(String userName, Short listId) {
-		Set<ListItem> items = listItemRepository.findByParentListOwnerUserNameAndParentListListNo(userName, listId);
+	public Set<ListItem> getItemsForUsersListNo(String userName, Short listNo) {
+		Set<ListItem> items = listItemRepository.findByParentList_OwnerNameAndParentList_ListNo(userName, listNo);
 		if (items.isEmpty()) {
 			throw new ItemNotFoundException(userName);
 		}
@@ -175,7 +175,7 @@ public class UserService {
 				.orElseThrow(//
 						() -> new UserNotFoundException(userName));
 		//get count of user lists
-		short count = shoppingListRepository.countByOwnerUserName(userName);
+		short count = shoppingListRepository.countByOwnerName(userName);
 		if(count==Short.MAX_VALUE)
 			throw new ListTooLongException(ListTooLongException.listType.SHOPPING_LIST, user.getId());
 		count++;

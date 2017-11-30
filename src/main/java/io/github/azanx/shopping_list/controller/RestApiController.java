@@ -61,9 +61,9 @@ public class RestApiController {
 	 * @param listId of the shopping list whose listItems to retrieve (listId field, not Id used as primary key in database) 
 	 * 
 	 */
-	@RequestMapping(value = "/list/{listId}", method = RequestMethod.GET)
-	Set<ListItem> getAllItemsFromList(@PathVariable String userName, @PathVariable Short listId) {
-		return userService.getItemsForUsersListId(userName, listId);
+	@RequestMapping(value = "/list/{listNo}", method = RequestMethod.GET)
+	Set<ListItem> getAllItemsFromList(@PathVariable String userName, @PathVariable Short listNo) {
+		return userService.getItemsForUsersListNo(userName, listNo);
 	}
 	
 	/**
@@ -73,8 +73,8 @@ public class RestApiController {
 	 * @param itemId of the item we wan't to retrieve (itemId field, not Id used as primary key in database)
 	 * 
 	 */
-	@RequestMapping(value = "list/{listId}/{itemId}", method = RequestMethod.GET)
-	ListItem getSingleItemFromList(@PathVariable String userName, @PathVariable Short listId, @PathVariable Short itemId) {
+	@RequestMapping(value = "list/{listNo}/{itemId}", method = RequestMethod.GET)
+	ListItem getSingleItemFromList(@PathVariable String userName, @PathVariable Short listNo, @PathVariable Short itemId) {
 		//TODO implement
 		return null;
 	}

@@ -1,5 +1,6 @@
 package io.github.azanx.shopping_list.domain;
 
+import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -27,7 +28,12 @@ import io.github.azanx.shopping_list.domain.exception.ListTooLongException;
 @Table(name = "app_user") // without this annotation parameter it would be
 							// mapped to table
 							// "AppUser"
-public class AppUser {
+public class AppUser implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 207113748011038111L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")

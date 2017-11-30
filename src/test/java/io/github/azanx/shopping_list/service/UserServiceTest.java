@@ -146,7 +146,7 @@ public class UserServiceTest {
 		user2list.addListItem(item);
 		listItemRepository.save(item);
 		//get Items from user2 list number one and check if they contain inserted item u
-		assertTrue(userService.getItemsForUsersListId(user2Name, (short)1).contains(item));
+		assertTrue(userService.getItemsForUsersListNo(user2Name, (short)1).contains(item));
 	}
 		
 	@Test(expected = UserNotFoundException.class)
@@ -165,12 +165,12 @@ public class UserServiceTest {
 	
 	@Test
 	public void addShoppingListToUserByName_succeedsForMultipleLists() {
-		ShoppingList list = 
-				userService.addShoppingListToUserByName(userName, "LIST 1");
+		
+		userService.addShoppingListToUserByName(userName, "LIST 1");
 		ShoppingList list2 = 
 				userService.addShoppingListToUserByName(user.getUserName(), "LIST 2");
-		ShoppingList list3 = 
-				userService.addShoppingListToUserByName(user.getUserName(), "LIST 3");
+		
+		userService.addShoppingListToUserByName(user.getUserName(), "LIST 3");
 		assertTrue( userService.getShoppingListsForUser(userName).contains(list2));
 	}
 //getShoppingListsForUser

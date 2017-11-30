@@ -31,6 +31,11 @@ public class MvcController {
 		this.userService = userService;
 	}
 	
+//	@ModelAttribute("userName")
+//	String getUserName(@PathVariable String userName){
+//		return userName;
+//	}
+	
 	/**
 	 * Send user to a page showing all his lists
 	 * @param userName name of the user to retrieve
