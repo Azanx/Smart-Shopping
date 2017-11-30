@@ -1,6 +1,7 @@
 package io.github.azanx.shopping_list.service;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import io.github.azanx.shopping_list.domain.AppUser;
 import io.github.azanx.shopping_list.domain.ListItem;
 import io.github.azanx.shopping_list.domain.ShoppingList;
+import io.github.azanx.shopping_list.domain.exception.ListTooLongException;
 import io.github.azanx.shopping_list.repository.AppUserRepository;
 import io.github.azanx.shopping_list.repository.ListItemRepository;
 import io.github.azanx.shopping_list.repository.ShoppingListRepository;
@@ -32,7 +34,7 @@ import io.github.azanx.shopping_list.service.exception.UserNotFoundException;
 @Service
 public class UserService {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger("---UserService LOGGER---");
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
 	private final AppUserRepository appUserRepository;
 
@@ -60,8 +62,8 @@ public class UserService {
 			// check if admin exists, else create one and log
 			LOGGER.warn("No 'admin' account found in DB, creating 'admin' account with password defaulting to 'admin'");
 			AppUser newAdmin = new AppUser("admin", "admin", "admin@temp.pl");
-
-			ShoppingList shopList = new ShoppingList("admin shopping", newAdmin);
+			appUserRepository.save(newAdmin);
+			ShoppingList shopList = newAdmin.addShoppingList("admin shopping");
 			ListItem listItem1 = new ListItem("mleko", shopList);
 			shopList.addListItem(listItem1);
 			newAdmin.addShoppingList(shopList);
@@ -105,6 +107,11 @@ public class UserService {
 		if (lists.isEmpty()) {
 			throw new ListNotFoundException(userName);
 		}
+		LOGGER.debug("Returning ShoppingLists for user: {}, Lists:\n {}",userName,//
+				lists.stream()//
+					.map(ShoppingList::toString)//
+					.collect(Collectors.toList())//
+				);
 		return lists;
 	}
 
@@ -129,7 +136,8 @@ public class UserService {
 		LOGGER.debug("Returning ListItem's with ID's: {}", //
 				items.stream()//
 						.map(ListItem::getId)//
-		);
+						.collect(Collectors.toList())
+				);
 		return items;
 	}
 
@@ -166,8 +174,12 @@ public class UserService {
 		AppUser user = appUserRepository.findByUserName(userName)//
 				.orElseThrow(//
 						() -> new UserNotFoundException(userName));
-		
-		ShoppingList list = new ShoppingList(newListName, user);
+		//get count of user lists
+		short count = shoppingListRepository.countByOwnerUserName(userName);
+		if(count==Short.MAX_VALUE)
+			throw new ListTooLongException(ListTooLongException.listType.SHOPPING_LIST, user.getId());
+		count++;
+		ShoppingList list = user.addShoppingList(newListName, count);
 		list = shoppingListRepository.save(list);
 		LOGGER.info("Created new list: {}", list);
 		return list;
