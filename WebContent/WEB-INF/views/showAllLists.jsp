@@ -12,7 +12,7 @@
 <body>
 
 	Logged as:
-	<a href="profile">${userName}</a>
+	<a href="/admin/profile">${userName}</a>
 	<br /> Your shopping lists:
 	<br />
 	<table>
@@ -27,9 +27,18 @@
 			</tr>
 		</c:forEach>
 	</table>
-	<form:form action="list" modelAttribute="newList">
-	
-	</form:form>
+	Add new list:
+<%-- 	<form:form action="/list" modelAttribute="ShoppingList"> --%>
+<!-- 		<table> -->
+<!-- 			<tr> -->
+<%-- 				<td><form:label path="listName">List Name: </form:label></td> --%>
+<%-- 				<td><form:input path="listName" placeholder="Enter name for the new list"/></td> --%>
+<!-- 			</tr> -->
+<!-- 			<tr> -->
+<!-- 				<td><input type="submit" value="Submit"/></td> -->
+<!-- 			</tr> -->
+<!-- 		</table> -->
+<%-- 	</form:form> --%>
 	Create new list
 </body>
 </html>
