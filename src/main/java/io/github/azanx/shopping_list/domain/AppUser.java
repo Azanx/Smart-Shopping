@@ -16,6 +16,8 @@ import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import io.github.azanx.shopping_list.domain.exception.ListTooLongException;
+
 /**
  * Domain Class representing application user
  * @author Kamil Piwowarski
@@ -41,7 +43,7 @@ public class AppUser {
 	@JsonIgnore
 	@OneToMany(mappedBy = "owner", cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
 	@OrderBy("listNo")
-	private Set<ShoppingList> shoppingList = new LinkedHashSet<>();
+	private Set<ShoppingList> shoppingLists = new LinkedHashSet<>();
 
 	@JsonIgnore
 	@Column(name = "user_password", nullable = false)
@@ -89,8 +91,8 @@ public class AppUser {
 		this.password = password;
 	}
 
-	public Set<ShoppingList> getShoppingList() {
-		return shoppingList;
+	public Set<ShoppingList> getShoppingLists() {
+		return shoppingLists;
 	}
 
 	/**
@@ -102,17 +104,35 @@ public class AppUser {
 	public boolean addShoppingList(ShoppingList newShoppingList) {
 		if(!newShoppingList.getOwner().equals(this))
 			throw new IllegalArgumentException("list isn't owned by this AppUser instance!");
-		return this.getShoppingList().add(newShoppingList);
+		return shoppingLists.add(newShoppingList);
 	}
 
 	/**
-	 * Add shopping list of given name to this user
+	 * Add shopping list of given name to this user. Remember to initialize the ShoppingList collection before calling or your get LazyInitializationException!!
 	 * @param listName name of the new list to be created for this user
 	 * @return reference to the new ShoppngList instance
 	 */
 	public ShoppingList addShoppingList(String listName) {
-		ShoppingList newShoppingList = new ShoppingList(listName, this);
-		this.getShoppingList().add(newShoppingList);
+		Short listNo;
+		ShoppingList newShoppingList;
+		if (getShoppingLists().size()+1 > Short.MAX_VALUE) {
+			throw new ListTooLongException(ListTooLongException.listType.SHOPPING_LIST, this.getId());
+		} else {
+			listNo = (short) (shoppingLists.size()+1);
+			newShoppingList = new ShoppingList(listName, this, listNo);
+		}
+		shoppingLists.add(newShoppingList);
+		return newShoppingList;
+	}
+	
+	/**
+	 * Add shopping list of given name to this user. Use if you know current ShoppingList collection size but don't have the collection initialize (for example, you checked it with query
+	 * @param listName name of the new list to be created for this user
+	 * @return reference to the new ShoppngList instance
+	 */
+	public ShoppingList addShoppingList(String listName, Short listNo) {
+		ShoppingList newShoppingList;
+			newShoppingList = new ShoppingList(listName, this, listNo);
 		return newShoppingList;
 	}
 
@@ -120,6 +140,7 @@ public class AppUser {
 	public int hashCode() {
 		final int prime = 31;
 		int result = prime +  userName.hashCode(); //no need for null check as userName must be not null
+		//TODO readd nullchecks when finished - this method generally shouldn't throw exceptions
 		return result;
 	}
 
