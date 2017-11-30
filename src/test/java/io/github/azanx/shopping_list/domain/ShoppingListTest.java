@@ -17,13 +17,13 @@ import org.junit.Test;
 public class ShoppingListTest {
 
 	private ShoppingList listUnderTest;
-	private AppUser testUser;
+	private AppUser user;
 	
 	@Before
 	public void setup() {
-		testUser = new AppUser("test_user", "123", "test@test.com");
-		listUnderTest = new ShoppingList("Test shopping list", testUser); 
-		testUser.addShoppingList(listUnderTest);
+		user = new AppUser("test_user", "123", "test@test.com");
+		user.setId(1L); // we have to set id manually as we are not writing to database!
+		listUnderTest = user.addShoppingList("Test shopping list"); 
 	}
 	
 	@Test
@@ -43,8 +43,8 @@ public class ShoppingListTest {
 	
 	@Test
 	public void twoSimilarListsNotEqual() {
-		ShoppingList list2 = new ShoppingList("Test shopping list", testUser); 
-		testUser.addShoppingList(list2);
+		ShoppingList list2 = user.addShoppingList("Test shopping list"); 
+		user.addShoppingList(list2);
 		assertNotEquals(list2, listUnderTest);
 	}
 	

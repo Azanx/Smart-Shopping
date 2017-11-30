@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import javax.transaction.Transactional;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class UserServiceTest {
 	ShoppingListRepository shoppingListRepository;
 
 	UserService userService;
-	AppUser userUnderTest;
+	AppUser user;
 	String userName = "User";
 
 	// clean repositories, create fresh userService instance
@@ -59,8 +59,8 @@ public class UserServiceTest {
 		userService = new UserService(appUserRepository, listItemRepository, shoppingListRepository);
 		userService.init(); // have to call it explicitly as I'm not autowiring
 							// the class so POST_CONSTRUCT wouldn't start
-		userUnderTest = new AppUser(userName, "password", "email@test.com");
-		userService.addUser(userUnderTest);
+		user = new AppUser(userName, "password", "email@test.com");
+		userService.addUser(user);
 	}
 
 	/**
@@ -68,45 +68,40 @@ public class UserServiceTest {
 	 * userService construction
 	 */
 	@Test
-	public void isAdminPresent() {
+	public void getUserIfExistsElseThrow_isAdminPresent_Succeeds() {
 		AppUser userUnderTest = userService.getUserIfExistsElseThrow("admin");
 		assertNotNull(userUnderTest);
 	}
 	
 	@Test
-	public void addNewUserSucceeds() {
+	public void addUser_Succeeds() {
 		//user already added during @Before
 		assertNotNull(userService.getUserIfExistsElseThrow(userName));
 	}
 	
 	@Test(expected = UserNotFoundException.class)
-	public void getNonExistendUserThrows() {
-		userService.getUserIfExistsElseThrow("fake");
-	}
-
-	@Test(expected = UserNotFoundException.class)
-	public void throwsExceptionForNonExistingUser() {
+	public void getUserIfExistsElseThrow_ForNonExistingUser_Fails() {
 		userService.getUserIfExistsElseThrow("fake_accout");
 	}
 
 	@Test(expected = DuplicateUserException.class)
-	public void addDuplicateUserFails() {
-		userService.addUser(userUnderTest);
+	public void addUser_DuplicateUser_Fails() {
+		userService.addUser(user);
 	}
 	
 	@Test(expected = DuplicateUserException.class)
-	public void addDuplicateUserWithDifferentObjectsFails() {
+	public void addUser_DuplicateUserWithDifferentObjects_Fails() {
 		AppUser userUnderTest2 = new AppUser("User", "password1", "email1@test.com");
 		userService.addUser(userUnderTest2);
 	}
 	
 	@Test(expected = ListNotFoundException.class)
-	public void getShoppingListsForNonExistentUserFails() {
+	public void getShoppingListsForUser_WhenUserNonExistent_Fails() {
 		userService.getShoppingListsForUser("fake_account");
 	}
 	
 	@Test(expected = ListNotFoundException.class)
-	public void getShoppingListsForUserWhenNoListsFails() {
+	public void getShoppingListsForUser_WhenNoLists_Fails() {
 		userService.getShoppingListsForUser(userName);
 	}
 	
@@ -114,22 +109,20 @@ public class UserServiceTest {
 	 * Using separate AppUser instance to separate this test from methods like "update" "addList" etc
 	 */
 	@Test
-	public void getShoppingListsForUserWithOneList() {
-		String userName = "Test2"; //hiding class field with the same name
-		AppUser userUnderTest = new AppUser(userName, "password", "email@test.com"); //hiding class field with the same name
-		userUnderTest.addShoppingList("test list");
-		userService.addUser(userUnderTest);
-		assertEquals(1, userService.getShoppingListsForUser(userName).size());
+	public void getShoppingListsForUser_WithOneList_Succeeds() {
+		ShoppingList list = user.addShoppingList("test list");
+		appUserRepository.save(user); // dont have "updateUser method yet so using repository instead
+		Set<ShoppingList> lists = userService.getShoppingListsForUser(userName);
+		assertEquals(1, lists.size()); //check if number of users lists is correct
+		assertTrue(lists.contains(list)); //check if user really has list equal to created list
 	}
 	
 	@Test
-	public void getShoppingListsForUserWithMultipleListsHasCorrectCollectionLength() {
-		String userName = "Test2"; //hiding class field with the same name
-		AppUser userUnderTest = new AppUser(userName, "password", "email@test.com"); //hiding class field with the same name
+	public void getShoppingListsForUser_WithMultipleLists_Succeeds() {
 		int amount = 3; //how many lists to add
 		for(int i=0; i<amount; i++)
-			userUnderTest.addShoppingList("test list"); //lists can have duplicate names
-		userService.addUser(userUnderTest);
+			user.addShoppingList("test list"); //lists can have duplicate names
+		appUserRepository.save(user);
 		assertEquals(amount, userService.getShoppingListsForUser(userName).size());
 	}
 	
@@ -138,19 +131,20 @@ public class UserServiceTest {
 	 * checks if getting list uses listNo and not Id
 	 */
 	@Test
-	public void getShoppingListsForSecondUserListContainsCorrectItem() {
+	public void getShoppingListsForUser_with2usersAndLists_ContainsCorrectItem() {
 		AppUser user1 = new AppUser("User1", "password", "email@test.com");
-		user1.addShoppingList("user1list");
 		userService.addUser(user1);
+		user1.addShoppingList("user1list");
+		appUserRepository.save(user1);
 		String user2Name = "User2";
 		AppUser user2 = new AppUser(user2Name, "password", "email@test.com");
-		ShoppingList user2list = new ShoppingList("user2list", user2);
+		userService.addUser(user2);
+		ShoppingList user2list = user2.addShoppingList("user2list");
+		shoppingListRepository.save(user2list);
 		String itemName = "Some Item";
 		ListItem item = new ListItem(itemName, user2list);
 		user2list.addListItem(item);
-		user2.addShoppingList(user2list);
-		userService.addUser(user2);
-		
+		listItemRepository.save(item);
 		//get Items from user2 list number one and check if they contain inserted item u
 		assertTrue(userService.getItemsForUsersListId(user2Name, (short)1).contains(item));
 	}
@@ -161,11 +155,23 @@ public class UserServiceTest {
 	}
 	
 	@Test
-	@Transactional //LazyInitializationException thrown without it at second asssert
+//	@Transactional //LazyInitializationException thrown without it at second asssert
 	public void addShoppingListToUserByName_succeedsForExistingUser() {
-		ShoppingList list = userService.addShoppingListToUserByName(userUnderTest.getUserName(), userName);
+		ShoppingList list = 
+				userService.addShoppingListToUserByName(user.getUserName(), "LIST 1");
 		assertNotNull(list);
 		assertTrue( userService.getShoppingListsForUser(userName).contains(list));
+	}
+	
+	@Test
+	public void addShoppingListToUserByName_succeedsForMultipleLists() {
+		ShoppingList list = 
+				userService.addShoppingListToUserByName(userName, "LIST 1");
+		ShoppingList list2 = 
+				userService.addShoppingListToUserByName(user.getUserName(), "LIST 2");
+		ShoppingList list3 = 
+				userService.addShoppingListToUserByName(user.getUserName(), "LIST 3");
+		assertTrue( userService.getShoppingListsForUser(userName).contains(list2));
 	}
 //getShoppingListsForUser
 //getItemsForUsersListId

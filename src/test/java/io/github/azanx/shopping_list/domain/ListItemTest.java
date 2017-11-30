@@ -22,8 +22,9 @@ public class ListItemTest {
 	@Before
 	public void init() {
 		user = new AppUser("testUser", "password", "email@test.com");
-		list = new ShoppingList("test list" , user);
-		user.addShoppingList(list);
+		user.setId(1L); // we have to set id manually as we are not writing to database!
+		list = user.addShoppingList("test list");
+//		list.setId(1L);; // we have to set id manually as we are not writing to database!
 	}
 
 	/**
@@ -31,7 +32,7 @@ public class ListItemTest {
 	 */
 	@Test
 	public void testSimilarObjectsWithDifferentParentNotEqual() {
-		ShoppingList list2 = new ShoppingList("test list2", user);
+		ShoppingList list2 = user.addShoppingList("test list2");
 		ListItem item1 = new ListItem("Item", list);
 		list.addListItem(item1);
 		ListItem item2 = new ListItem("Item", list2);
