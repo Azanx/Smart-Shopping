@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -16,8 +17,6 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import io.github.azanx.shopping_list.domain.exception.ListTooLongException;
 
 /**
  * Domain Class representing shopping list
@@ -32,6 +31,9 @@ public class ShoppingList {
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
 	@GenericGenerator(name = "native", strategy = "native")
 	private Long id;
+	
+	@Column(name="owner_name", insertable=false, updatable=false)
+	private String ownerName;
 
 	//number of the list inside of user, used for equals, hashcode. There rather won't be lists longer than 2^15-1 elements
 	@Column(nullable = false)
@@ -42,6 +44,7 @@ public class ShoppingList {
 
 	@JsonIgnore
 	@ManyToOne
+	@JoinColumn(name="owner_name", referencedColumnName="user_name")
 	private AppUser owner;
 	
 	@JsonIgnore
@@ -57,16 +60,13 @@ public class ShoppingList {
 	 * if invoking this constructor directly remember to use parents {@link AppUser#addShoppingList(ShoppingList)} method immediately afterwards
 	 * @param listName name of the new list
 	 * @param owner AppUser owning the list
+	 * @param listNo 
 	 */
-	public ShoppingList(String listName, AppUser owner) {
-		super();
+	protected ShoppingList(String listName, AppUser owner, Short listNo) {
 		this.listName = listName;
 		this.owner = owner;
-		//check if collection won't grow over allowed limit (max value for listNo)  
-		if (owner.getShoppingList().size()+1 > Short.MAX_VALUE) {
-			throw new ListTooLongException(ListTooLongException.listType.ITEM_LIST, owner.getId());
-		} else
-		this.listNo = (short) (owner.getShoppingList().size()+1);
+		this.listNo = listNo;
+		this.ownerName = owner.getUserName();
 	}
 
 	public Long getId() {
@@ -75,6 +75,14 @@ public class ShoppingList {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getOwnerUserName() {
+		return ownerName;
+	}
+
+	public void setOwnerUserName(String parentUserName) {
+		this.ownerName = parentUserName;
 	}
 
 	public String getListName() {
@@ -130,22 +138,18 @@ public class ShoppingList {
 		this.listNo = listNo;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((listNo == null) ? 0 : listNo.hashCode());
-		//no need for null checks as owner cannot be null, if it is - better to get NullPointerException
-		result = prime * result + owner.hashCode();
+		//no need for null checks as owner cannot be null, if it is - better to get NullPointerException and fix it
+		//TODO readd nullchecks when finished - this method generally shouldn't throw exceptions
+		result = prime * result + ownerName.hashCode();
+//		result = prime * result + ((ownerId == null) ? 0 : ownerId.hashCode());
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -160,16 +164,16 @@ public class ShoppingList {
 				return false;
 		} else if (!listNo.equals(other.listNo))
 			return false;
-		if (owner == null) {
-			if (other.owner != null)
+		if (ownerName == null) {
+			if (other.ownerName != null)
 				return false;
-		} else if (!owner.equals(other.owner))
+		} else if (!ownerName.equals(other.ownerName))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "ShoppingList [listNo=" + listNo + ", listName=" + listName + ", owner=" + owner + "]";
+		return "ShoppingList [listNo=" + listNo + ", listName=" + listName + ", ownerId=" + ownerName + "]";
 	}
 }
