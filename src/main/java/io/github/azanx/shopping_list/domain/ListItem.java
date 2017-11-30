@@ -96,6 +96,7 @@ public class ListItem {
 		int result = 1;
 		result = prime * result + ((itemNo == null) ? 0 : itemNo.hashCode());
 		//no need for null checks as parentList cannot be null, if it is - better to get NullPointerException
+		//TODO readd nullchecks when finished - this method generally shouldn't throw exceptions
 		result = prime * result + parentList.hashCode();
 		return result;
 	}
