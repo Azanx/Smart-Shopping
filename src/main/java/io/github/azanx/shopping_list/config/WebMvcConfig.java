@@ -1,11 +1,15 @@
 package io.github.azanx.shopping_list.config;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.view.JstlView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
@@ -26,6 +30,15 @@ import org.springframework.web.servlet.view.UrlBasedViewResolver;
  */
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
+	@Autowired
+	private RequestMappingHandlerAdapter requestMappingHandlerAdapter;
+	
+	@PostConstruct
+	public void init() {
+		//disable setting requestAttributes (and whole model) during redirects as default behaviour
+	    requestMappingHandlerAdapter.setIgnoreDefaultModelOnRedirect(true);
+	}
+	
 	@Bean
 	public UrlBasedViewResolver urlBasedViewResolver() {
 		UrlBasedViewResolver resolver = new UrlBasedViewResolver();
