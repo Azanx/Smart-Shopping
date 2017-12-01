@@ -10,6 +10,7 @@
 <title><c:out value = "${userName}"/>:Shopping Lists</title>
 </head>
 <body>
+<c:set var="context" value="${pageContext.servletContext.contextPath}" />
 <c:import var = "pageHeader" url = "pageHeader.jsp"/>
 ${pageHeader}
 
@@ -27,18 +28,19 @@ ${pageHeader}
 			</tr>
 		</c:forEach>
 	</table>
-	Add new list:
-<%-- 	<form:form action="/list" modelAttribute="ShoppingList"> --%>
-<!-- 		<table> -->
-<!-- 			<tr> -->
-<%-- 				<td><form:label path="listName">List Name: </form:label></td> --%>
-<%-- 				<td><form:input path="listName" placeholder="Enter name for the new list"/></td> --%>
-<!-- 			</tr> -->
-<!-- 			<tr> -->
-<!-- 				<td><input type="submit" value="Submit"/></td> -->
-<!-- 			</tr> -->
-<!-- 		</table> -->
-<%-- 	</form:form> --%>
-	Create new list
+	<br/>
+	Add new list:<br/>
+	<form:form action="list" modelAttribute="newList">
+		<table>
+			<tr>
+				<td><form:label path="listName">List Name: </form:label></td>
+				<td><form:input path="listName" placeholder="Enter name for the new list"/></td>
+			</tr>
+			<tr>
+				<td><input type="submit" value="Submit"/></td>
+			</tr>
+		</table>
+	</form:form>
+<br/>
 </body>
 </html>
