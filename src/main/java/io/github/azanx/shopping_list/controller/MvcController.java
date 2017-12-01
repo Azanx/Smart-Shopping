@@ -5,6 +5,8 @@ package io.github.azanx.shopping_list.controller;
 
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -24,33 +26,37 @@ import io.github.azanx.shopping_list.service.UserService;
 @RequestMapping("/{userName}")
 public class MvcController {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(MvcController.class);
 	private final UserService userService;
+	private String userName; //populated by @ModelAttribute method used for easier access inside controller methods
 	
 	@Autowired
 	public MvcController(UserService userService) {
 		this.userService = userService;
 	}
 	
-//	@ModelAttribute("userName")
-//	String getUserName(@PathVariable String userName){
-//		return userName;
-//	}
+	@ModelAttribute("userName")
+	String getUserName(@PathVariable String userName){
+		LOGGER.debug("Controller for user {}",userName);
+		this.userName = userName;
+		return userName;
+	}
 	
 	/**
 	 * Send user to a page showing all his lists
 	 * @param userName name of the user to retrieve
 	 */
 	@RequestMapping(method = RequestMethod.GET)
-	public ModelAndView home(@PathVariable String userName) {
+	public ModelAndView home() {
 		ModelAndView mav = new ModelAndView("showAllLists");
-		mav.addObject("userName", userName);
+//		mav.addObject("userName", userName);
 		Set<ShoppingList> shoppingLists = userService.getShoppingListsForUser(userName);
 		mav.addObject("shoppingLists", shoppingLists);
 		return mav;
 	}
 	
 	@RequestMapping(value="list", method = RequestMethod.POST)
-	public ModelAndView addList(@PathVariable String userName, @ModelAttribute("newListName") String newListName) {
+	public ModelAndView addList(@ModelAttribute("newListName") String newListName) {
 		userService.addShoppingListToUserByName(userName, newListName);
 		//TODO implement
 		return null;
@@ -62,7 +68,7 @@ public class MvcController {
 	 * @param listNo of the shopping list whose listItems to retrieve (listNo field, not Id used as primary key in database)
 	 */
 	@RequestMapping(value = "/list/{listNo}", method = RequestMethod.GET)
-	public ModelAndView showLists(@PathVariable String userName, @PathVariable Short listNo) {
+	public ModelAndView showLists(String userName, @PathVariable Short listNo) {
 		ModelAndView mav = new ModelAndView("showList");
 		mav.addObject("userName", userName);
 		//TODO implement
@@ -74,9 +80,8 @@ public class MvcController {
 	 * @param userName name of the user to retrieve
 	 */
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
-	public ModelAndView showUserProfile(@PathVariable String userName) {
+	public ModelAndView showUserProfile() {
 		ModelAndView mav = new ModelAndView("userProfile");
-		mav.addObject("userName", userName);
 		//TODO implement
 		return mav;
 	}
