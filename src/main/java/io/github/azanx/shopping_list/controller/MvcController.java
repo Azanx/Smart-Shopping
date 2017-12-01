@@ -35,28 +35,35 @@ public class MvcController {
 		this.userService = userService;
 	}
 	
+	/**
+	 * @param userName name of the user to retrieve
+	 * @return userName attribute
+	 */
 	@ModelAttribute("userName")
 	String getUserName(@PathVariable String userName){
 		LOGGER.debug("Controller for user {}",userName);
+		
 		this.userName = userName;
 		return userName;
 	}
 	
 	/**
 	 * Send user to a page showing all his lists
-	 * @param userName name of the user to retrieve
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView home() {
+		LOGGER.debug("home() method of MvcController called for user: {}",userName);
+		
 		ModelAndView mav = new ModelAndView("showAllLists");
-//		mav.addObject("userName", userName);
 		Set<ShoppingList> shoppingLists = userService.getShoppingListsForUser(userName);
 		mav.addObject("shoppingLists", shoppingLists);
 		return mav;
 	}
 	
-	@RequestMapping(value="list", method = RequestMethod.POST)
+	@RequestMapping(value="/list", method = RequestMethod.POST)
 	public ModelAndView addList(@ModelAttribute("newListName") String newListName) {
+		LOGGER.debug("addList() method of MvcController called for user: {}",userName);
+		
 		userService.addShoppingListToUserByName(userName, newListName);
 		//TODO implement
 		return null;
@@ -64,11 +71,12 @@ public class MvcController {
 	
 	/**
 	 * Send user to a page showing all items in given list
-	 * @param userName name of the user to retrieve
 	 * @param listNo of the shopping list whose listItems to retrieve (listNo field, not Id used as primary key in database)
 	 */
 	@RequestMapping(value = "/list/{listNo}", method = RequestMethod.GET)
 	public ModelAndView showLists(String userName, @PathVariable Short listNo) {
+		LOGGER.debug("showLists() method of MvcController called for user: {}",userName);
+		
 		ModelAndView mav = new ModelAndView("showList");
 		mav.addObject("userName", userName);
 		//TODO implement
@@ -77,10 +85,11 @@ public class MvcController {
 	
 	/**
 	 * Send user to a page showing his profile (information about his account)
-	 * @param userName name of the user to retrieve
 	 */
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	public ModelAndView showUserProfile() {
+		LOGGER.debug("showUserProfile() method of MvcController called for user: {}",userName);
+		
 		ModelAndView mav = new ModelAndView("userProfile");
 		//TODO implement
 		return mav;
