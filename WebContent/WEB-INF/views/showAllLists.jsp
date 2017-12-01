@@ -7,12 +7,12 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>${userName}:Shopping Lists</title>
+<title><c:out value = "${userName}"/>:Shopping Lists</title>
 </head>
 <body>
+<c:import var = "pageHeader" url = "pageHeader.jsp"/>
+${pageHeader}
 
-	Logged as:
-	<a href="/admin/profile">${userName}</a>
 	<br /> Your shopping lists:
 	<br />
 	<table>
