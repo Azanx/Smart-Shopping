@@ -9,8 +9,6 @@ package io.github.azanx.shopping_list.domain;
  */
 public class AppUserDTO {
 
-	private Long id;
-
 	private String userName;
 
 	private String email;
@@ -18,14 +16,6 @@ public class AppUserDTO {
 	private String password;
 
 	private AppUserDTO() {
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getUserName() {
