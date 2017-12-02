@@ -1,5 +1,6 @@
 package io.github.azanx.shopping_list.service;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.github.azanx.shopping_list.domain.AppUser;
 import io.github.azanx.shopping_list.domain.ListItem;
+import io.github.azanx.shopping_list.domain.ListItemDTO;
 import io.github.azanx.shopping_list.domain.ShoppingList;
 import io.github.azanx.shopping_list.domain.exception.ListTooLongException;
 import io.github.azanx.shopping_list.repository.AppUserRepository;
@@ -107,11 +109,11 @@ public class UserService {
 		if (lists.isEmpty()) {
 			throw new ListNotFoundException(userName);
 		}
-		LOGGER.debug("Returning ShoppingLists for user: {}, Lists:\n {}",userName,//
+		LOGGER.debug("Returning ShoppingLists for user: {}, Lists:\n {}", userName, //
 				lists.stream()//
-					.map(ShoppingList::toString)//
-					.collect(Collectors.toList())//
-				);
+						.map(ShoppingList::toString)//
+						.collect(Collectors.toList())//
+		);
 		return lists;
 	}
 
@@ -121,7 +123,8 @@ public class UserService {
 	 * @param userName
 	 *            name of the user whose ListItems to retrieve from the database
 	 * @param listNo
-	 *            id (as in: number inside the list, NOT primary key in the DB) of the list to retrieve
+	 *            id (as in: number inside the list, NOT primary key in the DB)
+	 *            of the list to retrieve
 	 * @return collection containing all of the ListItems belonging to this
 	 *         ShoppingList
 	 * @throws ListNotFoundException
@@ -129,7 +132,7 @@ public class UserService {
 	 */
 	@Transactional(readOnly = true)
 	public Set<ListItem> getItemsForUsersListNo(String userName, Short listNo) {
-		LOGGER.debug("getItemsForUsersListNo: {}", listNo);
+		LOGGER.debug("getItemsForUsersListNo: user: {}, listNo: {}", userName, listNo);
 		Set<ListItem> items = listItemRepository.findByParentList_OwnerNameAndParentList_ListNo(userName, listNo);
 		if (items.isEmpty()) {
 			throw new ItemNotFoundException(userName);
@@ -137,11 +140,10 @@ public class UserService {
 		LOGGER.debug("Returning ListItem's with ID's: {}", //
 				items.stream()//
 						.map(ListItem::getId)//
-						.collect(Collectors.toList())
-				);
+						.collect(Collectors.toList()));
 		return items;
 	}
-	
+
 	/**
 	 * Retrieve ListItems of particular user's ShoppingList
 	 * 
@@ -156,17 +158,49 @@ public class UserService {
 	 */
 	@Transactional(readOnly = true)
 	public Set<ListItem> getItemsForUsersListId(String userName, Long listId) {
-		//Set<ListItem> items = listItemRepository.findByParentList_OwnerNameAndParentList_ListNo(userName, listId);
-//		if (items.isEmpty()) {
-//			throw new ItemNotFoundException(userName);
-//		}
-//		LOGGER.debug("Returning ListItem's with ID's: {}", //
-//				items.stream()//
-//						.map(ListItem::getId)//
-//						.collect(Collectors.toList())
-//				);
-		//TODO
-		return null;
+		LOGGER.debug("getItemsForUsersListId: user: {}, listId: {}", userName, listId);
+		shoppingListRepository//
+			.findByIdAndOwnerName(listId, userName)//
+				.orElseThrow(//
+						() -> new ListNotFoundException(listId, userName));
+		
+		Set<ListItem> items = listItemRepository.findByParentListId(listId);
+
+		LOGGER.debug("Returning ListItem's with ID's: {}", //
+				items.stream()//
+						.map(ListItem::getId)//
+						.collect(Collectors.toList()));
+		return items;
+	}
+	
+	/**
+	 * Retrieve ShoppingList containing ListItems of particular user's ShoppingList
+	 * 
+	 * @param userName
+	 *            name of the user whose ListItems to retrieve from the database
+	 * @param listId
+	 *            id (as in: primary key in DB) of the list to retrieve
+	 * @return ShoppingList containing all of the ListItems belonging to it
+	 * @throws ListNotFoundException
+	 *             if user doesn't have list with this ID
+	 */
+	@Transactional(readOnly = true)
+	public ShoppingList getShoppingListWithItemsForUsersListId(String userName, Long listId) {
+		LOGGER.debug("getShoppingListWithItemsForUsersListId: user: {}, listId: {}", userName, listId);
+		ShoppingList list = shoppingListRepository//
+			.findByIdAndOwnerName(listId, userName)//
+				.orElseThrow(//
+						() -> new ListNotFoundException(listId, userName));
+		
+		Set<ListItem> items = listItemRepository.findByParentListId(listId);
+
+		list.setListItems(items);
+		LOGGER.debug("Returning ListItem's with ID's: {}", //
+				items.stream()//
+						.map(ListItem::getId)//
+						.collect(Collectors.toList()));
+		return list;
+		//TODO properly FETCH children in one query with the list
 	}
 
 	/**
@@ -187,30 +221,45 @@ public class UserService {
 		}
 	}
 
-	/**
-	 * 
-	 */
+	
 	/**
 	 * Add new shopping list for a given user
-	 * @param userName name of the user for which to create the new list
-	 * @param newListName name of the new list
+	 * 
+	 * @param userName
+	 *            name of the user for which to create the new list
+	 * @param newListName
+	 *            name of the new list
 	 * @return newly created list
-	 * @throws UserNotFoundException if user with given name doesn't exist
+	 * @throws UserNotFoundException
+	 *             if user with given name doesn't exist
 	 */
 	@Transactional(readOnly = false)
 	public ShoppingList addShoppingListToUserByName(String userName, String newListName) {
 		AppUser user = appUserRepository.findByUserName(userName)//
 				.orElseThrow(//
 						() -> new UserNotFoundException(userName));
-		//get count of user lists
+		// get count of user lists
 		short count = shoppingListRepository.countByOwnerName(userName);
-		if(count==Short.MAX_VALUE)
+		if (count == Short.MAX_VALUE)
 			throw new ListTooLongException(ListTooLongException.listType.SHOPPING_LIST, user.getId());
 		count++;
 		ShoppingList list = user.addShoppingList(newListName, count);
 		list = shoppingListRepository.save(list);
 		LOGGER.info("Created new list: {}", list);
 		return list;
+	}
+
+	/**
+	 * Add new ListItems to existing shopping list belonging to certain user
+	 * 
+	 * @param userName name of the user whose ListItems to add to the list
+	 * @param listId id (as in: primary key in DB) of the list for which to add items
+	 * @param listItems list of items which to add
+	 */
+	@Transactional(readOnly = false)
+	public void addItemsToShoppingList(String userName, Long listId, List<ListItemDTO> listItems) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	// @Transactional(readOnly = false)

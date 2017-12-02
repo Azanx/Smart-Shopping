@@ -30,8 +30,6 @@ import io.github.azanx.shopping_list.service.UserService;
 @RequestMapping("/")
 public class MvcController {
 
-	//TODO change all jsp files to html5
-	
 	private static final Logger LOGGER = LoggerFactory.getLogger(MvcController.class);
 	private final UserService userService;
 	private String userName; // populated by @ModelAttribute method used for
@@ -91,26 +89,46 @@ public class MvcController {
 
 		userService.addShoppingListToUserByName(userName, newList.getListName());
 
-		return "redirect:list";
+		return "redirect:/list";
 	}
 
 	/**
-	 * Send user to a page showing all items in given list
+	 * Send user to a page showing all items in given list (if accessible by current user)
 	 * 
-	 * @param listNo
-	 *            of the shopping list whose listItems to retrieve (listNo
-	 *            field, not Id used as primary key in database)
+	 * @param listId
+	 *            of the shopping list whose listItems to retrieve (listId - primary key from DB
 	 */
-	@RequestMapping(value = "/list/{listNo}", method = RequestMethod.GET)
-	public ModelAndView showLists(String userName, @PathVariable Short listNo) {
-		LOGGER.debug("showLists() method of MvcController called for user: {}", userName);
-
+	@RequestMapping(value = "/list/{listId}", method = RequestMethod.GET)
+	public ModelAndView showListWithId(@PathVariable Long listId) {
+		LOGGER.debug("showListsWithId() method of MvcController called for user: {}, and list: {}", userName, listId);
+		
 		ModelAndView mav = new ModelAndView("showList");
-		mav.addObject("userName", userName);
+
+		//get ShoppingList with given Id for current user populated with its items
+		ShoppingList shoppingListWithExistingItems = userService.getShoppingListWithItemsForUsersListId(userName, listId);
+		mav.addObject("listItems", shoppingListWithExistingItems);
+		
+		//create new shopping list backing form object (mainly to retrieve new items)
+		ShoppingListDTO shoppingListWithEmptyItems= new ShoppingListDTO(10);
+		mav.addObject("shoppingList", shoppingListWithEmptyItems); 
 		// TODO implement
 		return mav;
 	}
 
+	/**
+	 * adds new item to the given shopping list (if editable by current user)
+	 * @param newList ShoppingListDTO with basic information about new list (must include list name)
+	 */
+	@RequestMapping(value = "/list/{listId}", method = RequestMethod.POST)
+	public String addItemToListWithId(@PathVariable Long listId, @ModelAttribute("shoppingList") ShoppingListDTO newList, BindingResult result) {
+		LOGGER.debug("addItemToListWithId() method of MvcController called for user: {}, and list: {}", userName, listId);
+
+		//userService.addItemsToShoppingList(userName, listId, newList.getListItems());
+//		userService.addShoppingListToUserByName(userName, newList.getListName());
+		//TODO implement
+		return "redirect:/list/"+listId;
+	}
+	
 	/**
 	 * Send user to a page showing his profile (information about his account)
 	 */
@@ -130,6 +148,6 @@ public class MvcController {
 		LOGGER.debug("showUserProfile() method of MvcController called for user: {}", userName);
 
 		// TODO implement
-		return "redirect:profile";
+		return "redirect:/profile";
 	}
 }

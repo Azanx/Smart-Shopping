@@ -10,7 +10,6 @@
 <title><c:out value = "${userName}"/>:Shopping Lists</title>
 </head>
 <body>
-<c:set var="context" value="${pageContext.servletContext.contextPath}" />
 <c:import var = "pageHeader" url = "pageHeader.jsp"/>
 ${pageHeader}
 
@@ -24,7 +23,8 @@ ${pageHeader}
 		<c:forEach var="listItem" items="${shoppingLists}">
 			<tr>
 				<td><c:out value="${listItem.listNo}" /></td>
-				<td><c:out value="${listItem.listName}" /></td>
+				<spring:url var="url" value="list/${listItem.id}"/>
+				<td><a href="${url}"><c:out value="${listItem.listName}" /></a></td>
 			</tr>
 		</c:forEach>
 	</table>
@@ -34,7 +34,7 @@ ${pageHeader}
 		<table>
 			<tr>
 				<td><form:label path="listName">List Name: </form:label></td>
-				<td><form:input path="listName" placeholder="Enter name for the new list"/></td>
+				<td><form:input path="listName" placeholder="Name for the new list"/></td>
 			</tr>
 			<tr>
 				<td><input type="submit" value="Submit"/></td>
