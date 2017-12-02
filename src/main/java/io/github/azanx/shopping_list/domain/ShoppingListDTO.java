@@ -3,6 +3,9 @@
  */
 package io.github.azanx.shopping_list.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Kamil Piwowarski
  *
@@ -18,7 +21,28 @@ public class ShoppingListDTO {
 	
 	private String listName;
 	
+	//not using set as itemNo used for equality/hashCode will be assigned by @Service class, used to retrieve new items from form
+	private List<ListItemDTO> listItems;
+	
+	/**
+	 * Creates object without initialising listItems list
+	 */
 	public ShoppingListDTO() {
+	}
+	
+	/**
+	 * Creates object and initialise listItems list
+	 * @param capacity
+	 */
+	public ShoppingListDTO(int capacity) {
+		listItems = new ArrayList<ListItemDTO>(capacity);
+		while(listItems.size()<capacity)
+			listItems.add(new ListItemDTO());
+	}
+
+	public ShoppingListDTO(String ownerName, int capacity) {
+		this(capacity);
+		this.ownerName = ownerName;
 	}
 
 	public Long getId() {
@@ -51,5 +75,13 @@ public class ShoppingListDTO {
 
 	public void setListName(String listName) {
 		this.listName = listName;
+	}
+
+	public List<ListItemDTO> getListItems() {
+		return listItems;
+	}
+
+	public void setListItems(List<ListItemDTO> listItems) {
+		this.listItems = listItems;
 	}
 }
