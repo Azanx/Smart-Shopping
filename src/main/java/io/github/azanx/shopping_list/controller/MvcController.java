@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import io.github.azanx.shopping_list.domain.AppUser;
+import io.github.azanx.shopping_list.domain.AppUserDTO;
 import io.github.azanx.shopping_list.domain.ShoppingList;
 import io.github.azanx.shopping_list.domain.ShoppingListDTO;
 import io.github.azanx.shopping_list.service.UserService;
@@ -29,6 +30,8 @@ import io.github.azanx.shopping_list.service.UserService;
 @RequestMapping("/")
 public class MvcController {
 
+	//TODO change all jsp files to html5
+	
 	private static final Logger LOGGER = LoggerFactory.getLogger(MvcController.class);
 	private final UserService userService;
 	private String userName; // populated by @ModelAttribute method used for
@@ -78,6 +81,10 @@ public class MvcController {
 		return mav;
 	}
 
+	/**
+	 * adds new shopping list for the current user
+	 * @param newList ShoppingListDTO with basic information about new list (must include list name)
+	 */
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	public String addList(@ModelAttribute("newList") ShoppingListDTO newList, BindingResult result) {
 		LOGGER.debug("addList() method of MvcController called for user: {}", userName);
@@ -112,16 +119,17 @@ public class MvcController {
 		LOGGER.debug("showUserProfile() method of MvcController called for user: {}", userName);
 
 		ModelAndView mav = new ModelAndView("userProfile");
-		// TODO implement
+		AppUser user = userService.getUserIfExistsElseThrow(userName);
+		mav.addObject("user", user);
 		return mav;
+		//TODO add basic html5 side validation (for example input type="email")
 	}
 
 	@RequestMapping(value = "/profile", method = RequestMethod.POST)
-	public ModelAndView editUserProfile(@ModelAttribute AppUser appUser) {
+	public String editUserProfile(@ModelAttribute AppUserDTO appUser) {
 		LOGGER.debug("showUserProfile() method of MvcController called for user: {}", userName);
 
-		ModelAndView mav = new ModelAndView("userProfile");
 		// TODO implement
-		return mav;
+		return "redirect:profile";
 	}
 }
