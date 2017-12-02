@@ -174,6 +174,7 @@ public class ShoppingList{
 
 	@Override
 	public String toString() {
-		return "ShoppingList [listNo=" + listNo + ", listName=" + listName + ", ownerId=" + ownerName + "]";
+		return "ShoppingList [id=" + id + ", ownerName=" + ownerName + ", listNo=" + listNo + ", listName=" + listName
+				+ "]";
 	}
 }

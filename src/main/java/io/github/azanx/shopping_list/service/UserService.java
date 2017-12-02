@@ -120,8 +120,8 @@ public class UserService {
 	 * 
 	 * @param userName
 	 *            name of the user whose ListItems to retrieve from the database
-	 * @param listId
-	 *            id (as in: primary key in DB) of the list to retrieve
+	 * @param listNo
+	 *            id (as in: number inside the list, NOT primary key in the DB) of the list to retrieve
 	 * @return collection containing all of the ListItems belonging to this
 	 *         ShoppingList
 	 * @throws ListNotFoundException
@@ -129,6 +129,7 @@ public class UserService {
 	 */
 	@Transactional(readOnly = true)
 	public Set<ListItem> getItemsForUsersListNo(String userName, Short listNo) {
+		LOGGER.debug("getItemsForUsersListNo: {}", listNo);
 		Set<ListItem> items = listItemRepository.findByParentList_OwnerNameAndParentList_ListNo(userName, listNo);
 		if (items.isEmpty()) {
 			throw new ItemNotFoundException(userName);
@@ -139,6 +140,33 @@ public class UserService {
 						.collect(Collectors.toList())
 				);
 		return items;
+	}
+	
+	/**
+	 * Retrieve ListItems of particular user's ShoppingList
+	 * 
+	 * @param userName
+	 *            name of the user whose ListItems to retrieve from the database
+	 * @param listId
+	 *            id (as in: primary key in DB) of the list to retrieve
+	 * @return collection containing all of the ListItems belonging to this
+	 *         ShoppingList
+	 * @throws ListNotFoundException
+	 *             if user doesn't have list with this ID
+	 */
+	@Transactional(readOnly = true)
+	public Set<ListItem> getItemsForUsersListId(String userName, Long listId) {
+		//Set<ListItem> items = listItemRepository.findByParentList_OwnerNameAndParentList_ListNo(userName, listId);
+//		if (items.isEmpty()) {
+//			throw new ItemNotFoundException(userName);
+//		}
+//		LOGGER.debug("Returning ListItem's with ID's: {}", //
+//				items.stream()//
+//						.map(ListItem::getId)//
+//						.collect(Collectors.toList())
+//				);
+		//TODO
+		return null;
 	}
 
 	/**
