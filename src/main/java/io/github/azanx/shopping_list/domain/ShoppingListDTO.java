@@ -44,6 +44,11 @@ public class ShoppingListDTO {
 		this(capacity);
 		this.ownerName = ownerName;
 	}
+	
+	public ShoppingListDTO(String ownerName, Long listId, int capacity) {
+		this(ownerName, capacity);
+		this.id = listId;
+	}
 
 	public Long getId() {
 		return id;
