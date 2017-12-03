@@ -8,6 +8,8 @@
 	<properties>
 		<spring.version>4.3.12.RELEASE</spring.version>
 		<jackson.version>2.9.2</jackson.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
