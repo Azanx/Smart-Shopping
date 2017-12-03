@@ -122,10 +122,10 @@ public class MvcController {
 	@RequestMapping(value = "/list/{listId}", method = RequestMethod.POST)
 	public String addItemToListWithId(@PathVariable Long listId, @ModelAttribute("shoppingList") ShoppingListDTO newList, BindingResult result) {
 		LOGGER.debug("addItemToListWithId() method of MvcController called for user: {}, and list: {}", userName, listId);
-
-		//userService.addItemsToShoppingList(userName, listId, newList.getListItems());
-//		userService.addShoppingListToUserByName(userName, newList.getListName());
-		//TODO implement
+		//list should belong to current user as only owner can edit list! someone could've inserted other username to the DTO on client side and change the listId, so no sense in passing them
+		newList.setOwnerName(userName);
+		newList.setId(listId);
+		userService.addItemsToShoppingList(userName, newList);
 		return "redirect:/list/"+listId;
 	}
 	

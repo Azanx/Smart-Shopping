@@ -20,7 +20,9 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import io.github.azanx.shopping_list.config.JPAConfig;
 import io.github.azanx.shopping_list.domain.AppUser;
 import io.github.azanx.shopping_list.domain.ListItem;
+import io.github.azanx.shopping_list.domain.ListItemDTO;
 import io.github.azanx.shopping_list.domain.ShoppingList;
+import io.github.azanx.shopping_list.domain.ShoppingListDTO;
 import io.github.azanx.shopping_list.repository.AppUserRepository;
 import io.github.azanx.shopping_list.repository.ListItemRepository;
 import io.github.azanx.shopping_list.repository.ShoppingListRepository;
@@ -217,4 +219,53 @@ public class UserServiceTest {
 		ShoppingList items_list = userService.getShoppingListWithItemsForUsersListId(userName, list.getId());
 		assertNotNull(items_list.getListItems());
 	}
+	
+	@Test(expected = ListNotFoundException.class)
+	public void addItemsToShoppingList_FailsIfListNotExists() {
+		ShoppingListDTO items = new ShoppingListDTO(userName, 100000L, 2);
+		items.getListItems().get(0).setItemName("some item"); //set item name for the new item in the list
+		
+		userService.addItemsToShoppingList(userName, items);
+	}
+	
+	@Test(expected = ListNotFoundException.class)
+	public void addItemsToShoppingList_FailsIfListOwnedByAnotherUser() {
+		AppUser user2 = new AppUser("second", "password", "email@test.com");
+		userService.addUser(user2);
+		userService.addShoppingListToUserByName(user2.getUserName(), "second's list");
+		ShoppingListDTO items = new ShoppingListDTO(userName, 100000L, 2);
+		items.getListItems().get(0).setItemName("some item"); //set item name for the new item in the list
+		
+		userService.addItemsToShoppingList(user.getUserName(), items);
+	}
+	
+	@Test
+	public void addItemsToShoppingList_SucceedsIfUserHaveThisList() {
+		ShoppingList list = userService.addShoppingListToUserByName(userName, "list1");
+		ShoppingListDTO items = new ShoppingListDTO(userName, list.getId(), 1);
+		ListItemDTO item = items.getListItems().get(0);
+		item.setItemName("some item"); //set item name for the new item in the list
+		
+		Set<ListItem> updatedItemsList = userService.addItemsToShoppingList(user.getUserName(), items);
+		
+		//updatedItemsList contains/get won't work as ListItem equality/hashCode check depends on listNo which was assigned right now
+		//as list didn't contain any items before adding new one, we can be sure it's the only item in the set - we can compare it's name to the original item
+		for (ListItem newItem : updatedItemsList)
+			assertEquals(item.getItemName(), newItem.getItemName());
+	}
+	
+	@Test 
+	public void addItemsToShoppingList_AddsNOTHINGIfGivenListOfEmptyItems() {
+		ShoppingList list = userService.addShoppingListToUserByName(userName, "list1");
+		ShoppingListDTO items = new ShoppingListDTO(userName, list.getId(), 5);
+		for (ListItemDTO item : items.getListItems())
+			item.setItemName(""); //set item name for the new item in the list
+		
+		Set<ListItem> updatedItemsList = userService.addItemsToShoppingList(user.getUserName(), items);
+		
+		//as list didn't contain any items before adding new one, we should get an empty set
+		assertTrue(updatedItemsList.isEmpty());
+	}
+	
+	//addItemsToShoppingList
 }

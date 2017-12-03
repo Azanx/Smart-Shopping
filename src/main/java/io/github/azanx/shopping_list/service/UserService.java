@@ -1,6 +1,6 @@
 package io.github.azanx.shopping_list.service;
 
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -16,6 +16,7 @@ import io.github.azanx.shopping_list.domain.AppUser;
 import io.github.azanx.shopping_list.domain.ListItem;
 import io.github.azanx.shopping_list.domain.ListItemDTO;
 import io.github.azanx.shopping_list.domain.ShoppingList;
+import io.github.azanx.shopping_list.domain.ShoppingListDTO;
 import io.github.azanx.shopping_list.domain.exception.ListTooLongException;
 import io.github.azanx.shopping_list.repository.AppUserRepository;
 import io.github.azanx.shopping_list.repository.ListItemRepository;
@@ -235,6 +236,7 @@ public class UserService {
 	 */
 	@Transactional(readOnly = false)
 	public ShoppingList addShoppingListToUserByName(String userName, String newListName) {
+		LOGGER.debug("addShoppingListToUserByName: user: {}, listName: {}", userName, newListName);
 		AppUser user = appUserRepository.findByUserName(userName)//
 				.orElseThrow(//
 						() -> new UserNotFoundException(userName));
@@ -252,14 +254,39 @@ public class UserService {
 	/**
 	 * Add new ListItems to existing shopping list belonging to certain user
 	 * 
-	 * @param userName name of the user whose ListItems to add to the list
-	 * @param listId id (as in: primary key in DB) of the list for which to add items
-	 * @param listItems list of items which to add
+	 * @param userName name of the user adding items (to check if it's his list)
+	 * @param listItems ShoppingListDTO containing list of items to add
+	 * @return ShoppingList populated with all current items
 	 */
 	@Transactional(readOnly = false)
-	public void addItemsToShoppingList(String userName, Long listId, List<ListItemDTO> listItems) {
-		// TODO Auto-generated method stub
+	public Set<ListItem> addItemsToShoppingList(String userName, ShoppingListDTO listWithNewItems) {
+		LOGGER.debug("addItemsToShoppingList: user: {}, listId: {}", listWithNewItems.getOwnerName(), listWithNewItems.getId());
+		//using ID provided by the client and username associated to current user (currently you can edit only your lists)
+		ShoppingList list = shoppingListRepository//
+				.findByIdAndOwnerName(listWithNewItems.getId(), userName)//
+					.orElseThrow(//
+							()-> new ListNotFoundException(listWithNewItems.getId(), listWithNewItems.getOwnerName()));
 		
+		// get count of ListsItems in the list
+		short count = listItemRepository.countByParentListId(listWithNewItems.getId());
+		if (count == Short.MAX_VALUE)
+			throw new ListTooLongException(ListTooLongException.listType.SHOPPING_LIST, listWithNewItems.getId());
+		count++;
+	
+		Set<ListItem> newItems = new LinkedHashSet<>(listWithNewItems.getListItems().size());
+		for (ListItemDTO newItem : listWithNewItems.getListItems()) {
+			if(!newItem.getItemName().isEmpty()) {
+				LOGGER.debug("addItemsToShoppingList: adding item: {}, with No: {}", newItem.getItemName(), count);
+				ListItem item = list.addListItem(newItem.getItemName(), count);
+				newItems.add(item);
+				count++;
+			}
+		}
+		listItemRepository.save(newItems);
+		//TODO check if it really saves values in batch
+		
+		newItems = listItemRepository.findByParentListId(listWithNewItems.getId());
+		return newItems;
 	}
 
 	// @Transactional(readOnly = false)

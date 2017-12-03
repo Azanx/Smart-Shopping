@@ -19,6 +19,7 @@ public class ListItemDTO {
 	private Long parentListId;
 
 	public ListItemDTO() {
+		itemName = "";
 	}
 
 	public Long getId() {

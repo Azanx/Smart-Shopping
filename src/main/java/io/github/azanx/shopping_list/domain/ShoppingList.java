@@ -129,6 +129,17 @@ public class ShoppingList{
 		this.getListItems().add(newItem);
 		return newItem;
 	}
+	
+	/**
+	 * Use if you know current ListItem collection size but don't have the collection initialized (for example, you checked it with query)
+	 * @param itemName name of the item to add into the list
+	 * @param itemNo number of the item inside the list
+	 * @return reference to the new item
+	 */
+	public ListItem addListItem(String itemName , Short itemNo) {
+		ListItem newItem = new ListItem(itemName, this, itemNo);
+		return newItem;
+	}
 
 	public Short getListNo() {
 		return listNo;

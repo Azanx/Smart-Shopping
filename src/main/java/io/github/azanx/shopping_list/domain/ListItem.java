@@ -56,6 +56,20 @@ public class ListItem {
 			throw new ListTooLongException(ListTooLongException.listType.ITEM_LIST, parentList.getId());
 		} else
 		this.itemNo = (short) (parentList.getListItems().size()+1);
+		
+		//TODO reformat service to not use this constructor and delete it
+	}
+	
+	/**
+	 * @param itemName name of the new list item
+	 * @param parentList list owning this item
+	 * @param itemNo
+	 */
+	protected ListItem(String itemName, ShoppingList parentList, Short itemNo) {
+		this.itemName = itemName;
+		this.itemNo = itemNo;
+		this.parentList = parentList;
+		this.itemNo = itemNo;
 	}
 
 	public Long getId() {
