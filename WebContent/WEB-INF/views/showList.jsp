@@ -13,7 +13,8 @@
 	<c:import var="pageHeader" url="pageHeader.jsp" />
 	${pageHeader}
 
-	<br /> Your shopping lists <c:out value="ąśćżźó"/>:
+	<br /> Items in list:<br/>
+	<b><c:out value="${listItems.listName}"></c:out></b>
 	<br />
 	<table>
 		<tr>

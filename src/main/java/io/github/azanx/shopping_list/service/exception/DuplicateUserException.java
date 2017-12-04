@@ -5,7 +5,7 @@ package io.github.azanx.shopping_list.service.exception;
 
 import java.util.HashMap;
 
-import io.github.azanx.shopping_list.exception.MessageableException;
+import io.github.azanx.shopping_list.controller.exception.MessageableException;
 
 /**
  * Thrown if trying to add user with already used name

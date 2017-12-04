@@ -5,9 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import io.github.azanx.shopping_list.controller.exception.MessageableException;
+import io.github.azanx.shopping_list.controller.exception.MessageableExceptionResponse;
 import io.github.azanx.shopping_list.domain.exception.ListTooLongException;
-import io.github.azanx.shopping_list.exception.MessageableException;
-import io.github.azanx.shopping_list.exception.MessageableExceptionResponse;
 import io.github.azanx.shopping_list.service.exception.DuplicateUserException;
 import io.github.azanx.shopping_list.service.exception.ItemNotFoundException;
 import io.github.azanx.shopping_list.service.exception.ListNotFoundException;

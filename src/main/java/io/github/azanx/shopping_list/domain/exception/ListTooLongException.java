@@ -5,7 +5,7 @@ package io.github.azanx.shopping_list.domain.exception;
 
 import java.util.HashMap;
 
-import io.github.azanx.shopping_list.exception.MessageableException;
+import io.github.azanx.shopping_list.controller.exception.MessageableException;
 
 /**
  * Thrown if collection exceeds set limit for the application (set in domain classes)
