@@ -22,6 +22,10 @@ public class ListItemDTO {
 		itemName = "";
 	}
 	
+	public ListItemDTO(String itemName) {
+		this.itemName = itemName;
+	}
+	
 	public ListItemDTO(ListItem item) {
 		this.id = item.getId();
 		this.itemNo = item.getItemNo();
