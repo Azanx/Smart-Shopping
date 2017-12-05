@@ -293,8 +293,20 @@ public class UserService {
 				 .findByIdAndOwnerName(listId, userName)//
 				 	.orElseThrow(//
 				 		() -> new ListNotFoundException(listId, userName));
+		 
 		 shoppingListRepository.delete(list);
-		 LOGGER.info("removeShoppingList: Deleted list: {}", listId);
+		 LOGGER.info("removeShoppingList: Deleted list: {} with listNo: {}", listId, list.getListNo());
+		 
+		 List<ShoppingList> listsToReorder = shoppingListRepository.findByOwnerNameAndListNoGreaterThan(userName, list.getListNo());
+		 for(ShoppingList currentList : listsToReorder) {
+			 short newListNo = (short) (currentList.getListNo()-1);
+			 LOGGER.debug("reordering listNo: {} into {}", currentList.getListNo(), newListNo);
+			 currentList.setListNo(newListNo);
+		 }
+		 
+		 shoppingListRepository.save(listsToReorder);
+		 //TODO check if saves by batch or in loop
+		 LOGGER.info("Reordered lists of user: {} with No greater than: {}", userName, list.getListNo());
 		 //TODO decrement listNo for all lists below deleted list
 	 }
 }

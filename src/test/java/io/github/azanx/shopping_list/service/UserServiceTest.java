@@ -301,9 +301,7 @@ public class UserServiceTest {
 		userService.removeShoppingList(userName, list.getId()+1-count);//remove first list, using id relative to the last list
 																	//in case there were some lists created during userService.init()
 		list = shoppingListRepository.findOne(list.getId());
-		assertEquals(lastListNo-1, list.getListNo().shortValue());
-		//we now DB is cleaned before each test, so we now lists start from
-		//id = 1 and listNo=1. At start id's are equal to listNo, but after removal listNo should be 1 less then id 
+		assertEquals(lastListNo-1, list.getListNo().shortValue());//listNo of last list (and every other greater than removed list) should be now lower by 1
 	}
 //	 public void removeShoppingList(String userName, Long listId) {
 }

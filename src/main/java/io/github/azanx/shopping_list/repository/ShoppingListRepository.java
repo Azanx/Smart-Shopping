@@ -16,4 +16,5 @@ public interface ShoppingListRepository extends CrudRepository<ShoppingList, Lon
 	Optional<ShoppingList> findByIdAndOwnerName(Long id, String OwnerName);
 	List<ShoppingList> findByOwnerName(String ownerName);
 	Short countByOwnerName(String ownerName);
+	List<ShoppingList> findByOwnerNameAndListNoGreaterThan(String ownerName, Short greaterThanListNo);
 }
