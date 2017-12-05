@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -28,6 +29,9 @@ public class ListItem {
 	@GenericGenerator(name = "native", strategy = "native")
 	private Long id;
 	
+	@Column(name = "parentList_Id", insertable=false, updatable=false)
+	private Long parentListId;
+	
 	@Column(nullable = false)
 	//number of the item inside of list, used for equals, hashcode. There rather won't be lists longer than 2^15-1 elements
 	private Short itemNo;
@@ -37,6 +41,7 @@ public class ListItem {
 	
 	@JsonIgnore
 	@ManyToOne
+	@JoinColumn(name="parentList_Id", referencedColumnName="id")
 	ShoppingList parentList;
 
 	protected ListItem() {
@@ -140,6 +145,14 @@ public class ListItem {
 	@Override
 	public String toString() {
 		return "ListItem [itemNo=" + itemNo + ", itemname=" + itemName + ", parentList=" + parentList + "]";
+	}
+
+	public Long getParentListId() {
+		return parentListId;
+	}
+
+	public void setParentListId(Long parentListId) {
+		this.parentListId = parentListId;
 	}
 
 	

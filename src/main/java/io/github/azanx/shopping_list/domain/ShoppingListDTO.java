@@ -49,6 +49,17 @@ public class ShoppingListDTO {
 		this(ownerName, capacity);
 		this.id = listId;
 	}
+	
+	/**
+	 * Converts ShoppingList into ShoppingListDTO. Doesn't initialize listItems!
+	 * @param list ShoppingList to convert into DTO
+	 */
+	public ShoppingListDTO(ShoppingList list) {
+		this.id = list.getId();
+		this.ownerName = list.getOwnerUserName();
+		this.listNo = list.getListNo();
+		this.listName = list.getListName();
+	}
 
 	public Long getId() {
 		return id;

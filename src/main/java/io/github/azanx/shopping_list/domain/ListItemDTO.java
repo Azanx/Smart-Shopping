@@ -21,6 +21,13 @@ public class ListItemDTO {
 	public ListItemDTO() {
 		itemName = "";
 	}
+	
+	public ListItemDTO(ListItem item) {
+		this.id = item.getId();
+		this.itemNo = item.getItemNo();
+		this.itemName = item.getItemName();
+		this.parentListId = item.getParentListId();
+	}
 
 	public Long getId() {
 		return id;

@@ -15,7 +15,13 @@ public class AppUserDTO {
 
 	private String password;
 
-	private AppUserDTO() {
+	public AppUserDTO() {
+	}
+	
+	public AppUserDTO(AppUser user) {
+		this.userName = user.getUserName();
+		this.email = user.getEmail();
+		this.password = user.getPassword();
 	}
 
 	public String getUserName() {
