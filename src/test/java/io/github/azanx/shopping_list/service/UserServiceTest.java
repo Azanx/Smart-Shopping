@@ -5,6 +5,7 @@ package io.github.azanx.shopping_list.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
@@ -267,5 +268,24 @@ public class UserServiceTest {
 		assertTrue(updatedItemsList.isEmpty());
 	}
 	
-	//addItemsToShoppingList
+	@Test(expected = ListNotFoundException.class)
+	public void removeShoppingList_FailsIfListNotExist() {
+		userService.removeShoppingList(userName, 10000L);
+	}
+	
+	@Test(expected = ListNotFoundException.class)
+	public void removeShoppingList_FailsIfListOwnedByAnotherUser() {
+		AppUser user2 = new AppUser("second", "password", "email@test.com");
+		userService.addUser(user2);
+		ShoppingList list2 = userService.addShoppingListToUserByName(user2.getUserName(), "some list");
+		userService.removeShoppingList(userName, list2.getId());
+	}
+	
+	@Test
+	public void removeShoppingList_SucceedsIfUserHasThisList() {
+		ShoppingList list = userService.addShoppingListToUserByName(userName, "list");
+		userService.removeShoppingList(userName, list.getId());
+		assertNull(shoppingListRepository.findOne(list.getId()));
+	}
+//	 public void removeShoppingList(String userName, Long listId) {
 }

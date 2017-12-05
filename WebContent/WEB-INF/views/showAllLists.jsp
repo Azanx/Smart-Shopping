@@ -10,9 +10,10 @@
 <title><c:out value = "${userName}"/>:Shopping Lists</title>
 </head>
 <body>
+<c:url var = "url" value="/list"/>
 <c:import var = "pageHeader" url = "pageHeader.jsp"/>
 ${pageHeader}
-
+<c:out value="${url}"/>
 	<br /> Your shopping lists:
 	<br />
 	<table>
@@ -20,17 +21,22 @@ ${pageHeader}
 			<td>List Number</td>
 			<td>List Name</td>
 		</tr>
-		<c:forEach var="listItem" items="${shoppingLists}">
+		<c:forEach var="usersList" items="${shoppingLists}">
 			<tr>
-				<td><c:out value="${listItem.listNo}" /></td>
-				<spring:url var="url" value="list/${listItem.id}"/>
-				<td><a href="${url}"><c:out value="${listItem.listName}" /></a></td>
+				<td><c:out value="${usersList.listNo}" /></td>
+				<td><a href="${url}/${usersList.id}"><c:out value="${usersList.listName}" /></a></td>
+				<td>
+					<form:form action="${url}/delete" modelAttribute="listToDelete">
+						<form:hidden path="id" value="${usersList.id}"/>
+						<input type="submit" value="delete list"/>
+					</form:form>
+				</td>
 			</tr>
 		</c:forEach>
 	</table>
 	<br/>
 	Add new list:<br/>
-	<form:form action="list" modelAttribute="newList">
+	<form:form action="${url}" modelAttribute="newList">
 		<table>
 			<tr>
 				<td><form:label path="listName">List Name: </form:label></td>

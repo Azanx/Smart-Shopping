@@ -76,6 +76,7 @@ public class MvcController {
 		Set<ShoppingList> shoppingLists = userService.getShoppingListsForUser(userName);
 		mav.addObject("shoppingLists", shoppingLists);
 		mav.addObject("newList", new ShoppingListDTO());
+		mav.addObject("listToDelete", new ShoppingListDTO());
 		return mav;
 	}
 
@@ -89,6 +90,13 @@ public class MvcController {
 
 		userService.addShoppingListToUserByName(userName, newList.getListName());
 
+		return "redirect:/list";
+	}
+	
+	@RequestMapping(value = "/list/delete", method = RequestMethod.POST)
+	public String deleteList(@ModelAttribute("listToDelete") ShoppingListDTO listToDelete, BindingResult result) {
+		userService.removeShoppingList(userName, listToDelete.getId());
+		//TODO implement
 		return "redirect:/list";
 	}
 

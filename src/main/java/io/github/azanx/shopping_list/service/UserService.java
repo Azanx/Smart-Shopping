@@ -247,7 +247,7 @@ public class UserService {
 		count++;
 		ShoppingList list = user.addShoppingList(newListName, count);
 		list = shoppingListRepository.save(list);
-		LOGGER.info("Created new list: {}", list);
+		LOGGER.info("addShoppingListToUserByName: Created new list: {}", list);
 		return list;
 	}
 
@@ -289,8 +289,15 @@ public class UserService {
 		return newItems;
 	}
 
-	// @Transactional(readOnly = false)
-	// public void removeShoppingList( listId) {
-	//
-	// }
+	 @Transactional(readOnly = false)
+	 public void removeShoppingList(String userName, Long listId) {
+		 LOGGER.debug("removeShoppingList: user: {}, list: {}", userName, listId);
+		 ShoppingList list = shoppingListRepository//
+				 .findByIdAndOwnerName(listId, userName)//
+				 	.orElseThrow(//
+				 		() -> new ListNotFoundException(listId, userName));
+		 shoppingListRepository.delete(list);
+		 LOGGER.info("removeShoppingList: Deleted list: {}", listId);
+		 //TODO decrement listNo for all lists below deleted list
+	 }
 }
