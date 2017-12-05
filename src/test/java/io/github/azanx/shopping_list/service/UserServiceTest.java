@@ -4,10 +4,12 @@
 package io.github.azanx.shopping_list.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -302,6 +304,25 @@ public class UserServiceTest {
 																	//in case there were some lists created during userService.init()
 		list = shoppingListRepository.findOne(list.getId());
 		assertEquals(lastListNo-1, list.getListNo().shortValue());//listNo of last list (and every other greater than removed list) should be now lower by 1
+	}
+	
+	@Test
+	public void removeShoppingList_RemovesAlsoItemsBelongingToList() {
+		ShoppingList list = userService.addShoppingListToUserByName(userName, "list");
+		ShoppingListDTO listDTO = new ShoppingListDTO(list);
+		listDTO.setListItems(new ArrayList<ListItemDTO>());
+		listDTO.getListItems().add(new ListItemDTO("item"));
+		userService.addItemsToShoppingList(userName, listDTO);
+		
+		assertFalse(listItemRepository//
+				.findByParentListIdOrderByItemNo(list.getId())//
+					.isEmpty()); //check if list of items really was full after creation
+		
+		userService.removeShoppingList(userName, list.getId());
+		
+		assertTrue(listItemRepository//
+				.findByParentListIdOrderByItemNo(list.getId())//
+					.isEmpty()); //check if items were deleted alongside containing shoppinglist
 	}
 //	 public void removeShoppingList(String userName, Long listId) {
 }
