@@ -1,7 +1,7 @@
 package io.github.azanx.shopping_list.domain;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -50,7 +50,7 @@ public class ShoppingList{
 	@JsonIgnore
 	@OneToMany(mappedBy = "parentList", cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)	
 	@OrderBy("itemNo")
-	Set<ListItem> listItems = new LinkedHashSet<>();
+	List<ListItem> listItems = new ArrayList<>();
 
 	// empty constructor for JPA
 	protected ShoppingList() {
@@ -101,11 +101,11 @@ public class ShoppingList{
 		this.owner = owner;
 	}
 
-	public Set<ListItem> getListItems() {
+	public List<ListItem> getListItems() {
 		return listItems;
 	}
 	
-	public void setListItems(Set<ListItem> listItems) {
+	public void setListItems(List<ListItem> listItems) {
 		this.listItems = listItems;
 	}	
 

@@ -8,7 +8,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Set;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -62,6 +62,8 @@ public class UserServiceTest {
 		userService = new UserService(appUserRepository, listItemRepository, shoppingListRepository);
 		userService.init(); // have to call it explicitly as I'm not autowiring
 							// the class so POST_CONSTRUCT wouldn't start
+							//currently using local implementation to make sure fields generated for manual tests wouldn't break automatic tests
+		
 		user = new AppUser(userName, "password", "email@test.com");
 		userService.addUser(user);
 	}
@@ -117,7 +119,7 @@ public class UserServiceTest {
 		ShoppingList list = user.addShoppingList("test list");
 		appUserRepository.save(user); // dont have "updateUser method yet so
 										// using repository instead
-		Set<ShoppingList> lists = userService.getShoppingListsForUser(userName);
+		List<ShoppingList> lists = userService.getShoppingListsForUser(userName);
 		assertEquals(1, lists.size()); // check if number of users lists is
 										// correct
 		assertTrue(lists.contains(list)); // check if user really has list equal
@@ -197,7 +199,7 @@ public class UserServiceTest {
 	@Test
 	public void getItemsForUsersListId_SucceedsIfUserHaveThisList() {
 		ShoppingList list = userService.addShoppingListToUserByName(userName, "list1");
-		Set<ListItem> items = userService.getItemsForUsersListId(userName, list.getId());
+		List<ListItem> items = userService.getItemsForUsersListId(userName, list.getId());
 		assertNotNull(items);
 	}
 
@@ -247,7 +249,7 @@ public class UserServiceTest {
 		ListItemDTO item = items.getListItems().get(0);
 		item.setItemName("some item"); //set item name for the new item in the list
 		
-		Set<ListItem> updatedItemsList = userService.addItemsToShoppingList(user.getUserName(), items);
+		List<ListItem> updatedItemsList = userService.addItemsToShoppingList(user.getUserName(), items);
 		
 		//updatedItemsList contains/get won't work as ListItem equality/hashCode check depends on listNo which was assigned right now
 		//as list didn't contain any items before adding new one, we can be sure it's the only item in the set - we can compare it's name to the original item
@@ -262,7 +264,7 @@ public class UserServiceTest {
 		for (ListItemDTO item : items.getListItems())
 			item.setItemName(""); //set item name for the new item in the list
 		
-		Set<ListItem> updatedItemsList = userService.addItemsToShoppingList(user.getUserName(), items);
+		List<ListItem> updatedItemsList = userService.addItemsToShoppingList(user.getUserName(), items);
 		
 		//as list didn't contain any items before adding new one, we should get an empty set
 		assertTrue(updatedItemsList.isEmpty());
@@ -286,6 +288,22 @@ public class UserServiceTest {
 		ShoppingList list = userService.addShoppingListToUserByName(userName, "list");
 		userService.removeShoppingList(userName, list.getId());
 		assertNull(shoppingListRepository.findOne(list.getId()));
+	}
+	
+	@Test
+	public void removeShoppingList_DecrementsListNoForListsWithHigherNumber() {
+		short count = 3; //how many lists to create
+		ShoppingList list = null; //contains last created list
+		for(short i=0; i<count; i++)
+			list = userService.addShoppingListToUserByName(userName, "list");
+		
+		short lastListNo = list.getListNo();//number of the last list before removal
+		userService.removeShoppingList(userName, list.getId()+1-count);//remove first list, using id relative to the last list
+																	//in case there were some lists created during userService.init()
+		list = shoppingListRepository.findOne(list.getId());
+		assertEquals(lastListNo-1, list.getListNo().shortValue());
+		//we now DB is cleaned before each test, so we now lists start from
+		//id = 1 and listNo=1. At start id's are equal to listNo, but after removal listNo should be 1 less then id 
 	}
 //	 public void removeShoppingList(String userName, Long listId) {
 }

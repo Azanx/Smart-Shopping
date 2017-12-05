@@ -3,7 +3,7 @@
  */
 package io.github.azanx.shopping_list.controller;
 
-import java.util.Set;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +73,7 @@ public class MvcController {
 		LOGGER.debug("home() method of MvcController called for user: {}", userName);
 
 		ModelAndView mav = new ModelAndView("showAllLists");
-		Set<ShoppingList> shoppingLists = userService.getShoppingListsForUser(userName);
+		List<ShoppingList> shoppingLists = userService.getShoppingListsForUser(userName);
 		mav.addObject("shoppingLists", shoppingLists);
 		mav.addObject("newList", new ShoppingListDTO());
 		mav.addObject("listToDelete", new ShoppingListDTO());

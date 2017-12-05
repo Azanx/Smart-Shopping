@@ -1,7 +1,7 @@
 package io.github.azanx.shopping_list.service;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -66,10 +66,7 @@ public class UserService {
 			LOGGER.warn("No 'admin' account found in DB, creating 'admin' account with password defaulting to 'admin'");
 			AppUser newAdmin = new AppUser("admin", "admin", "admin@temp.pl");
 			appUserRepository.save(newAdmin);
-			ShoppingList shopList = newAdmin.addShoppingList("admin shopping");
-			ListItem listItem1 = new ListItem("mleko", shopList);
-			shopList.addListItem(listItem1);
-			newAdmin.addShoppingList(shopList);
+			newAdmin.addShoppingList("admin shopping").addListItem("mleko");
 			newAdmin.addShoppingList("second list").addListItem("mleko z drugiej listy");
 
 			appUserRepository.save(newAdmin);
@@ -105,8 +102,8 @@ public class UserService {
 	 *             if user doesn't have any lists
 	 */
 	@Transactional(readOnly = true)
-	public Set<ShoppingList> getShoppingListsForUser(String userName) {
-		Set<ShoppingList> lists = shoppingListRepository.findByOwnerName(userName);
+	public List<ShoppingList> getShoppingListsForUser(String userName) {
+		List<ShoppingList> lists = shoppingListRepository.findByOwnerName(userName);
 		if (lists.isEmpty()) {
 			throw new ListNotFoundException(userName);
 		}
@@ -132,9 +129,9 @@ public class UserService {
 	 *             if user doesn't have list with this ID
 	 */
 	@Transactional(readOnly = true)
-	public Set<ListItem> getItemsForUsersListNo(String userName, Short listNo) {
+	public List<ListItem> getItemsForUsersListNo(String userName, Short listNo) {
 		LOGGER.debug("getItemsForUsersListNo: user: {}, listNo: {}", userName, listNo);
-		Set<ListItem> items = listItemRepository.findByParentList_OwnerNameAndParentList_ListNo(userName, listNo);
+		List<ListItem> items = listItemRepository.findByParentList_OwnerNameAndParentList_ListNo(userName, listNo);
 		if (items.isEmpty()) {
 			throw new ItemNotFoundException(userName);
 		}
@@ -158,14 +155,14 @@ public class UserService {
 	 *             if user doesn't have list with this ID
 	 */
 	@Transactional(readOnly = true)
-	public Set<ListItem> getItemsForUsersListId(String userName, Long listId) {
+	public List<ListItem> getItemsForUsersListId(String userName, Long listId) {
 		LOGGER.debug("getItemsForUsersListId: user: {}, listId: {}", userName, listId);
 		shoppingListRepository//
 			.findByIdAndOwnerName(listId, userName)//
 				.orElseThrow(//
 						() -> new ListNotFoundException(listId, userName));
 		
-		Set<ListItem> items = listItemRepository.findByParentListId(listId);
+		List<ListItem> items = listItemRepository.findByParentListId(listId);
 
 		LOGGER.debug("Returning ListItem's with ID's: {}", //
 				items.stream()//
@@ -193,7 +190,7 @@ public class UserService {
 				.orElseThrow(//
 						() -> new ListNotFoundException(listId, userName));
 		
-		Set<ListItem> items = listItemRepository.findByParentListId(listId);
+		List<ListItem> items = listItemRepository.findByParentListId(listId);
 
 		list.setListItems(items);
 		LOGGER.debug("Returning ListItem's with ID's: {}", //
@@ -259,7 +256,7 @@ public class UserService {
 	 * @return ShoppingList populated with all current items
 	 */
 	@Transactional(readOnly = false)
-	public Set<ListItem> addItemsToShoppingList(String userName, ShoppingListDTO listWithNewItems) {
+	public List<ListItem> addItemsToShoppingList(String userName, ShoppingListDTO listWithNewItems) {
 		LOGGER.debug("addItemsToShoppingList: user: {}, listId: {}", listWithNewItems.getOwnerName(), listWithNewItems.getId());
 		//using ID provided by the client and username associated to current user (currently you can edit only your lists)
 		ShoppingList list = shoppingListRepository//
@@ -273,7 +270,7 @@ public class UserService {
 			throw new ListTooLongException(ListTooLongException.listType.SHOPPING_LIST, listWithNewItems.getId());
 		count++;
 	
-		Set<ListItem> newItems = new LinkedHashSet<>(listWithNewItems.getListItems().size());
+		List<ListItem> newItems = new ArrayList<>(listWithNewItems.getListItems().size());
 		for (ListItemDTO newItem : listWithNewItems.getListItems()) {
 			if(!newItem.getItemName().isEmpty()) {
 				LOGGER.debug("addItemsToShoppingList: adding item: {}, with No: {}", newItem.getItemName(), count);

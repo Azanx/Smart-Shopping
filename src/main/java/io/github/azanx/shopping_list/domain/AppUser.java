@@ -1,8 +1,8 @@
 package io.github.azanx.shopping_list.domain;
 
 import java.io.Serializable;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -49,7 +49,7 @@ public class AppUser implements Serializable{
 	@JsonIgnore
 	@OneToMany(mappedBy = "owner", cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
 	@OrderBy("listNo")
-	private Set<ShoppingList> shoppingLists = new LinkedHashSet<>();
+	private List<ShoppingList> shoppingLists = new ArrayList<>();
 
 	@JsonIgnore
 	@Column(name = "user_password", nullable = false)
@@ -97,7 +97,7 @@ public class AppUser implements Serializable{
 		this.password = password;
 	}
 
-	public Set<ShoppingList> getShoppingLists() {
+	public List<ShoppingList> getShoppingLists() {
 		return shoppingLists;
 	}
 
@@ -111,6 +111,7 @@ public class AppUser implements Serializable{
 		if(!newShoppingList.getOwner().equals(this))
 			throw new IllegalArgumentException("list isn't owned by this AppUser instance!");
 		return shoppingLists.add(newShoppingList);
+		//TODO remove this method
 	}
 
 	/**
