@@ -103,7 +103,7 @@ public class UserService {
 	 */
 	@Transactional(readOnly = true)
 	public List<ShoppingList> getShoppingListsForUser(String userName) {
-		List<ShoppingList> lists = shoppingListRepository.findByOwnerName(userName);
+		List<ShoppingList> lists = shoppingListRepository.findByOwnerNameOrderByListNo(userName);
 		if (lists.isEmpty()) {
 			throw new ListNotFoundException(userName);
 		}
@@ -162,7 +162,7 @@ public class UserService {
 				.orElseThrow(//
 						() -> new ListNotFoundException(listId, userName));
 		
-		List<ListItem> items = listItemRepository.findByParentListId(listId);
+		List<ListItem> items = listItemRepository.findByParentListIdOrderByItemNo(listId);
 
 		LOGGER.debug("Returning ListItem's with ID's: {}", //
 				items.stream()//
@@ -190,7 +190,7 @@ public class UserService {
 				.orElseThrow(//
 						() -> new ListNotFoundException(listId, userName));
 		
-		List<ListItem> items = listItemRepository.findByParentListId(listId);
+		List<ListItem> items = listItemRepository.findByParentListIdOrderByItemNo(listId);
 
 		list.setListItems(items);
 		LOGGER.debug("Returning ListItem's with ID's: {}", //
@@ -282,7 +282,7 @@ public class UserService {
 		listItemRepository.save(newItems);
 		//TODO check if it really saves values in batch
 		
-		newItems = listItemRepository.findByParentListId(listWithNewItems.getId());
+		newItems = listItemRepository.findByParentListIdOrderByItemNo(listWithNewItems.getId());
 		return newItems;
 	}
 

@@ -11,7 +11,7 @@ import io.github.azanx.shopping_list.domain.ListItem;
  *
  */
 public interface ListItemRepository extends CrudRepository<ListItem, Long> {
-	List<ListItem> findByParentListId(Long parentListId);
+	List<ListItem> findByParentListIdOrderByItemNo(Long parentListId);
 	List<ListItem> findByParentList_OwnerNameAndParentList_ListNo(String parentListOwner, Short parentListNo);
 	Short countByParentListId(Long parentListId);
 }
