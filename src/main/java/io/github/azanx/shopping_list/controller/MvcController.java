@@ -96,7 +96,6 @@ public class MvcController {
 	@RequestMapping(value = "/list/delete", method = RequestMethod.POST)
 	public String deleteList(@ModelAttribute("listToDelete") ShoppingListDTO listToDelete, BindingResult result) {
 		userService.removeShoppingList(userName, listToDelete.getId());
-		//TODO implement
 		return "redirect:/list";
 	}
 
@@ -119,7 +118,6 @@ public class MvcController {
 		//create new shopping list backing form object (mainly to retrieve new items)
 		ShoppingListDTO shoppingListWithEmptyItems= new ShoppingListDTO(10);
 		mav.addObject("shoppingList", shoppingListWithEmptyItems); 
-		// TODO implement
 		return mav;
 	}
 
