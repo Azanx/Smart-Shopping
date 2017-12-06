@@ -39,6 +39,8 @@ public class ListItem {
 	@Column(name = "item_name", nullable = false)
 	private String itemName;
 	
+	private Boolean bought = false;
+	
 	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name="parentList_Id", referencedColumnName="id")
@@ -142,11 +144,6 @@ public class ListItem {
 		return true;
 	}
 
-	@Override
-	public String toString() {
-		return "ListItem [itemNo=" + itemNo + ", itemname=" + itemName + ", parentList=" + parentList + "]";
-	}
-
 	public Long getParentListId() {
 		return parentListId;
 	}
@@ -155,5 +152,17 @@ public class ListItem {
 		this.parentListId = parentListId;
 	}
 
-	
+	public Boolean getBought() {
+		return bought;
+	}
+
+	public void setBought(Boolean bought) {
+		this.bought = bought;
+	}
+
+	@Override
+	public String toString() {
+		return "ListItem [id=" + id + ", parentListId=" + parentListId + ", itemNo=" + itemNo + ", itemName=" + itemName
+				+ ", bought=" + bought + "]";
+	}	
 }

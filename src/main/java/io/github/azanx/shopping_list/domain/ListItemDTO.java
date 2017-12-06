@@ -17,6 +17,8 @@ public class ListItemDTO {
 	private String itemName;
 	
 	private Long parentListId;
+	
+	private Boolean bought = false;
 
 	public ListItemDTO() {
 		itemName = "";
@@ -31,6 +33,7 @@ public class ListItemDTO {
 		this.itemNo = item.getItemNo();
 		this.itemName = item.getItemName();
 		this.parentListId = item.getParentListId();
+		this.bought = item.getBought();
 	}
 
 	public Long getId() {
@@ -63,5 +66,13 @@ public class ListItemDTO {
 
 	public void setParentListId(Long parentListId) {
 		this.parentListId = parentListId;
+	}
+
+	public Boolean isBought() {
+		return bought;
+	}
+
+	public void setBought(Boolean bought) {
+		this.bought = bought;
 	} 
 }
