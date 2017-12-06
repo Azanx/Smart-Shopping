@@ -68,7 +68,7 @@ public class ListItemDTO {
 		this.parentListId = parentListId;
 	}
 
-	public Boolean isBought() {
+	public Boolean getBought() {
 		return bought;
 	}
 

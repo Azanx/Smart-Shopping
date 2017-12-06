@@ -7,46 +7,37 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title><c:out value = "${userName}"/> - List: <c:out value="${listItems.listName}"/></title>
 </head>
 <body>
 	<c:import var="pageHeader" url="pageHeader.jsp" />
+	<spring:url var = "urlToLists" value="/list"/>
+	<spring:url var = "urlToCurrent" value="/list/${listId}" />
 	${pageHeader}
 
-	<br /> Items in list:<br/>
-	<b><c:out value="${listItems.listName}"></c:out></b>
+	<br /> Items in list: <b><c:out value="${listItems.listName}"/></b>
 	<br />
-	<table>
-		<tr>
-			<td>Item Number</td>
-			<td>Item Name</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td></td>
-		</tr>
-		<c:forEach var="listItem" items="${listItems.listItems}">
-			<tr>
-				<td><c:out value="${listItem.itemNo}" /></td>
-				<td><c:out value="${listItem.itemName}" /></td>
-			</tr>
+
+	<c:forEach var="listItem" items="${listItems.listItems}">
+		<form:form action="${urlToCurrent}/setBought" modelAttribute="listItemToModify">
+			<form:label path="itemName">${listItem.itemNo}</form:label>
+			<form:input path="itemName" value="${listItem.itemName}" disabled="true" />
+			${listItem.bought}
+			<form:hidden path="id" value="${listItem.id}"/>
+			<form:hidden path="bought" value="${not listItem.bought}"/>
+			<input type="submit" value="Bought"/>
+		</form:form>
+	</c:forEach>
+	<br />
+	<form:form action="${urlToCurrent}" modelAttribute="shoppingList">
+		Add new items:<br/>
+		<c:forEach items="${shoppingList.listItems}" varStatus="vs">
+			<form:input path="listItems[${vs.index}].itemName"
+				placeholder="Name for the new item" /><br/>
 		</c:forEach>
-	</table>
-	<br />
-	<form:form action="${listId}" modelAttribute="shoppingList">
-	Add new items:
-	<table>
-			<c:forEach items="${shoppingList.listItems}" varStatus="vs">
-				<tr>
-					<td><form:input path="listItems[${vs.index}].itemName"
-							placeholder="Name for the new item" /></td>
-				</tr>
-			</c:forEach>
-			<tr>
-				<td><input type="submit" value="Submit" /></td>
-			</tr>
-		</table>
+		<input type="submit" value="Submit" />
 	</form:form>
 	<br />
+	<a href="${urlToLists}">Back to all lists</a>
 </body>
 </html>

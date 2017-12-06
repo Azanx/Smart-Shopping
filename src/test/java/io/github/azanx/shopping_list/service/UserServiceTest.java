@@ -30,6 +30,7 @@ import io.github.azanx.shopping_list.repository.AppUserRepository;
 import io.github.azanx.shopping_list.repository.ListItemRepository;
 import io.github.azanx.shopping_list.repository.ShoppingListRepository;
 import io.github.azanx.shopping_list.service.exception.DuplicateUserException;
+import io.github.azanx.shopping_list.service.exception.ItemNotFoundException;
 import io.github.azanx.shopping_list.service.exception.ListNotFoundException;
 import io.github.azanx.shopping_list.service.exception.UserNotFoundException;
 
@@ -324,5 +325,95 @@ public class UserServiceTest {
 				.findByParentListIdOrderByItemNo(list.getId())//
 					.isEmpty()); //check if items were deleted alongside containing shoppinglist
 	}
-//	 public void removeShoppingList(String userName, Long listId) {
+	
+	@Test(expected = ListNotFoundException.class)
+	public void switchItemBoughtStatus_FailsIfListOwnedByAnotherUser() {
+		AppUser user2 = new AppUser("second", "password", "email@test.com");
+		userService.addUser(user2);
+		
+		ShoppingListDTO listWithItems = //
+				new ShoppingListDTO(//
+						userService.addShoppingListToUserByName(user2.getUserName(), "some list"));
+		
+		listWithItems.setListItems(new ArrayList<ListItemDTO>());
+		listWithItems.getListItems()//
+				.add(0, new ListItemDTO("item"));
+		List<ListItem> items = userService.addItemsToShoppingList(user2.getUserName(), listWithItems);
+		//there is only one element in the list so we are using index 0, new item defaults to Bought=false so we need to change status to true
+		listWithItems.getListItems().get(0).setId(items.get(0).getId());//setting item Id to one added during saving in DB
+		listWithItems.getListItems().get(0).setParentListId(items.get(0).getParentListId());//setting parent list id
+		listWithItems.getListItems().get(0).setBought(true);
+		
+		userService.switchItemBoughtStatus(userName, listWithItems.getListItems().get(0));
+	}
+	
+	@Test(expected = ListNotFoundException.class)
+	public void switchItemBoughtStatus_FailsIfListDoesntExist() {
+		ShoppingListDTO listWithItems = new ShoppingListDTO(userName, 10000L, 2);
+		listWithItems.setListItems(new ArrayList<ListItemDTO>());
+		listWithItems.getListItems().add(new ListItemDTO("item"));
+		ListItemDTO item = listWithItems.getListItems().get(0);
+		item.setId(1L);
+		item.setParentListId(10000L);
+
+		userService.switchItemBoughtStatus(userName, listWithItems.getListItems().get(0));
+		
+	}
+	
+	@Test(expected = ItemNotFoundException.class)
+	public void switchItemBoughtStatus_FailsIfListDoesntHaveThisItem() {
+		ShoppingList list = userService.addShoppingListToUserByName(userName, "list");
+		ShoppingListDTO listWithItems = new ShoppingListDTO(list);
+		listWithItems.setListItems(new ArrayList<ListItemDTO>());
+		listWithItems.getListItems().add(new ListItemDTO("item"));
+		ListItemDTO item = listWithItems.getListItems().get(0);
+		item.setId(1L);
+		item.setParentListId(listWithItems.getId());
+	
+		userService.switchItemBoughtStatus(userName, listWithItems.getListItems().get(0));
+	}
+	
+	@Test(expected = ItemNotFoundException.class)
+	public void switchItemBoughtStatus_FailsIfItemExistsInAnotherList() {
+		ShoppingList list = userService.addShoppingListToUserByName(userName, "list");
+		ShoppingListDTO listWithItems = new ShoppingListDTO(list);
+		listWithItems.setListItems(new ArrayList<ListItemDTO>());
+		
+		ShoppingList list2 = userService.addShoppingListToUserByName(userName, "list2");
+		ShoppingListDTO listWithItems2 = new ShoppingListDTO(list2);
+		listWithItems2.setListItems(new ArrayList<ListItemDTO>());
+		listWithItems2.getListItems().add(new ListItemDTO("item"));
+		List<ListItem> items = userService.addItemsToShoppingList(userName, listWithItems2);
+		
+		listWithItems.getListItems().add(new ListItemDTO(items.get(0)));	
+		
+		ListItemDTO item = listWithItems.getListItems().get(0);
+		item.setParentListId(listWithItems.getId());//setting parentlist id to first list,
+		//trying to fool the userService into changing item from another list than declared
+	
+		userService.switchItemBoughtStatus(userName, item);
+	}
+
+	@Test
+	public void switchItemBoughtStatus_SucceedsIfItemValid() {
+		ShoppingList list = userService.addShoppingListToUserByName(userName, "list");
+		ShoppingListDTO listWithItems = new ShoppingListDTO(list);
+		listWithItems.setListItems(new ArrayList<ListItemDTO>());
+		
+		listWithItems.getListItems().add(new ListItemDTO("item"));
+		List<ListItem> items = userService.addItemsToShoppingList(userName, listWithItems);
+		
+		
+		listWithItems.setListItems(new ArrayList<ListItemDTO>());
+		listWithItems.getListItems().add(new ListItemDTO(items.get(0)));
+		ListItemDTO item = listWithItems.getListItems().get(0);
+		item.setBought(true);
+		
+		userService.switchItemBoughtStatus(userName, item);
+		
+		assertTrue(listItemRepository.//
+						findOne(item//
+								.getId())//
+									.getBought());
+	}
 }

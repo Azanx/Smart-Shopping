@@ -283,10 +283,17 @@ public class UserService {
 		//TODO check if it really saves values in batch
 		
 		newItems = listItemRepository.findByParentListIdOrderByItemNo(listWithNewItems.getId());
+		LOGGER.debug("addItemsToShoppingList: returning items: {}", newItems);
 		return newItems;
 	}
 
-	 @Transactional(readOnly = false)
+	 /**
+	 * Remove shopping list from database
+	 * @param userName name of user to whom the list belongs
+	 * @param listId Id of the list to remove
+	 * @throws ListNotFoundException
+	 */
+	@Transactional(readOnly = false)
 	 public void removeShoppingList(String userName, Long listId) {
 		 LOGGER.debug("removeShoppingList: user: {}, list: {}", userName, listId);
 		 ShoppingList list = shoppingListRepository//
@@ -307,6 +314,30 @@ public class UserService {
 		 shoppingListRepository.save(listsToReorder);
 		 //TODO check if saves by batch or in loop
 		 LOGGER.info("Reordered lists of user: {} with No greater than: {}", userName, list.getListNo());
-		 //TODO decrement listNo for all lists below deleted list
 	 }
+
+	/**
+	 * change status of the item to bought or unbought, according to value given inside ListItemDTO item
+	 * @param userName name of user to whom the list belongs
+	 * @param item ListItemDTO corresponding to the item in database we want to change. Values of item Id, parentListId, and Bought must be set correctly!
+	 * @throws ListNotFoundException if given user doesn't have ShoppingList with Id set in item
+	 * @throws ItemNotFoundException if ShoppingList declared inside item doesn't contain item with this Id
+	 */
+	@Transactional(readOnly = false)
+	public void switchItemBoughtStatus(String userName, ListItemDTO item) {
+		LOGGER.debug("switchItemBoughtStatus: user: {}, list: {}, item: {}", userName, item.getParentListId(), item.getId());
+		shoppingListRepository.//
+			findByIdAndOwnerName(item.getParentListId(), userName)//
+				.orElseThrow(//
+					() -> new ListNotFoundException(item.getParentListId(), userName));
+		
+		ListItem listItem = listItemRepository//
+				.findByIdAndParentListId(item.getId(), item.getParentListId())//
+					.orElseThrow(//
+						() -> new ItemNotFoundException(userName));
+		
+		listItem.setBought(item.getBought());
+		listItemRepository.save(listItem);
+		LOGGER.debug("switchItemBoughtStatus: changed ListItem id: {} to bought: {}",listItem.getId(), listItem.getBought());
+	}
 }

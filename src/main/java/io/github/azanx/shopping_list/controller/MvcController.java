@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import io.github.azanx.shopping_list.domain.AppUser;
 import io.github.azanx.shopping_list.domain.AppUserDTO;
+import io.github.azanx.shopping_list.domain.ListItemDTO;
 import io.github.azanx.shopping_list.domain.ShoppingList;
 import io.github.azanx.shopping_list.domain.ShoppingListDTO;
 import io.github.azanx.shopping_list.service.UserService;
@@ -118,6 +119,10 @@ public class MvcController {
 		//create new shopping list backing form object (mainly to retrieve new items)
 		ShoppingListDTO shoppingListWithEmptyItems= new ShoppingListDTO(10);
 		mav.addObject("shoppingList", shoppingListWithEmptyItems); 
+		
+		//create new listItem backing form object (used later to change bought status)
+		ListItemDTO listItemToModify = new ListItemDTO();
+		mav.addObject("listItemToModify", listItemToModify);
 		return mav;
 	}
 
@@ -132,6 +137,13 @@ public class MvcController {
 		newList.setOwnerName(userName);
 		newList.setId(listId);
 		userService.addItemsToShoppingList(userName, newList);
+		return "redirect:/list/"+listId;
+	}
+	
+	@RequestMapping(value = "/list/{listId}/setBought", method = RequestMethod.POST)
+	public String switchItemBoughtStatus(@PathVariable Long listId, @ModelAttribute ListItemDTO item) {
+		item.setParentListId(listId);
+		userService.switchItemBoughtStatus(userName, item);
 		return "redirect:/list/"+listId;
 	}
 	
