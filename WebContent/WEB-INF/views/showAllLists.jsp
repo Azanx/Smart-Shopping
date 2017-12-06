@@ -10,7 +10,7 @@
 <title><c:out value = "${userName}"/>:Shopping Lists</title>
 </head>
 <body>
-<c:url var = "url" value="/list"/>
+<spring:url var = "url" value="/list"/>
 <c:import var = "pageHeader" url = "pageHeader.jsp"/>
 ${pageHeader}
 <c:out value="${url}"/>
