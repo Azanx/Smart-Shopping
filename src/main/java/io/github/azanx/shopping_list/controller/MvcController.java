@@ -76,7 +76,7 @@ public class MvcController {
 		LOGGER.debug("home() method of MvcController called for user: {}", userName);
 
 		ModelAndView mav = new ModelAndView("showAllLists");
-		List<ShoppingList> shoppingLists = userService.getShoppingListsForUser(userName);
+		List<ShoppingList> shoppingLists = userService.getShoppingLists(userName);
 		mav.addObject("shoppingLists", shoppingLists); //current ShoppingLists of the user to display
 		mav.addObject("newList", new ShoppingListDTO()); //backing object for name of the new ShoppingList
 		mav.addObject("listToDelete", new ShoppingListDTO()); //backing object for ShoppingList to delete
@@ -184,7 +184,7 @@ public class MvcController {
 		LOGGER.debug("showUserProfile() method of MvcController called for user: {}", userName);
 
 		ModelAndView mav = new ModelAndView("userProfile");
-		AppUser user = userService.getUserIfExistsElseThrow(userName);
+		AppUser user = userService.getUser(userName);
 		mav.addObject("user", user);
 		return mav;
 		// TODO add basic html5 side validation (for example input type="email")

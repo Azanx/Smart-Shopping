@@ -77,19 +77,19 @@ public class UserServiceTest {
 	 */
 	@Test
 	public void getUserIfExistsElseThrow_isAdminPresent_Succeeds() {
-		AppUser userUnderTest = userService.getUserIfExistsElseThrow("admin");
+		AppUser userUnderTest = userService.getUser("admin");
 		assertNotNull(userUnderTest);
 	}
 
 	@Test
 	public void addUser_Succeeds() {
 		// user already added during @Before
-		assertNotNull(userService.getUserIfExistsElseThrow(userName));
+		assertNotNull(userService.getUser(userName));
 	}
 
 	@Test(expected = UserNotFoundException.class)
 	public void getUserIfExistsElseThrow_ForNonExistingUser_Fails() {
-		userService.getUserIfExistsElseThrow("fake_accout");
+		userService.getUser("fake_accout");
 	}
 
 	@Test(expected = DuplicateUserException.class)
@@ -105,12 +105,12 @@ public class UserServiceTest {
 
 	@Test(expected = ListNotFoundException.class)
 	public void getShoppingListsForUser_WhenUserNonExistent_Fails() {
-		userService.getShoppingListsForUser("fake_account");
+		userService.getShoppingLists("fake_account");
 	}
 
 	@Test(expected = ListNotFoundException.class)
 	public void getShoppingListsForUser_WhenNoLists_Fails() {
-		userService.getShoppingListsForUser(userName);
+		userService.getShoppingLists(userName);
 	}
 
 	/**
@@ -122,7 +122,7 @@ public class UserServiceTest {
 		ShoppingList list = user.addShoppingList("test list");
 		appUserRepository.save(user); // dont have "updateUser method yet so
 										// using repository instead
-		List<ShoppingList> lists = userService.getShoppingListsForUser(userName);
+		List<ShoppingList> lists = userService.getShoppingLists(userName);
 		assertEquals(1, lists.size()); // check if number of users lists is
 										// correct
 		assertTrue(lists.contains(list)); // check if user really has list equal
@@ -135,7 +135,7 @@ public class UserServiceTest {
 		for (int i = 0; i < amount; i++)
 			user.addShoppingList("test list"); // lists can have duplicate names
 		appUserRepository.save(user);
-		assertEquals(amount, userService.getShoppingListsForUser(userName).size());
+		assertEquals(amount, userService.getShoppingLists(userName).size());
 	}
 
 	/**
@@ -159,7 +159,7 @@ public class UserServiceTest {
 		listItemRepository.save(item);
 		// get Items from user2 list number one and check if they contain
 		// inserted item u
-		assertTrue(userService.getItemsForUsersListNo(user2Name, (short) 1).contains(item));
+		assertTrue(userService.getListItems(user2Name, (short) 1).contains(item));
 	}
 
 	@Test(expected = UserNotFoundException.class)
@@ -173,7 +173,7 @@ public class UserServiceTest {
 	public void addShoppingListToUserByName_succeedsForExistingUser() {
 		ShoppingList list = userService.addShoppingListToUserByName(user.getUserName(), "LIST 1");
 		assertNotNull(list);
-		assertTrue(userService.getShoppingListsForUser(userName).contains(list));
+		assertTrue(userService.getShoppingLists(userName).contains(list));
 	}
 
 	@Test
@@ -183,12 +183,12 @@ public class UserServiceTest {
 		ShoppingList list2 = userService.addShoppingListToUserByName(user.getUserName(), "LIST 2");
 
 		userService.addShoppingListToUserByName(user.getUserName(), "LIST 3");
-		assertTrue(userService.getShoppingListsForUser(userName).contains(list2));
+		assertTrue(userService.getShoppingLists(userName).contains(list2));
 	}
 
 	@Test(expected = ListNotFoundException.class)
 	public void getItemsForUsersListId_FailsIfListNotExists() {
-		userService.getItemsForUsersListId(userName, 100000L);
+		userService.getListItems(userName, 100000L);
 	}
 
 	@Test(expected = ListNotFoundException.class)
@@ -196,13 +196,13 @@ public class UserServiceTest {
 		AppUser user2 = new AppUser("second", "password", "email@test.com");
 		userService.addUser(user2);
 		ShoppingList user2list = userService.addShoppingListToUserByName(user2.getUserName(), "user2list");
-		userService.getItemsForUsersListId(userName, user2list.getId());
+		userService.getListItems(userName, user2list.getId());
 	}
 
 	@Test
 	public void getItemsForUsersListId_SucceedsIfUserHaveThisList() {
 		ShoppingList list = userService.addShoppingListToUserByName(userName, "list1");
-		List<ListItem> items = userService.getItemsForUsersListId(userName, list.getId());
+		List<ListItem> items = userService.getListItems(userName, list.getId());
 		assertNotNull(items);
 	}
 

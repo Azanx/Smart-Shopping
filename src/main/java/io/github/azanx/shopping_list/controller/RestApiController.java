@@ -39,7 +39,7 @@ public class RestApiController {
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	AppUser getUserInformation(@PathVariable String userName) {
-		return userService.getUserIfExistsElseThrow(userName); //if user doesn't exist method throws exception
+		return userService.getUser(userName); //if user doesn't exist method throws exception
 										//caught by RestControllerAdvice - hence no need for
 										// return value and checking it's success
 	}
@@ -51,7 +51,7 @@ public class RestApiController {
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	List<ShoppingList> getShoppingListsForUserName(@PathVariable String userName) {
-		return userService.getShoppingListsForUser(userName);// method throws exception caught by
+		return userService.getShoppingLists(userName);// method throws exception caught by
 										// RestControllerAdvice
 	}
 	
@@ -63,7 +63,7 @@ public class RestApiController {
 	 */
 	@RequestMapping(value = "/list/{listNo}", method = RequestMethod.GET)
 	List<ListItem> getAllItemsFromList(@PathVariable String userName, @PathVariable Short listNo) {
-		return userService.getItemsForUsersListNo(userName, listNo);
+		return userService.getListItems(userName, listNo);
 	}
 	
 	/**

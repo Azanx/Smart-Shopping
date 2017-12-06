@@ -40,15 +40,12 @@ public class UserService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
 	private final AppUserRepository appUserRepository;
-
 	private final ListItemRepository listItemRepository;
-
 	private final ShoppingListRepository shoppingListRepository;
 
 	@Autowired
 	public UserService(AppUserRepository appUserRepository, ListItemRepository listItemRepository,
 			ShoppingListRepository shoppingListRepository) {
-		super();
 		this.appUserRepository = appUserRepository;
 		this.listItemRepository = listItemRepository;
 		this.shoppingListRepository = shoppingListRepository;
@@ -66,9 +63,10 @@ public class UserService {
 			LOGGER.warn("No 'admin' account found in DB, creating 'admin' account with password defaulting to 'admin'");
 			AppUser newAdmin = new AppUser("admin", "admin", "admin@temp.pl");
 			appUserRepository.save(newAdmin);
+			
+			//generate lists used in manual tests:
 			newAdmin.addShoppingList("admin shopping").addListItem("mleko");
 			newAdmin.addShoppingList("second list").addListItem("mleko z drugiej listy");
-
 			appUserRepository.save(newAdmin);
 		}
 	}
@@ -82,13 +80,12 @@ public class UserService {
 	 * @throws UserNotFoundException
 	 *             if user with 'userName' doesn't exist
 	 */
-	// throws clause not necessarry as it's an unchecked exception
 	@Transactional(readOnly = true)
-	public AppUser getUserIfExistsElseThrow(String userName) {
+	public AppUser getUser(String userName) {
 		return appUserRepository//
-				.findByUserName(userName) //
+			.findByUserName(userName) //
 				.orElseThrow( //
-						() -> new UserNotFoundException(userName)); //
+					() -> new UserNotFoundException(userName));//
 	}
 
 	/**
@@ -102,22 +99,21 @@ public class UserService {
 	 *             if user doesn't have any lists
 	 */
 	@Transactional(readOnly = true)
-	public List<ShoppingList> getShoppingListsForUser(String userName) {
+	public List<ShoppingList> getShoppingLists(String userName) {
 		List<ShoppingList> lists = shoppingListRepository.findByOwnerNameOrderByListNo(userName);
-		if (lists.isEmpty()) {
+		if (lists.isEmpty())
 			throw new ListNotFoundException(userName);
-		}
+
 		LOGGER.debug("Returning ShoppingLists for user: {}, Lists:\n {}", userName, //
 				lists.stream()//
-						.map(ShoppingList::toString)//
-						.collect(Collectors.toList())//
-		);
+					.map(ShoppingList::toString)//
+						.collect(Collectors.toList()));//
 		return lists;
 	}
 
 	/**
 	 * Retrieve ListItems of particular user's ShoppingList
-	 * 
+	 * @deprecated
 	 * @param userName
 	 *            name of the user whose ListItems to retrieve from the database
 	 * @param listNo
@@ -129,15 +125,17 @@ public class UserService {
 	 *             if user doesn't have list with this ID
 	 */
 	@Transactional(readOnly = true)
-	public List<ListItem> getItemsForUsersListNo(String userName, Short listNo) {
+	public List<ListItem> getListItems(String userName, Short listNo) {
 		LOGGER.debug("getItemsForUsersListNo: user: {}, listNo: {}", userName, listNo);
-		List<ListItem> items = listItemRepository.findByParentList_OwnerNameAndParentList_ListNo(userName, listNo);
-		if (items.isEmpty()) {
+		
+		List<ListItem> items = listItemRepository//
+									.findByParentList_OwnerNameAndParentList_ListNo(userName, listNo);//
+		if (items.isEmpty())
 			throw new ItemNotFoundException(userName);
-		}
+		
 		LOGGER.debug("Returning ListItem's with ID's: {}", //
 				items.stream()//
-						.map(ListItem::getId)//
+					.map(ListItem::getId)//
 						.collect(Collectors.toList()));
 		return items;
 	}
@@ -155,19 +153,17 @@ public class UserService {
 	 *             if user doesn't have list with this ID
 	 */
 	@Transactional(readOnly = true)
-	public List<ListItem> getItemsForUsersListId(String userName, Long listId) {
+	public List<ListItem> getListItems(String userName, Long listId) {
 		LOGGER.debug("getItemsForUsersListId: user: {}, listId: {}", userName, listId);
-		shoppingListRepository//
-			.findByIdAndOwnerName(listId, userName)//
-				.orElseThrow(//
-						() -> new ListNotFoundException(listId, userName));
+		
+		retrieveShoppingList(listId, userName); //throws ListNotFound exception if user doesn't have list with this Id
 		
 		List<ListItem> items = listItemRepository.findByParentListIdOrderByItemNo(listId);
 
 		LOGGER.debug("Returning ListItem's with ID's: {}", //
 				items.stream()//
-						.map(ListItem::getId)//
-						.collect(Collectors.toList()));
+					.map(ListItem::getId)//
+						.collect(Collectors.toList()));//
 		return items;
 	}
 	
@@ -185,14 +181,13 @@ public class UserService {
 	@Transactional(readOnly = true)
 	public ShoppingList getShoppingListWithItemsForUsersListId(String userName, Long listId) {
 		LOGGER.debug("getShoppingListWithItemsForUsersListId: user: {}, listId: {}", userName, listId);
-		ShoppingList list = shoppingListRepository//
-			.findByIdAndOwnerName(listId, userName)//
-				.orElseThrow(//
-						() -> new ListNotFoundException(listId, userName));
 		
-		List<ListItem> items = listItemRepository.findByParentListIdOrderByItemNo(listId);
-
+		ShoppingList list = retrieveShoppingList(listId, userName);
+		
+		List<ListItem> items = listItemRepository//
+				.findByParentListIdOrderByItemNo(listId);
 		list.setListItems(items);
+		
 		LOGGER.debug("Returning ListItem's with ID's: {}", //
 				items.stream()//
 						.map(ListItem::getId)//
@@ -211,12 +206,13 @@ public class UserService {
 	 */
 	@Transactional(readOnly = false)
 	public void addUser(AppUser newUser) {
-		if (!appUserRepository.findByUserName(newUser.getUserName()).isPresent()) {
-			appUserRepository.save(newUser);
-			LOGGER.info("addUser: Created new user: {}", newUser);
-		} else {
-			throw new DuplicateUserException(newUser.getUserName());
-		}
+		appUserRepository//
+			.findByUserName(newUser.getUserName())//
+				.ifPresent(//
+					user -> {throw new DuplicateUserException(user.getUserName());});//
+		appUserRepository.save(newUser);
+		
+		LOGGER.info("addUser(): Created new user: {}", newUser);
 	}
 
 	
@@ -230,20 +226,23 @@ public class UserService {
 	 * @return newly created list
 	 * @throws UserNotFoundException
 	 *             if user with given name doesn't exist
+	 * @throws ListTooLongException if size of the list containing ShoppingLists would exceed limit of Short type after adding new ShoppingList
 	 */
 	@Transactional(readOnly = false)
 	public ShoppingList addShoppingListToUserByName(String userName, String newListName) {
 		LOGGER.debug("addShoppingListToUserByName: user: {}, listName: {}", userName, newListName);
-		AppUser user = appUserRepository.findByUserName(userName)//
-				.orElseThrow(//
-						() -> new UserNotFoundException(userName));
+		
+		AppUser user = getUser(userName); //throws UserNotFoundException
+		
 		// get count of user lists
 		short count = shoppingListRepository.countByOwnerName(userName);
 		if (count == Short.MAX_VALUE)
 			throw new ListTooLongException(ListTooLongException.listType.SHOPPING_LIST, user.getId());
 		count++;
+		
 		ShoppingList list = user.addShoppingList(newListName, count);
 		list = shoppingListRepository.save(list);
+		
 		LOGGER.info("addShoppingListToUserByName: Created new list: {}", list);
 		return list;
 	}
@@ -258,31 +257,35 @@ public class UserService {
 	@Transactional(readOnly = false)
 	public List<ListItem> addItemsToShoppingList(String userName, ShoppingListDTO listWithNewItems) {
 		LOGGER.debug("addItemsToShoppingList: user: {}, listId: {}", listWithNewItems.getOwnerName(), listWithNewItems.getId());
-		//using ID provided by the client and username associated to current user (currently you can edit only your lists)
-		ShoppingList list = shoppingListRepository//
-				.findByIdAndOwnerName(listWithNewItems.getId(), userName)//
-					.orElseThrow(//
-							()-> new ListNotFoundException(listWithNewItems.getId(), listWithNewItems.getOwnerName()));
 		
-		// get count of ListsItems in the list
+		//using ID provided by the client and username associated to current user (currently you can edit only your lists)
+		ShoppingList list = retrieveShoppingList(listWithNewItems.getId(), userName);
+
+		// get current count of ListsItems in the list
 		short count = listItemRepository.countByParentListId(listWithNewItems.getId());
-		if (count == Short.MAX_VALUE)
-			throw new ListTooLongException(ListTooLongException.listType.SHOPPING_LIST, listWithNewItems.getId());
-		count++;
-	
+		
+		//create list containing ListItems for new items to save in DB
 		List<ListItem> newItems = new ArrayList<>(listWithNewItems.getListItems().size());
 		for (ListItemDTO newItem : listWithNewItems.getListItems()) {
+			//ignoring empty items from list provided by client
 			if(!newItem.getItemName().isEmpty()) {
 				LOGGER.debug("addItemsToShoppingList: adding item: {}, with No: {}", newItem.getItemName(), count);
+				
+				//must check if list isn't too long for Short type when adding every new item
+				if (count == Short.MAX_VALUE)
+					throw new ListTooLongException(ListTooLongException.listType.SHOPPING_LIST, listWithNewItems.getId());
+				count++; //increase listNo for next item in the list
+				
 				ListItem item = list.addListItem(newItem.getItemName(), count);
 				newItems.add(item);
-				count++;
 			}
 		}
+		
 		listItemRepository.save(newItems);
 		//TODO check if it really saves values in batch
 		
 		newItems = listItemRepository.findByParentListIdOrderByItemNo(listWithNewItems.getId());
+		
 		LOGGER.debug("addItemsToShoppingList: returning items: {}", newItems);
 		return newItems;
 	}
@@ -296,18 +299,20 @@ public class UserService {
 	@Transactional(readOnly = false)
 	 public void removeShoppingList(String userName, Long listId) {
 		 LOGGER.debug("removeShoppingList: user: {}, list: {}", userName, listId);
-		 ShoppingList list = shoppingListRepository//
-				 .findByIdAndOwnerName(listId, userName)//
-				 	.orElseThrow(//
-				 		() -> new ListNotFoundException(listId, userName));
+		 
+		 ShoppingList list = retrieveShoppingList(listId, userName);
 		 
 		 shoppingListRepository.delete(list);
+		 
 		 LOGGER.info("removeShoppingList: Deleted list: {} with listNo: {}", listId, list.getListNo());
 		 
+		 //after removing ShoppingList, must decrement number of every list with number greater than deleted one
 		 List<ShoppingList> listsToReorder = shoppingListRepository.findByOwnerNameAndListNoGreaterThan(userName, list.getListNo());
 		 for(ShoppingList currentList : listsToReorder) {
 			 short newListNo = (short) (currentList.getListNo()-1);
+			 
 			 LOGGER.debug("reordering listNo: {} into {}", currentList.getListNo(), newListNo);
+			 
 			 currentList.setListNo(newListNo);
 		 }
 		 
@@ -326,10 +331,8 @@ public class UserService {
 	@Transactional(readOnly = false)
 	public void switchItemBoughtStatus(String userName, ListItemDTO item) {
 		LOGGER.debug("switchItemBoughtStatus: user: {}, list: {}, item: {}", userName, item.getParentListId(), item.getId());
-		shoppingListRepository.//
-			findByIdAndOwnerName(item.getParentListId(), userName)//
-				.orElseThrow(//
-					() -> new ListNotFoundException(item.getParentListId(), userName));
+
+		retrieveShoppingList(item.getParentListId(), userName);
 		
 		ListItem listItem = listItemRepository//
 				.findByIdAndParentListId(item.getId(), item.getParentListId())//
@@ -339,5 +342,19 @@ public class UserService {
 		listItem.setBought(item.getBought());
 		listItemRepository.save(listItem);
 		LOGGER.debug("switchItemBoughtStatus: changed ListItem id: {} to bought: {}",listItem.getId(), listItem.getBought());
+	}
+	
+	/**
+	 * Retrieve given ShoppingList from database or throw exception
+	 * @param listId of the list to retrieve
+	 * @param userName of AppUser owning the list
+	 * @return ShoppingList
+	 * @throws ListNotFoundException
+	 */
+	private ShoppingList retrieveShoppingList(Long listId, String userName) {
+		return shoppingListRepository//
+					.findByIdAndOwnerName(listId, userName)//
+						.orElseThrow(//
+							() -> new ListNotFoundException(listId, userName));//
 	}
 }
