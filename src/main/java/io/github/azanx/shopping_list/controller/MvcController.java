@@ -100,17 +100,17 @@ public class MvcController {
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	public String addList(@Valid @ModelAttribute("newList") ShoppingListDTO newList, BindingResult binding, RedirectAttributes attr, HttpSession session) {
 		LOGGER.debug("addList() method of MvcController called for user: {}", userName);
-		String resultView = "redirect:/list";
-		if(binding.hasErrors()) {
+		if(!binding.hasErrors()) 
+			userService.addShoppingListToUserByName(userName, newList.getListName());
+		else {
 			attr.addFlashAttribute("org.springframework.validation.BindingResult.newList", binding);
 			attr.addFlashAttribute("newList", newList);
 			for(FieldError ferr:binding.getFieldErrors()) {
 				LOGGER.info("addList(): field error: " + ferr.getDefaultMessage());
 			}
-		} else
-			userService.addShoppingListToUserByName(userName, newList.getListName());
+		}
 		
-		return resultView;
+		return "redirect:/list";
 	}
 
 	/**
