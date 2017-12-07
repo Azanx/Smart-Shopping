@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.github.azanx.shopping_list.domain.AppUser;
 import io.github.azanx.shopping_list.domain.ListItem;
 import io.github.azanx.shopping_list.domain.ShoppingList;
-import io.github.azanx.shopping_list.service.UserService;
+import io.github.azanx.shopping_list.service.RepositoryService;
 
 /**
  * Controller for the REST API
@@ -24,10 +24,10 @@ import io.github.azanx.shopping_list.service.UserService;
 @RequestMapping(value = "/api/{userName}")
 public class RestApiController {
 
-	private final UserService userService;
+	private final RepositoryService userService;
 
 	@Autowired
-	public RestApiController( UserService userService) {
+	public RestApiController( RepositoryService userService) {
 		super();
 		this.userService = userService;
 	}

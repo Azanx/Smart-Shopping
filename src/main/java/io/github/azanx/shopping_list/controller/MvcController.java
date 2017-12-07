@@ -21,7 +21,7 @@ import io.github.azanx.shopping_list.domain.AppUserDTO;
 import io.github.azanx.shopping_list.domain.ListItemDTO;
 import io.github.azanx.shopping_list.domain.ShoppingList;
 import io.github.azanx.shopping_list.domain.ShoppingListDTO;
-import io.github.azanx.shopping_list.service.UserService;
+import io.github.azanx.shopping_list.service.RepositoryService;
 
 /**
  * @author Kamil Piwowarski
@@ -33,12 +33,12 @@ public class MvcController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MvcController.class);
 
-	private final UserService userService;
+	private final RepositoryService userService;
 	private String userName; // populated by @ModelAttribute method used for
 								// easier access inside controller methods
 
 	@Autowired
-	public MvcController(UserService userService) {
+	public MvcController(RepositoryService userService) {
 		this.userService = userService;
 	}
 

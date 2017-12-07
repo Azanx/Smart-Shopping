@@ -36,16 +36,16 @@ import io.github.azanx.shopping_list.service.exception.UserNotFoundException;
  * @author Kamil Piwowarski
  */
 @Service
-public class UserService {
+public class RepositoryService {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryService.class);
 
 	private final AppUserRepository appUserRepository;
 	private final ListItemRepository listItemRepository;
 	private final ShoppingListRepository shoppingListRepository;
 
 	@Autowired
-	public UserService(AppUserRepository appUserRepository, ListItemRepository listItemRepository,
+	public RepositoryService(AppUserRepository appUserRepository, ListItemRepository listItemRepository,
 			ShoppingListRepository shoppingListRepository) {
 		this.appUserRepository = appUserRepository;
 		this.listItemRepository = listItemRepository;

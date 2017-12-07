@@ -42,7 +42,7 @@ import io.github.azanx.shopping_list.service.exception.UserNotFoundException;
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = { JPAConfig.class })
-public class UserServiceTest {
+public class RepositoryServiceTest {
 
 	@Autowired
 	AppUserRepository appUserRepository;
@@ -51,7 +51,7 @@ public class UserServiceTest {
 	@Autowired
 	ShoppingListRepository shoppingListRepository;
 
-	UserService userService;
+	RepositoryService userService;
 	AppUser user;
 	AppUserDTO userDTO;
 	String userName = "User";
@@ -64,7 +64,7 @@ public class UserServiceTest {
 		this.listItemRepository.deleteAll();
 		this.shoppingListRepository.deleteAll();
 
-		userService = new UserService(appUserRepository, listItemRepository, shoppingListRepository);
+		userService = new RepositoryService(appUserRepository, listItemRepository, shoppingListRepository);
 		userService.init(); // have to call it explicitly as I'm not autowiring
 							// the class so POST_CONSTRUCT wouldn't start
 							//currently using local implementation to make sure fields generated for manual tests wouldn't break automatic tests
