@@ -123,7 +123,7 @@ public class MvcController {
 		LOGGER.debug("showListsWithId() method of MvcController called for user: {}, and list: {}", userName, listId);
 
 		ModelAndView mav = new ModelAndView("showList");
-		ShoppingList shoppingListWithExistingItems = userService.getShoppingListWithItemsForUsersListId(userName,
+		ShoppingList shoppingListWithExistingItems = userService.getShoppingListWithItems(userName,
 				listId);
 		ShoppingListDTO shoppingListWithEmptyItems = new ShoppingListDTO(10);
 		ListItemDTO listItemToModify = new ListItemDTO();

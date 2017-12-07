@@ -22,6 +22,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import io.github.azanx.shopping_list.config.JPAConfig;
 import io.github.azanx.shopping_list.domain.AppUser;
+import io.github.azanx.shopping_list.domain.AppUserDTO;
 import io.github.azanx.shopping_list.domain.ListItem;
 import io.github.azanx.shopping_list.domain.ListItemDTO;
 import io.github.azanx.shopping_list.domain.ShoppingList;
@@ -52,6 +53,7 @@ public class UserServiceTest {
 
 	UserService userService;
 	AppUser user;
+	AppUserDTO userDTO;
 	String userName = "User";
 
 	// clean repositories, create fresh userService instance
@@ -66,9 +68,8 @@ public class UserServiceTest {
 		userService.init(); // have to call it explicitly as I'm not autowiring
 							// the class so POST_CONSTRUCT wouldn't start
 							//currently using local implementation to make sure fields generated for manual tests wouldn't break automatic tests
-		
-		user = new AppUser(userName, "password", "email@test.com");
-		userService.addUser(user);
+		userDTO = new AppUserDTO(userName, "password", "email@test.com");
+		user = userService.addUser(userDTO);
 	}
 
 	/**
@@ -94,12 +95,12 @@ public class UserServiceTest {
 
 	@Test(expected = DuplicateUserException.class)
 	public void addUser_DuplicateUser_Fails() {
-		userService.addUser(user);
+		userService.addUser(userDTO);
 	}
 
 	@Test(expected = DuplicateUserException.class)
 	public void addUser_DuplicateUserWithDifferentObjects_Fails() {
-		AppUser userUnderTest2 = new AppUser("User", "password1", "email1@test.com");
+		AppUserDTO userUnderTest2 = new AppUserDTO("User", "password1", "email1@test.com");
 		userService.addUser(userUnderTest2);
 	}
 
@@ -144,13 +145,11 @@ public class UserServiceTest {
 	 */
 	@Test
 	public void getShoppingListsForUser_with2usersAndLists_ContainsCorrectItem() {
-		AppUser user1 = new AppUser("User1", "password", "email@test.com");
-		userService.addUser(user1);
+		AppUser user1 = userService.addUser(new AppUserDTO("User1", "password", "email@test.com"));
 		user1.addShoppingList("user1list");
 		appUserRepository.save(user1);
 		String user2Name = "User2";
-		AppUser user2 = new AppUser(user2Name, "password", "email@test.com");
-		userService.addUser(user2);
+		AppUser user2 = userService.addUser(new AppUserDTO(user2Name, "password", "email@test.com"));
 		ShoppingList user2list = user2.addShoppingList("user2list");
 		shoppingListRepository.save(user2list);
 		String itemName = "Some Item";
@@ -193,8 +192,7 @@ public class UserServiceTest {
 
 	@Test(expected = ListNotFoundException.class)
 	public void getItemsForUsersListId_FailsIfListOwnedByAnotherUser() {
-		AppUser user2 = new AppUser("second", "password", "email@test.com");
-		userService.addUser(user2);
+		AppUser user2 = userService.addUser(new AppUserDTO("second", "password", "email@test.com"));
 		ShoppingList user2list = userService.addShoppingListToUserByName(user2.getUserName(), "user2list");
 		userService.getListItems(userName, user2list.getId());
 	}
@@ -208,21 +206,20 @@ public class UserServiceTest {
 
 	@Test(expected = ListNotFoundException.class)
 	public void getShoppingListWithItemsForUsersListId_FailsIfListNotExists() {
-		userService.getShoppingListWithItemsForUsersListId(userName, 100000L);
+		userService.getShoppingListWithItems(userName, 100000L);
 	}
 
 	@Test(expected = ListNotFoundException.class)
 	public void getShoppingListWithItemsForUsersListId_FailsIfListOwnedByAnotherUser() {
-		AppUser user2 = new AppUser("second", "password", "email@test.com");
-		userService.addUser(user2);
+		AppUser user2 = userService.addUser(new AppUserDTO("second", "password", "email@test.com"));
 		ShoppingList user2list = userService.addShoppingListToUserByName(user2.getUserName(), "user2list");
-		userService.getShoppingListWithItemsForUsersListId(userName, user2list.getId());
+		userService.getShoppingListWithItems(userName, user2list.getId());
 	}
 
 	@Test
 	public void getShoppingListWithItemsForUsersListId_SucceedsIfUserHaveThisList() {
 		ShoppingList list = userService.addShoppingListToUserByName(userName, "list1");
-		ShoppingList items_list = userService.getShoppingListWithItemsForUsersListId(userName, list.getId());
+		ShoppingList items_list = userService.getShoppingListWithItems(userName, list.getId());
 		assertNotNull(items_list.getListItems());
 	}
 	
@@ -236,8 +233,7 @@ public class UserServiceTest {
 	
 	@Test(expected = ListNotFoundException.class)
 	public void addItemsToShoppingList_FailsIfListOwnedByAnotherUser() {
-		AppUser user2 = new AppUser("second", "password", "email@test.com");
-		userService.addUser(user2);
+		AppUser user2 = userService.addUser(new AppUserDTO("second", "password", "email@test.com"));
 		userService.addShoppingListToUserByName(user2.getUserName(), "second's list");
 		ShoppingListDTO items = new ShoppingListDTO(userName, 100000L, 2);
 		items.getListItems().get(0).setItemName("some item"); //set item name for the new item in the list
@@ -280,8 +276,7 @@ public class UserServiceTest {
 	
 	@Test(expected = ListNotFoundException.class)
 	public void removeShoppingList_FailsIfListOwnedByAnotherUser() {
-		AppUser user2 = new AppUser("second", "password", "email@test.com");
-		userService.addUser(user2);
+		AppUser user2 = userService.addUser(new AppUserDTO("second", "password", "email@test.com"));
 		ShoppingList list2 = userService.addShoppingListToUserByName(user2.getUserName(), "some list");
 		userService.removeShoppingList(userName, list2.getId());
 	}
@@ -328,8 +323,8 @@ public class UserServiceTest {
 	
 	@Test(expected = ListNotFoundException.class)
 	public void switchItemBoughtStatus_FailsIfListOwnedByAnotherUser() {
-		AppUser user2 = new AppUser("second", "password", "email@test.com");
-		userService.addUser(user2);
+		AppUser user2 = 
+		userService.addUser(new AppUserDTO("second", "password", "email@test.com"));
 		
 		ShoppingListDTO listWithItems = //
 				new ShoppingListDTO(//

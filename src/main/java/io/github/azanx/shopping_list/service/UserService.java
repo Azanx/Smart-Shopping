@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.github.azanx.shopping_list.domain.AppUser;
+import io.github.azanx.shopping_list.domain.AppUserDTO;
 import io.github.azanx.shopping_list.domain.ListItem;
 import io.github.azanx.shopping_list.domain.ListItemDTO;
 import io.github.azanx.shopping_list.domain.ShoppingList;
@@ -89,7 +90,7 @@ public class UserService {
 	}
 
 	/**
-	 * Retrieve shopping lists of an user from the database
+	 * Retrieve shopping lists of an user from the database (without their items)
 	 * 
 	 * @param userName
 	 *            name of the user whose lists to retrieve from the database
@@ -179,7 +180,7 @@ public class UserService {
 	 *             if user doesn't have list with this ID
 	 */
 	@Transactional(readOnly = true)
-	public ShoppingList getShoppingListWithItemsForUsersListId(String userName, Long listId) {
+	public ShoppingList getShoppingListWithItems(String userName, Long listId) {
 		LOGGER.debug("getShoppingListWithItemsForUsersListId: user: {}, listId: {}", userName, listId);
 		
 		ShoppingList list = retrieveShoppingList(listId, userName);
@@ -203,16 +204,20 @@ public class UserService {
 	 *            AppUser instance of the new user to create
 	 * @throws DuplicateUserException
 	 *             if user with same name already exists
+	 * @return AppUser instance of newly saved user
 	 */
 	@Transactional(readOnly = false)
-	public void addUser(AppUser newUser) {
+	public AppUser addUser(AppUserDTO newUserDTO) {
 		appUserRepository//
-			.findByUserName(newUser.getUserName())//
+			.findByUserName(newUserDTO.getUserName())//
 				.ifPresent(//
 					user -> {throw new DuplicateUserException(user.getUserName());});//
+		
+		AppUser newUser = new AppUser(newUserDTO.getUserName(), newUserDTO.getPassword(), newUserDTO.getEmail());
 		appUserRepository.save(newUser);
 		
 		LOGGER.info("addUser(): Created new user: {}", newUser);
+		return newUser;
 	}
 
 	
