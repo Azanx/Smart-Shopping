@@ -5,16 +5,22 @@ package io.github.azanx.shopping_list.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import io.github.azanx.shopping_list.domain.AppUser;
 import io.github.azanx.shopping_list.domain.AppUserDTO;
@@ -72,13 +78,14 @@ public class MvcController {
 	 * Send user to a page showing all his lists
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public ModelAndView showLists() {
+	public ModelAndView showLists(Model model) {
 		LOGGER.debug("home() method of MvcController called for user: {}", userName);
 
-		ModelAndView mav = new ModelAndView("showAllLists");
+		ModelAndView mav = new ModelAndView("showAllLists", model.asMap());
 		List<ShoppingList> shoppingLists = userService.getShoppingLists(userName);
 		mav.addObject("shoppingLists", shoppingLists); //current ShoppingLists of the user to display
-		mav.addObject("newList", new ShoppingListDTO()); //backing object for name of the new ShoppingList
+		if(!model.containsAttribute("newList"))
+			mav.addObject("newList", new ShoppingListDTO()); //backing object for name of the new ShoppingList
 		mav.addObject("listToDelete", new ShoppingListDTO()); //backing object for ShoppingList to delete
 		return mav;
 	}
@@ -91,11 +98,19 @@ public class MvcController {
 	 *            include list name)
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
-	public String addList(@ModelAttribute("newList") ShoppingListDTO newList, BindingResult result) {
+	public String addList(@Valid @ModelAttribute("newList") ShoppingListDTO newList, BindingResult binding, RedirectAttributes attr, HttpSession session) {
 		LOGGER.debug("addList() method of MvcController called for user: {}", userName);
+		String resultView = "redirect:/list";
+		if(binding.hasErrors()) {
+			attr.addFlashAttribute("org.springframework.validation.BindingResult.newList", binding);
+			attr.addFlashAttribute("newList", newList);
+			for(FieldError ferr:binding.getFieldErrors()) {
+				LOGGER.info("addList(): field error: " + ferr.getDefaultMessage());
+			}
+		} else
+			userService.addShoppingListToUserByName(userName, newList.getListName());
 		
-		userService.addShoppingListToUserByName(userName, newList.getListName());
-		return "redirect:/list";
+		return resultView;
 	}
 
 	/**

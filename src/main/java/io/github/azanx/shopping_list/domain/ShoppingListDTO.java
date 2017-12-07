@@ -6,6 +6,8 @@ package io.github.azanx.shopping_list.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * @author Kamil Piwowarski
  *
@@ -19,6 +21,7 @@ public class ShoppingListDTO {
 	//number of the list inside of user, used for equals, hashcode. There rather won't be lists longer than 2^15-1 elements
 	private Short listNo;
 	
+	@NotBlank(message="*In order to add a list you must assign it a name!")
 	private String listName;
 	
 	//not using set as itemNo used for equality/hashCode will be assigned by @Service class, used to retrieve new items from form

@@ -41,6 +41,7 @@ ${pageHeader}
 			<tr>
 				<td><form:label path="listName">List Name: </form:label></td>
 				<td><form:input path="listName" placeholder="Name for the new list"/></td>
+				<td><form:errors path="listName"/>
 			</tr>
 			<tr>
 				<td><input type="submit" value="Submit"/></td>
