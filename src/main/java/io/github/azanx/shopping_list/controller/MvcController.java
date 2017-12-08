@@ -39,13 +39,17 @@ public class MvcController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MvcController.class);
 
-	private final RepositoryService userService;
+	private final RepositoryService repositoryService;
 	private String userName; // populated by @ModelAttribute method used for
 								// easier access inside controller methods
 
+	/**
+	 * Initialize controller and it's repository service
+	 * @param repositoryService used to communicate with DB repositories 
+	 */
 	@Autowired
 	public MvcController(RepositoryService userService) {
-		this.userService = userService;
+		this.repositoryService = userService;
 	}
 
 	/**
@@ -82,7 +86,7 @@ public class MvcController {
 		LOGGER.debug("home() method of MvcController called for user: {}", userName);
 
 		ModelAndView mav = new ModelAndView("showAllLists", model.asMap());
-		List<ShoppingList> shoppingLists = userService.getShoppingLists(userName);
+		List<ShoppingList> shoppingLists = repositoryService.getShoppingLists(userName);
 		mav.addObject("shoppingLists", shoppingLists); //current ShoppingLists of the user to display
 		if(!model.containsAttribute("newList"))
 			mav.addObject("newList", new ShoppingListDTO()); //backing object for name of the new ShoppingList
@@ -101,7 +105,7 @@ public class MvcController {
 	public String addList(@Valid @ModelAttribute("newList") ShoppingListDTO newList, BindingResult binding, RedirectAttributes attr, HttpSession session) {
 		LOGGER.debug("addList() method of MvcController called for user: {}", userName);
 		if(!binding.hasErrors()) 
-			userService.addShoppingListToUserByName(userName, newList.getListName());
+			repositoryService.addShoppingListToUserByName(userName, newList.getListName());
 		else {
 			attr.addFlashAttribute("org.springframework.validation.BindingResult.newList", binding);
 			attr.addFlashAttribute("newList", newList);
@@ -121,7 +125,7 @@ public class MvcController {
 	public String deleteList(@ModelAttribute("listToDelete") ShoppingListDTO listToDelete, BindingResult result) {
 		LOGGER.debug("deleteList() method of MvcController called for user: {} list: {}", userName, listToDelete.getId());
 		
-		userService.removeShoppingList(userName, listToDelete.getId());
+		repositoryService.removeShoppingList(userName, listToDelete.getId());
 		return "redirect:/list";
 	}
 
@@ -138,7 +142,7 @@ public class MvcController {
 		LOGGER.debug("showListsWithId() method of MvcController called for user: {}, and list: {}", userName, listId);
 
 		ModelAndView mav = new ModelAndView("showList");
-		ShoppingList shoppingListWithExistingItems = userService.getShoppingListWithItems(userName,
+		ShoppingList shoppingListWithExistingItems = repositoryService.getShoppingListWithItems(userName,
 				listId);
 		ShoppingListDTO shoppingListWithEmptyItems = new ShoppingListDTO(10);
 		ListItemDTO listItemToModify = new ListItemDTO();
@@ -166,7 +170,7 @@ public class MvcController {
 		// and change the listId
 		newList.setOwnerName(userName);
 		newList.setId(listId);
-		userService.addItemsToShoppingList(userName, newList);
+		repositoryService.addItemsToShoppingList(userName, newList);
 		return "redirect:/list/" + listId;
 	}
 
@@ -187,7 +191,7 @@ public class MvcController {
 				userName, item.getId(), listId);
 	
 		item.setParentListId(listId);
-		userService.switchItemBoughtStatus(userName, item);
+		repositoryService.switchItemBoughtStatus(userName, item);
 		return "redirect:/list/" + listId;
 	}
 
@@ -199,7 +203,7 @@ public class MvcController {
 		LOGGER.debug("showUserProfile() method of MvcController called for user: {}", userName);
 
 		ModelAndView mav = new ModelAndView("userProfile");
-		AppUser user = userService.getUser(userName);
+		AppUser user = repositoryService.getUser(userName);
 		mav.addObject("user", user);
 		return mav;
 		// TODO add basic html5 side validation (for example input type="email")
