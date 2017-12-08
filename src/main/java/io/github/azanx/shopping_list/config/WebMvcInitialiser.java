@@ -30,6 +30,9 @@ public class WebMvcInitialiser implements WebApplicationInitializer {
 		filterRegistration.setInitParameter("encoding", "UTF-8");
 		filterRegistration.setInitParameter("forceEncoding", "true");
 		filterRegistration.addMappingForUrlPatterns(null, true, "/*");
+		//disable appending jsessionid to the URL
+		filterRegistration = servletContext.addFilter("disableUrlSessionFilter", new DisableUrlSessionFilter());
+		filterRegistration.addMappingForUrlPatterns(null, true, "/*");
 	}
 
 }
