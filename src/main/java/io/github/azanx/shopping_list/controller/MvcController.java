@@ -122,7 +122,7 @@ public class MvcController {
 	 * @param listToDelete ShoppingList to delete for this user
 	 */
 	@RequestMapping(value = "/list/delete", method = RequestMethod.POST)
-	public String deleteList(@ModelAttribute("listToDelete") ShoppingListDTO listToDelete, BindingResult result) {
+	public String deleteList(@ModelAttribute("listToDelete") ShoppingListDTO listToDelete) {
 		LOGGER.debug("deleteList() method of MvcController called for user: {} list: {}", userName, listToDelete.getId());
 		
 		repositoryService.removeShoppingList(userName, listToDelete.getId());
@@ -161,7 +161,7 @@ public class MvcController {
 	 */
 	@RequestMapping(value = "/list/{listId}", method = RequestMethod.POST)
 	public String addItemToListWithId(@PathVariable Long listId,
-			@ModelAttribute("shoppingList") ShoppingListDTO newList, BindingResult result) {
+			@ModelAttribute("shoppingList") ShoppingListDTO newList) {
 		LOGGER.debug("addItemToListWithId() method of MvcController called for user: {}, and list: {}", userName,
 				listId);
 
