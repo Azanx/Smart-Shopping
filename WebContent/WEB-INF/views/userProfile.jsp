@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<%@ include file = "basicStyling.jsp"%>
+<%@ include file="headElements.jsp"%>
 <title><c:out value="${userName}" /></title>
 </head>
 <body>

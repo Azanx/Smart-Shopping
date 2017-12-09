@@ -5,8 +5,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<%@ include file = "basicStyling.jsp"%>
 <title>Shopping List</title>
+<%@ include file="headElements.jsp"%>
 </head>
 <body>
 	Hello World ;)
