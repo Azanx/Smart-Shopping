@@ -1,0 +1,52 @@
+@CHARSET "UTF-8";
+
+body {
+	font-size: 1.2em;
+}
+
+.error {
+	color: red;
+}
+
+a.listField {
+	font-size: 1em;
+	text-decoration: none;
+	color: #000;
+}
+
+.bought {
+	text-decoration: line-through;
+}
+
+.unbought {
+	
+}
+
+input[type="text"] {
+	font-size: 1em;
+	padding: 8px;
+	margin: 3px;
+	width: 10em;
+}
+
+input[type="submit"] {
+	border: none;
+	background-color: #00AA66;
+	color: white;
+	padding: 8px;
+	margin: 3px;
+	font-size: 1em;
+	width: 8em;
+}
+
+input[disabled] {
+	border-style: solid;
+	background: transparent;
+	color: #000;
+}
+
+input[readonly] {
+	border-style: solid;
+	background: transparent;
+	color: #000;
+}

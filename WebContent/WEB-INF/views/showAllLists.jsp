@@ -7,7 +7,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<%@ include file = "basicStyling.jsp"%>
+
 <title><c:out value = "${userName}"/>:Shopping Lists</title>
+
 </head>
 <body>
 <spring:url var = "url" value="/list"/>
@@ -17,16 +20,14 @@ ${pageHeader}
 	<br /> Your shopping lists:
 	<br />
 	<table>
-		<tr>
-			<td>List Number</td>
-			<td>List Name</td>
-		</tr>
 		<c:forEach var="usersList" items="${shoppingLists}">
 			<tr>
-				<td><c:out value="${usersList.listNo}" /></td>
-				<td><a href="${url}/${usersList.id}"><c:out value="${usersList.listName}" /></a></td>
 				<td>
 					<form:form action="${url}/delete" modelAttribute="listToDelete">
+						<c:out value="${usersList.listNo}" />
+						<a href="${url}/${usersList.id}" class="listField">
+							<form:input path="listName" value="${usersList.listName}" readonly="true" />
+						</a>
 						<form:hidden path="id" value="${usersList.id}"/>
 						<input type="submit" value="delete list"/>
 					</form:form>
@@ -40,8 +41,10 @@ ${pageHeader}
 		<table>
 			<tr>
 				<td><form:label path="listName">List Name: </form:label></td>
-				<td><form:input path="listName" placeholder="Name for the new list"/></td>
-				<td><form:errors path="listName"/>
+				<td><form:input path="listName" placeholder="New list name" /></td>
+			</tr>
+			<tr><td></td>
+				<td><form:errors path="listName" cssClass="error" />
 			</tr>
 			<tr>
 				<td><input type="submit" value="Submit"/></td>
