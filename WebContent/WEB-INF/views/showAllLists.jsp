@@ -15,7 +15,7 @@
 	<div class="container">
 		<div class="row">
 			<div class=col-md-4></div>
-			<div class=col-4>
+			<div class=col>
 				<spring:url var="url" value="/list" />
 				<c:import var="pageHeader" url="pageHeader.jsp" />
 				${pageHeader}
