@@ -37,7 +37,7 @@ Firstly you need to configure 'shopping_list' database and create user for datab
 ```GRANT ALL PRIVILEGES ON shopping_list.* to devuser@'localhost' IDENTIFIED BY 'devuser'```<br/>
 4. You don't have to create the database schema, as it will be created automatically during app deployment. WARNING - with default settings present in the repository all data in the database will be dropped during every application startup! If you don't want this behaviour you have to change value of `hibernate.hbm2ddl.auto` property inside the `db.properties` file!<br/>
 #### Start the app
-1. From inside copy the "shopping_list-x-x-x-SNAPSHOT.war" into the machine running tomcat, if you are on linux and tomcat is on remote machine, you might use scp:<br/>
+1. From inside the project directory, copy the "shopping_list-x-x-x-SNAPSHOT.war" into the machine running tomcat. If you are on linux and tomcat is on remote machine, you might use scp:<br/>
 ```scp shopping_list-x-x-x-SNAPSHOT.war server_ip:```<br/>
 2. Log into the machine with tomcat installed, and copy the .war file into `TOMCAT_DIR/webapps` directory<br/>
 
