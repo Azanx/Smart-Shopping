@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.azanx</groupId>
 	<artifactId>shopping_list</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<properties>
 		<spring.version>4.3.12.RELEASE</spring.version>
@@ -155,4 +155,5 @@
 
 	</dependencies>
 
+	<name>Smart-Shopping</name>
 </project>
