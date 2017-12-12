@@ -6,9 +6,15 @@
 <head>
 <meta charset="UTF-8">
 <%@ include file="headElements.jsp"%>
-<title>Insert title here</title>
+<title>Create new account</title>
 </head>
 <body>
- 
+	<div class="container">
+		<div class="row">
+			<div class=col-md-4></div>
+			<div class=col></div>
+			<div class=col-md-4></div>
+		</div>
+	</div> 
 </body>
 </html>
