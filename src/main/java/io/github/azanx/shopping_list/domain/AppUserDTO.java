@@ -3,16 +3,20 @@
  */
 package io.github.azanx.shopping_list.domain;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * @author Kamil Piwowarski
  *
  */
 public class AppUserDTO {
 
+	@NotBlank(message="*username can't be empty")
 	private String userName;
 
 	private String email;
 
+	@NotBlank(message="*password can't be empty")
 	private String password;
 
 	public AppUserDTO() {
