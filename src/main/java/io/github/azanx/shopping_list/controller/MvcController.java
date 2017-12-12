@@ -4,6 +4,7 @@
 package io.github.azanx.shopping_list.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -215,5 +216,40 @@ public class MvcController {
 
 		// TODO implement
 		return "redirect:/profile";
+	}
+	
+	/**
+	 * Send user to a page allowing to login into his/her account
+	 */
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	public ModelAndView showLoginPage(Model model) {
+		LOGGER.debug("showLoginPage() method of MvcController called");
+		ModelAndView mav = new ModelAndView("login", model.asMap());
+		if(!model.containsAttribute("user")) //model can already contain this attribute if there was binding error after sending form 
+			mav.addObject("user", new AppUserDTO());
+		return mav;
+	}
+	
+	/**
+	 * Logs the user into the system or sends him back to login form
+	 * @param user AppUserDTO containing login details
+	 * @param binding BindingResult
+	 * @param attr RedirectAttribute to pass back to login form in case of login failure
+	 */
+	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	public String loginUser(@Valid @ModelAttribute AppUserDTO user, BindingResult binding, RedirectAttributes attr) {
+		LOGGER.debug("loginUser() method of MvcController called");
+		if(binding.hasErrors())
+		{
+			attr.addFlashAttribute("org.springframework.validation.BindingResult.user", binding);
+			attr.addFlashAttribute("user", user);
+			LOGGER.debug("loginUser(): field errors: {}",//
+					binding.getFieldErrors()//
+						.stream()//
+							.map(FieldError::getDefaultMessage)//
+								.collect(Collectors.toList()));//
+		}
+		//TODO implement
+		return "redirect:/login";
 	}
 }
