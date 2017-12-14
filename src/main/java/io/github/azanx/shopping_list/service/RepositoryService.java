@@ -61,8 +61,8 @@ public class RepositoryService {
 	public void init() {
 		if (!appUserRepository.findByUserName("admin").isPresent()) {
 			// check if admin exists, else create one and log
-			LOGGER.warn("No 'admin' account found in DB, creating 'admin' account with password defaulting to 'admin'");
-			AppUser newAdmin = new AppUser("admin", "admin", "admin@temp.pl");
+			LOGGER.warn("No 'test' account found in DB, creating 'test' account with password defaulting to 'test'");
+			AppUser newAdmin = new AppUser("test", "test", "test@temp.pl");
 			appUserRepository.save(newAdmin);
 			
 			//generate lists used in manual tests:
