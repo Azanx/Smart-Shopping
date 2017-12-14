@@ -22,6 +22,7 @@ public class WebMvcInitialiser implements WebApplicationInitializer {
 		AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
 		rootContext.register(WebMvcConfig.class);
 		rootContext.register(JPAConfig.class);
+		rootContext.register(WebSecurityConfig.class);
 		ServletRegistration.Dynamic dispatcher = servletContext.addServlet("dispatcher",
 				new DispatcherServlet(rootContext));
 		dispatcher.addMapping("/");
@@ -34,5 +35,5 @@ public class WebMvcInitialiser implements WebApplicationInitializer {
 		filterRegistration = servletContext.addFilter("disableUrlSessionFilter", new DisableUrlSessionFilter());
 		filterRegistration.addMappingForUrlPatterns(null, true, "/*");
 	}
-
 }
+;
