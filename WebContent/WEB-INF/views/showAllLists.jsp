@@ -15,10 +15,17 @@
 	<div class="container">
 		<div class="row">
 			<div class=col-md-4></div>
+			<div class=col-md-4></div>
 			<div class=col>
-				<spring:url var="url" value="/list" />
 				<c:import var="pageHeader" url="pageHeader.jsp" />
 				${pageHeader}
+			</div>
+		</div>
+		<div class="row">
+			<div class=col-md-4></div>
+			<div class=col>
+				<spring:url var="url" value="/list" />
+
 				<%-- <c:out value="${url}"/> --%>
 				<br /> Your shopping lists: <br />
 				<table>

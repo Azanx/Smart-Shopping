@@ -11,22 +11,27 @@
 <title>Login to Smart-Shopping</title>
 </head>
 <body>
-	<spring:url var="url" value="/" />
+	<spring:url var="loginUrl" value="/login" />
 	<div class="container">
 		<div class="row">
 			<div class=col-md-4></div>
 			<div class=col>
-				<form:form action="${url}login" modelAttribute="user">
-					<form:label path="userName">Username:</form:label>
-					<form:input path="userName" placeholder="username" />
-					<form:errors path="userName" cssClass="error"/>
+				<form id="login" action="${loginUrl}" method="post">
+					<label for="userName">Username:</label>
+					<input type="text" id="userName" name="userName" placeholder="username" />
 					<br />
-					<form:label path="password">Password:</form:label>
-					<form:password path="password" placeholder="password" />
-					<form:errors path="password" cssClass="error"/>
+					<label for="password">Password:</label>
+					<input type="password" id="password" name="password" placeholder="password" />
 					<br />
+					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 					<input type="submit" value="Log in" />
-				</form:form>
+				</form>
+				<c:if test="${param.error!=null}">
+					<p class="error"> Invalid username and/or password!</p>
+				</c:if>
+				<c:if test="${param.logout!=null}">
+					<p class="error"> You have been logged out succesfully!</p>
+				</c:if>
 			</div>
 			<div class=col-md-4></div>
 		</div>
