@@ -3,6 +3,7 @@
  */
 package io.github.azanx.shopping_list.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -40,8 +41,6 @@ public class MvcController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MvcController.class);
 
 	private final RepositoryService repositoryService;
-	private String userName; // populated by @ModelAttribute method used for
-								// easier access inside controller methods
 
 	/**
 	 * Initialize controller and it's repository service
@@ -58,13 +57,10 @@ public class MvcController {
 	 * @return userName attribute
 	 */
 	@ModelAttribute("userName")
-	String getUserName() {
-		String userName = "admin";
-		// TODO change this method after implementing spring security
-		LOGGER.debug("Controller for user {}", userName);
+	String getUserName(Principal principal) {
+		LOGGER.debug("Controller for user {}", principal.getName());
 
-		this.userName = userName;
-		return userName;
+		return principal.getName();
 	}
 
 	/**
@@ -72,8 +68,8 @@ public class MvcController {
 	 * all his list. May change in future
 	 */
 	@RequestMapping(method = RequestMethod.GET)
-	public String home() {
-		LOGGER.debug("home() method of MvcController called for user: {}", userName);
+	public String home(Principal principal, Model model) {
+		LOGGER.debug("home() method of MvcController called for user: {}", principal.getName());
 		
 		return "redirect:list";
 	}
@@ -82,11 +78,11 @@ public class MvcController {
 	 * Send user to a page showing all his lists
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public ModelAndView showLists(Model model) {
-		LOGGER.debug("home() method of MvcController called for user: {}", userName);
+	public ModelAndView showLists(Principal principal, Model model) {
+		LOGGER.debug("home() method of MvcController called for user: {}", principal.getName());
 
 		ModelAndView mav = new ModelAndView("showAllLists", model.asMap());
-		List<ShoppingList> shoppingLists = repositoryService.getShoppingLists(userName);
+		List<ShoppingList> shoppingLists = repositoryService.getShoppingLists(principal.getName());
 		mav.addObject("shoppingLists", shoppingLists); //current ShoppingLists of the user to display
 		if(!model.containsAttribute("newList"))
 			mav.addObject("newList", new ShoppingListDTO()); //backing object for name of the new ShoppingList
@@ -102,10 +98,10 @@ public class MvcController {
 	 *            include list name)
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
-	public String addList(@Valid @ModelAttribute("newList") ShoppingListDTO newList, BindingResult binding, RedirectAttributes attr, HttpSession session) {
-		LOGGER.debug("addList() method of MvcController called for user: {}", userName);
+	public String addList(Principal principal, @Valid @ModelAttribute("newList") ShoppingListDTO newList, BindingResult binding, RedirectAttributes attr, HttpSession session) {
+		LOGGER.debug("addList() method of MvcController called for user: {}", principal.getName());
 		if(!binding.hasErrors()) 
-			repositoryService.addShoppingListToUserByName(userName, newList.getListName());
+			repositoryService.addShoppingListToUserByName(principal.getName(), newList.getListName());
 		else {
 			attr.addFlashAttribute("org.springframework.validation.BindingResult.newList", binding);
 			attr.addFlashAttribute("newList", newList);
@@ -122,10 +118,10 @@ public class MvcController {
 	 * @param listToDelete ShoppingList to delete for this user
 	 */
 	@RequestMapping(value = "/list/delete", method = RequestMethod.POST)
-	public String deleteList(@ModelAttribute("listToDelete") ShoppingListDTO listToDelete) {
-		LOGGER.debug("deleteList() method of MvcController called for user: {} list: {}", userName, listToDelete.getId());
+	public String deleteList(Principal principal, @ModelAttribute("listToDelete") ShoppingListDTO listToDelete) {
+		LOGGER.debug("deleteList() method of MvcController called for user: {} list: {}", principal.getName(), listToDelete.getId());
 		
-		repositoryService.removeShoppingList(userName, listToDelete.getId());
+		repositoryService.removeShoppingList(principal.getName(), listToDelete.getId());
 		return "redirect:/list";
 	}
 
@@ -138,11 +134,11 @@ public class MvcController {
 	 *            primary key from DB
 	 */
 	@RequestMapping(value = "/list/{listId}", method = RequestMethod.GET)
-	public ModelAndView showListWithId(@PathVariable Long listId) {
-		LOGGER.debug("showListsWithId() method of MvcController called for user: {}, and list: {}", userName, listId);
+	public ModelAndView showListWithId(Principal principal, @PathVariable Long listId) {
+		LOGGER.debug("showListsWithId() method of MvcController called for user: {}, and list: {}", principal.getName(), listId);
 
 		ModelAndView mav = new ModelAndView("showList");
-		ShoppingList shoppingListWithExistingItems = repositoryService.getShoppingListWithItems(userName,
+		ShoppingList shoppingListWithExistingItems = repositoryService.getShoppingListWithItems(principal.getName(),
 				listId);
 		ShoppingListDTO shoppingListWithEmptyItems = new ShoppingListDTO(10);
 		ListItemDTO listItemToModify = new ListItemDTO();
@@ -160,17 +156,17 @@ public class MvcController {
 	 *            include list name)
 	 */
 	@RequestMapping(value = "/list/{listId}", method = RequestMethod.POST)
-	public String addItemToListWithId(@PathVariable Long listId,
+	public String addItemToListWithId(Principal principal, @PathVariable Long listId,
 			@ModelAttribute("shoppingList") ShoppingListDTO newList) {
-		LOGGER.debug("addItemToListWithId() method of MvcController called for user: {}, and list: {}", userName,
+		LOGGER.debug("addItemToListWithId() method of MvcController called for user: {}, and list: {}", principal.getName(),
 				listId);
 
 		// list should belong to current user as only owner can edit list!
 		// someone could've inserted other username to the DTO on client side
 		// and change the listId
-		newList.setOwnerName(userName);
+		newList.setOwnerName(principal.getName());
 		newList.setId(listId);
-		repositoryService.addItemsToShoppingList(userName, newList);
+		repositoryService.addItemsToShoppingList(principal.getName(), newList);
 		return "redirect:/list/" + listId;
 	}
 
@@ -185,13 +181,13 @@ public class MvcController {
 	 *            ListItemDTO containing listId and new 'bought' value
 	 */
 	@RequestMapping(value = "/list/{listId}/setBought", method = RequestMethod.POST)
-	public String switchItemBoughtStatus(@PathVariable Long listId, @ModelAttribute ListItemDTO item) {
+	public String switchItemBoughtStatus(Principal principal, @PathVariable Long listId, @ModelAttribute ListItemDTO item) {
 		LOGGER.debug(
 				"switchItemBoughtStatus: method of MvcController called for user: {}, and listItem: {} from list: {}",
-				userName, item.getId(), listId);
+				principal.getName(), item.getId(), listId);
 	
 		item.setParentListId(listId);
-		repositoryService.switchItemBoughtStatus(userName, item);
+		repositoryService.switchItemBoughtStatus(principal.getName(), item);
 		return "redirect:/list/" + listId;
 	}
 
@@ -199,19 +195,19 @@ public class MvcController {
 	 * Send user to a page showing his profile (information about his account)
 	 */
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
-	public ModelAndView showUserProfile() {
-		LOGGER.debug("showUserProfile() method of MvcController called for user: {}", userName);
+	public ModelAndView showUserProfile(Principal principal) {
+		LOGGER.debug("showUserProfile() method of MvcController called for user: {}", principal.getName());
 
 		ModelAndView mav = new ModelAndView("userProfile");
-		AppUser user = repositoryService.getUser(userName);
+		AppUser user = repositoryService.getUser(principal.getName());
 		mav.addObject("user", user);
 		return mav;
 		// TODO add basic html5 side validation (for example input type="email")
 	}
 
 	@RequestMapping(value = "/profile", method = RequestMethod.POST)
-	public String editUserProfile(@ModelAttribute AppUserDTO appUser) {
-		LOGGER.debug("showUserProfile() method of MvcController called for user: {}", userName);
+	public String editUserProfile(Principal principal, @ModelAttribute AppUserDTO appUser) {
+		LOGGER.debug("showUserProfile() method of MvcController called for user: {}", principal.getName());
 
 		// TODO implement
 		return "redirect:/profile";
