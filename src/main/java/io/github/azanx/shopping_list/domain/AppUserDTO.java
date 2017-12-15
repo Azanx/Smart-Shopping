@@ -14,6 +14,7 @@ public class AppUserDTO {
 	@NotBlank(message="*username can't be empty")
 	private String userName;
 
+	@NotBlank(message="*email can't be empty")
 	private String email;
 
 	@NotBlank(message="*password can't be empty")
