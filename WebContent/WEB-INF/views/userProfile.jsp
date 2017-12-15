@@ -11,8 +11,19 @@
 <title><c:out value="${userName}" /></title>
 </head>
 <body>
-	<c:import var="pageHeader" url="pageHeader.jsp" />
-	${pageHeader}
+	<div class="container">
+		<div class="row">
+			<div class=col-md-4></div>
+			<div class=col-md-4></div>
+			<div class=col>
+				<c:import var="pageHeader" url="pageHeader.jsp" />
+				${pageHeader}
+			</div>
+		</div>
+	<div class="row">
+			<div class=col-md-4></div>
+			<div class=col>
+	</div>
 	<br /> Your shopping lists:
 	<br />
 	<table>
