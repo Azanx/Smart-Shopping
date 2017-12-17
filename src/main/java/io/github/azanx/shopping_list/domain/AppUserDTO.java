@@ -4,25 +4,36 @@
 package io.github.azanx.shopping_list.domain;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
+import io.github.azanx.shopping_list.domain.validation.EmailVerification;
+import io.github.azanx.shopping_list.domain.validation.FieldsVerification;
 
 /**
  * @author Kamil Piwowarski
  *
  */
+@FieldsVerification.List({
+		@FieldsVerification(field = "password", fieldMatch = "passwordVerification", message = "*Passwords do not match") })
 public class AppUserDTO {
 
-	@NotBlank(message="*username can't be empty")
+	@NotBlank(message = "*username can't be empty")
+	@Size(min = 5, max = 15, message = "*username must be beetween 5 and 15 characters")
 	private String userName;
 
-	@NotBlank(message="*email can't be empty")
+	@NotBlank(message = "*email can't be empty")
+	@EmailVerification
 	private String email;
 
-	@NotBlank(message="*password can't be empty")
+	@NotBlank(message = "*password can't be empty")
 	private String password;
+
+	@NotBlank(message = "*password can't be empty")
+	private String passwordVerification;
 
 	public AppUserDTO() {
 	}
-	
+
 	public AppUserDTO(AppUser user) {
 		this.userName = user.getUserName();
 		this.email = user.getEmail();
@@ -57,5 +68,13 @@ public class AppUserDTO {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getPasswordVerification() {
+		return passwordVerification;
+	}
+
+	public void setPasswordVerification(String password2) {
+		this.passwordVerification = password2;
 	}
 }
