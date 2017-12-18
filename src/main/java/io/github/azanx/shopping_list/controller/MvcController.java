@@ -29,6 +29,7 @@ import io.github.azanx.shopping_list.domain.ListItemDTO;
 import io.github.azanx.shopping_list.domain.ShoppingList;
 import io.github.azanx.shopping_list.domain.ShoppingListDTO;
 import io.github.azanx.shopping_list.service.RepositoryService;
+import io.github.azanx.shopping_list.service.exception.DuplicateUserException;
 
 /**
  * @author Kamil Piwowarski
@@ -52,15 +53,17 @@ public class MvcController {
 	}
 
 	/**
+	 * Adds current user name to the model
 	 * @param userName
 	 *            name of the user to retrieve
 	 * @return userName attribute
 	 */
 	@ModelAttribute("userName")
 	String getUserName(Principal principal) {
-		LOGGER.debug("Controller for user {}", principal.getName());
+		String userName = (principal != null ? principal.getName() : "Anonymous");
+		LOGGER.debug("Controller for user {}", userName);
 
-		return principal.getName();
+		return userName;
 	}
 
 	/**
@@ -211,5 +214,49 @@ public class MvcController {
 
 		// TODO implement
 		return "redirect:/profile";
+	}
+	
+	/**
+	 * Shows registration form for unlogged users, if user is logged shows message and link to the home page
+	 * @param model
+	 */
+	@RequestMapping(value = "/register", method = RequestMethod.GET)
+	public ModelAndView showRegistrationForm(Model model) {
+		LOGGER.debug("showRegistrationForm() called");
+		ModelAndView mav = new ModelAndView("register", model.asMap());
+		if(!model.containsAttribute("newUser"))
+			mav.addObject("newUser", new AppUserDTO());
+		//TODO implement POST, add type="email" etc
+		return mav;
+	}
+	
+	/**
+	 * Registers given user if there is no user with this username and all data is valid
+	 * @param newUser AppUserDTO with details of the new user
+	 */
+	@RequestMapping(value="/register", method = RequestMethod.POST)
+	public String register(@Valid @ModelAttribute AppUserDTO newUser, BindingResult binding, RedirectAttributes attr, HttpSession session) {
+		LOGGER.debug("register(): registering user: {}", newUser.getUserName());
+		if(!binding.hasErrors()) {
+			try{
+				repositoryService.addUser(newUser);
+				attr.addFlashAttribute("registered", true);
+			}catch(DuplicateUserException de) {
+				LOGGER.debug("register(): duplicate user {}", newUser.getUserName());
+				binding.addError(new FieldError("newUser", "userName", "*There is already an user with this name"));
+				
+				attr.addFlashAttribute("org.springframework.validation.BindingResult.newUser", binding);
+				attr.addFlashAttribute("newUser", newUser);
+			}
+		} else
+		{
+			LOGGER.debug("register(): binding errors occured in the form: {}", newUser);
+			attr.addFlashAttribute("org.springframework.validation.BindingResult.newUser", binding);
+			attr.addFlashAttribute("newUser", newUser);
+			for(FieldError ferr:binding.getFieldErrors()) {
+				LOGGER.info("register(): field error: " + ferr.getDefaultMessage());
+			}
+		}
+		return "redirect:/register";
 	}
 }

@@ -77,4 +77,9 @@ public class AppUserDTO {
 	public void setPasswordVerification(String password2) {
 		this.passwordVerification = password2;
 	}
+
+	@Override
+	public String toString() {
+		return "AppUserDTO [userName=" + userName + ", email=" + email + "]";
+	}
 }
