@@ -226,7 +226,6 @@ public class MvcController {
 		ModelAndView mav = new ModelAndView("register", model.asMap());
 		if(!model.containsAttribute("newUser"))
 			mav.addObject("newUser", new AppUserDTO());
-		//TODO implement POST, add type="email" etc
 		return mav;
 	}
 	
