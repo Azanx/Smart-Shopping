@@ -95,15 +95,11 @@ public class RepositoryService {
 	 * @param userName
 	 *            name of the user whose lists to retrieve from the database
 	 * @return collection containing all of the ShoppingLists belonging to this
-	 *         user
-	 * @throws ListNotFoundException
-	 *             if user doesn't have any lists
+	 *         user, or empty collection if user doesn't have any lists
 	 */
 	@Transactional(readOnly = true)
 	public List<ShoppingList> getShoppingLists(String userName) {
 		List<ShoppingList> lists = shoppingListRepository.findByOwnerNameOrderByListNo(userName);
-		if (lists.isEmpty())
-			throw new ListNotFoundException(userName);
 
 		LOGGER.debug("Returning ShoppingLists for user: {}, Lists:\n {}", userName, //
 				lists.stream()//
