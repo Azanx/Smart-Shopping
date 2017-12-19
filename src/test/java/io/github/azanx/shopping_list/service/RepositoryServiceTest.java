@@ -72,16 +72,6 @@ public class RepositoryServiceTest {
 		user = userService.addUser(userDTO);
 	}
 
-	/**
-	 * admin should be present after initialising the database during
-	 * userService construction
-	 */
-	@Test
-	public void getUserIfExistsElseThrow_isAdminPresent_Succeeds() {
-		AppUser userUnderTest = userService.getUser("admin");
-		assertNotNull(userUnderTest);
-	}
-
 	@Test
 	public void addUser_Succeeds() {
 		// user already added during @Before
