@@ -12,6 +12,7 @@
 <title>Create new account</title>
 </head>
 <body>
+<spring:url var="loginUrl" value="/login"/>
 	<div class="container">
 		<div class="row">
 			<div class=col-md-4></div>
@@ -38,7 +39,11 @@
 						<spring:url var="mainUrl" value="/index"/>
 						<a href="${mainUrl}">Go back to the main page</a>
 					</c:when>
+					<c:when test="${registered == true}">
+						You have succesfully registered! You can now <a href="${loginUrl}">log in</a>
+					</c:when>
 					<c:otherwise>
+					
 						<spring:url var="registerUrl" value="/register"/>
 						<form:form action="${registerUrl}" modelAttribute="newUser">
 							<form:label path="userName">Username:</form:label>
@@ -59,6 +64,7 @@
 							</spring:hasBindErrors>
 							
 							<input type="submit" value="Register"/>
+							<br/><a href="${loginUrl}">or Sign in</a>
 						</form:form>
 					</c:otherwise>
 				</c:choose>
