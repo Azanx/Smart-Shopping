@@ -12,6 +12,7 @@
 </head>
 <body>
 	<spring:url var="loginUrl" value="/login" />
+	<spring:url var="registerUrl" value="/register"/>
 	<div class="container">
 		<div class="row">
 			<div class=col-md-4></div>
@@ -25,6 +26,7 @@
 					<br />
 					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 					<input type="submit" value="Log in" />
+					<a href="${registerUrl}">or register</a>
 				</form>
 				<c:if test="${param.error!=null}">
 					<p class="error"> Invalid username and/or password!</p>
