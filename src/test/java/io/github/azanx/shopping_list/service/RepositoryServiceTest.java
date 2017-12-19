@@ -94,14 +94,12 @@ public class RepositoryServiceTest {
 		userService.addUser(userUnderTest2);
 	}
 
-	@Test(expected = ListNotFoundException.class)
 	public void getShoppingListsForUser_WhenUserNonExistent_Fails() {
-		userService.getShoppingLists("fake_account");
+		assertTrue(userService.getShoppingLists("fake_account").isEmpty());
 	}
 
-	@Test(expected = ListNotFoundException.class)
 	public void getShoppingListsForUser_WhenNoLists_Fails() {
-		userService.getShoppingLists(userName);
+		assertTrue(userService.getShoppingLists(userName).isEmpty());
 	}
 
 	/**
