@@ -51,9 +51,12 @@ public class AppUser implements Serializable{
 	@OrderBy("listNo")
 	private List<ShoppingList> shoppingLists = new ArrayList<>();
 
+	/**
+	 * Should contain password only in HASHED form!
+	 */
 	@JsonIgnore
 	@Column(name = "user_password", nullable = false)
-	private String password; // probably to change when properly securing theapp
+	private String password;
 
 	protected AppUser() {
 	} // JPA use

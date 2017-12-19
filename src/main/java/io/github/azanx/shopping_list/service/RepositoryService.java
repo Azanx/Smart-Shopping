@@ -1,5 +1,6 @@
 package io.github.azanx.shopping_list.service;
 
+import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,6 +10,7 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,13 +45,15 @@ public class RepositoryService {
 	private final AppUserRepository appUserRepository;
 	private final ListItemRepository listItemRepository;
 	private final ShoppingListRepository shoppingListRepository;
+	private final PasswordEncoder passwordEncoder;
 
 	@Autowired
 	public RepositoryService(AppUserRepository appUserRepository, ListItemRepository listItemRepository,
-			ShoppingListRepository shoppingListRepository) {
+			ShoppingListRepository shoppingListRepository, PasswordEncoder passwordEncoder) {
 		this.appUserRepository = appUserRepository;
 		this.listItemRepository = listItemRepository;
 		this.shoppingListRepository = shoppingListRepository;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	/**
@@ -62,13 +66,12 @@ public class RepositoryService {
 		if (!appUserRepository.findByUserName("admin").isPresent()) {
 			// check if admin exists, else create one and log
 			LOGGER.warn("No 'test' account found in DB, creating 'test' account with password defaulting to 'test'");
-			AppUser newAdmin = new AppUser("test", "test", "test@temp.pl");
+			AppUser newAdmin = new AppUser("test", passwordEncoder.encode("test"), "test@temp.pl");
 			appUserRepository.save(newAdmin);
 			
 			//generate lists used in manual tests:
 			newAdmin.addShoppingList("admin shopping").addListItem("mleko");
 			newAdmin.addShoppingList("second list").addListItem("mleko z drugiej listy");
-			appUserRepository.save(newAdmin);
 		}
 	}
 
@@ -194,7 +197,8 @@ public class RepositoryService {
 	}
 
 	/**
-	 * Add new user if there is no user with same name
+	 * Private transactional method separated because clearing password after save in transaction brakes it. 
+	 *  Add new user if there is no user with same name
 	 * 
 	 * @param newUser
 	 *            AppUser instance of the new user to create
@@ -209,13 +213,30 @@ public class RepositoryService {
 				.ifPresent(//
 					user -> {throw new DuplicateUserException(user.getUserName());});//
 		
-		AppUser newUser = new AppUser(newUserDTO.getUserName(), newUserDTO.getPassword(), newUserDTO.getEmail());
-		appUserRepository.save(newUser);
+		AppUser newUser = //
+				new AppUser(//
+						newUserDTO.getUserName(), //
+						passwordEncoder.encode(//
+							CharBuffer.wrap(newUserDTO.getPassword())),//
+						newUserDTO.getEmail());//
 		
+		clearPassword(newUserDTO.getPassword()); //password hash has been generated so it's better to remove password from the system ;)
+		
+		appUserRepository.save(newUser);
+		//TODO
 		LOGGER.info("addUser(): Created new user: {}", newUser);
 		return newUser;
 	}
-
+	
+	/**
+	 * Clears password so it no longer is kept in memory
+	 * @param password char array with password
+	 */
+	private void clearPassword(char[] password) {
+		for(int i=0; i<password.length; i++)
+			password[i] = ' ';
+		LOGGER.debug("password cleared, now equals: '{}'", String.valueOf(password));
+	}
 	
 	/**
 	 * Add new shopping list for a given user

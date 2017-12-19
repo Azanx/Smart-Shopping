@@ -47,13 +47,4 @@ public class ShoppingListTest {
 		user.addShoppingList(list2);
 		assertNotEquals(list2, listUnderTest);
 	}
-	
-	@Test public void addTwoItems() {
-		//TODO implement
-	}
-
-	@Test public void removeItem() {
-		//TODO implement
-	}
-
 }

@@ -51,5 +51,4 @@ public class ListItemTest {
 		list.addListItem(item2);
 		assertNotEquals(item2, item1);
 	}
-
 }

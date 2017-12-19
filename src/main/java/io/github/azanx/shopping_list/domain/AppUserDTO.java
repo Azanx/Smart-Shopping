@@ -4,6 +4,7 @@
 package io.github.azanx.shopping_list.domain;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 import io.github.azanx.shopping_list.domain.validation.EmailVerification;
@@ -24,12 +25,12 @@ public class AppUserDTO {
 	@NotBlank(message = "*email can't be empty")
 	@EmailVerification
 	private String email;
+//TODO add custom validation for passwords
+	@NotEmpty(message = "*password can't be empty")
+	private char[] password;
 
-	@NotBlank(message = "*password can't be empty")
-	private String password;
-
-	@NotBlank(message = "*password can't be empty")
-	private String passwordVerification;
+	@NotEmpty(message = "*password can't be empty")
+	private char[] passwordVerification;
 
 	public AppUserDTO() {
 	}
@@ -37,10 +38,10 @@ public class AppUserDTO {
 	public AppUserDTO(AppUser user) {
 		this.userName = user.getUserName();
 		this.email = user.getEmail();
-		this.password = user.getPassword();
+		this.password = user.getPassword().toCharArray();
 	}
 
-	public AppUserDTO(String userName, String email, String password) {
+	public AppUserDTO(String userName, char[] password, String email) {
 		this.userName = userName;
 		this.email = email;
 		this.password = password;
@@ -62,19 +63,19 @@ public class AppUserDTO {
 		this.email = email;
 	}
 
-	public String getPassword() {
+	public char[] getPassword() {
 		return password;
 	}
 
-	public void setPassword(String password) {
+	public void setPassword(char[] password) {
 		this.password = password;
 	}
 
-	public String getPasswordVerification() {
+	public char[] getPasswordVerification() {
 		return passwordVerification;
 	}
 
-	public void setPasswordVerification(String password2) {
+	public void setPasswordVerification(char[] password2) {
 		this.passwordVerification = password2;
 	}
 

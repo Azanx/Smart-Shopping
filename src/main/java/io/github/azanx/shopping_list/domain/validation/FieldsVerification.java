@@ -11,7 +11,8 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 /**
- * Field has to match sibling field
+ * Field has to match sibling field.
+ * Fields can be char[] array
  * @author Kamil Piwowarski
  *
  */

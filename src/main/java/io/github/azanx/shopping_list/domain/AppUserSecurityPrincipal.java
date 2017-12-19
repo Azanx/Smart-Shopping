@@ -41,7 +41,9 @@ public class AppUserSecurityPrincipal implements UserDetails {
 	 */
 	@Override
 	public String getPassword() {
-		return user.getPassword();
+		return user.getPassword(); //Spring Security requires password in String.
+								//we can use String here as password inside DB and AppUser
+								//should always be hashed anyway ;)
 	}
 
 	/* (non-Javadoc)

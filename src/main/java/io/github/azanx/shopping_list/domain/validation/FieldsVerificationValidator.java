@@ -1,12 +1,15 @@
 package io.github.azanx.shopping_list.domain.validation;
 
+import java.util.Arrays;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import org.springframework.beans.BeanWrapperImpl;
 
 /**
- * Validates whether two sibling fields have same value
+ * Validates whether two sibling fields have same value.
+ * Fields can be char[] array
  * @author Kamil Piwowarski
  *
  */
@@ -25,10 +28,16 @@ public class FieldsVerificationValidator implements ConstraintValidator<FieldsVe
 	public boolean isValid(Object value, ConstraintValidatorContext context) {
 		Object fieldValue = new BeanWrapperImpl(value).getPropertyValue(field);
 		Object fieldMatchValue = new BeanWrapperImpl(value).getPropertyValue(fieldMatch);
+		boolean result = false;
 		
 		if(fieldValue != null)
-			return fieldValue.equals(fieldMatchValue);
-		
-		return fieldMatchValue == null;
+		{
+			//Passwords are kept as char arrays, other values mostly as Strings
+			if(fieldValue instanceof char[])
+				result =  Arrays.equals((char[])fieldValue, (char[])fieldMatchValue);
+			else result = fieldValue.equals(fieldMatchValue);
+		} else
+			result = fieldMatchValue == null;
+		return result;
 	}
 }
