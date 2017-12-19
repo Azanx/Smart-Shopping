@@ -63,16 +63,17 @@ public class RepositoryService {
 	@PostConstruct
 	@Transactional(readOnly = false)
 	public void init() {
-		if (!appUserRepository.findByUserName("admin").isPresent()) {
-			// check if admin exists, else create one and log
-			LOGGER.warn("No 'test' account found in DB, creating 'test' account with password defaulting to 'test'");
-			AppUser newAdmin = new AppUser("test", passwordEncoder.encode("test"), "test@temp.pl");
-			appUserRepository.save(newAdmin);
-			
-			//generate lists used in manual tests:
-			newAdmin.addShoppingList("admin shopping").addListItem("mleko");
-			newAdmin.addShoppingList("second list").addListItem("mleko z drugiej listy");
-		}
+//		if (!appUserRepository.findByUserName("admin").isPresent()) {
+//			// check if admin exists, else create one and log
+//			LOGGER.warn("No 'test' account found in DB, creating 'test' account with password defaulting to 'test'");
+//			AppUser newAdmin = new AppUser("test", passwordEncoder.encode("test"), "test@temp.pl");
+//			newAdmin = appUserRepository.save(newAdmin);
+//			
+//			//generate lists used in manual tests:
+//			newAdmin.addShoppingList("admin shopping").addListItem("mleko");
+//			newAdmin.addShoppingList("second list").addListItem("mleko z drugiej listy");
+//			appUserRepository.save(newAdmin);
+//		}
 	}
 
 	/**
