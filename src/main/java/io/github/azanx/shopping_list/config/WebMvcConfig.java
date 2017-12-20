@@ -20,7 +20,7 @@ import org.springframework.web.servlet.view.UrlBasedViewResolver;
  *
  */
 @Configuration
-@ComponentScan("io.github.azanx.shopping_list")
+@ComponentScan("io.github.azanx.shopping_list.controller")
 @EnableWebMvc
 /*
  * @EnableSpringDataWebSupport // registers a DomainClassConverter to enable

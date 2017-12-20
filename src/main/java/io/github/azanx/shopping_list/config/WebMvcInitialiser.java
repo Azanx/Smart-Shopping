@@ -23,6 +23,7 @@ public class WebMvcInitialiser implements WebApplicationInitializer {
 		rootContext.register(WebMvcConfig.class);
 		rootContext.register(JPAConfig.class);
 		rootContext.register(WebSecurityConfig.class);
+		rootContext.register(ServiceConfig.class);
 		ServletRegistration.Dynamic dispatcher = servletContext.addServlet("dispatcher",
 				new DispatcherServlet(rootContext));
 		dispatcher.addMapping("/");
