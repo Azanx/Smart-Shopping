@@ -87,9 +87,11 @@ public class RepositoryServiceTest {
 	@Test
 	public void addUser_passwordClearedAfterSavingInDB() {
 		AppUserDTO testUser = new AppUserDTO("user2", "password".toCharArray(), "email@test.com");
+		testUser.setPasswordVerification("password".toCharArray());
 		userService.addUser(testUser);
 		assertFalse(Arrays.equals("password".toCharArray(), testUser.getPassword()));
 		assertArrayEquals("        ".toCharArray(), testUser.getPassword());
+		assertArrayEquals("        ".toCharArray(), testUser.getPasswordVerification()); //password verification field should also be cleared
 	}
 
 	@Test(expected = UserNotFoundException.class)

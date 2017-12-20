@@ -221,7 +221,9 @@ public class RepositoryService {
 							CharBuffer.wrap(newUserDTO.getPassword())),//
 						newUserDTO.getEmail());//
 		
-		clearPassword(newUserDTO.getPassword()); //password hash has been generated so it's better to remove password from the system ;)
+		clearPassword(newUserDTO.getPassword()); //password hash has been generated so it's better to remove password from the memory ;)
+		if(newUserDTO.getPasswordVerification() != null)
+			clearPassword(newUserDTO.getPasswordVerification()); // clear also password verification field if present
 		
 		appUserRepository.save(newUser);
 		//TODO
@@ -236,7 +238,7 @@ public class RepositoryService {
 	private void clearPassword(char[] password) {
 		for(int i=0; i<password.length; i++)
 			password[i] = ' ';
-		LOGGER.debug("password cleared, now equals: '{}'", String.valueOf(password));
+		LOGGER.debug("clearPassword(): password char[] cleared");
 	}
 	
 	/**
