@@ -27,6 +27,7 @@ public class AppUserDTO {
 	private String email;
 //TODO add custom validation for passwords
 	@NotEmpty(message = "*password can't be empty")
+	@Size(min = 6, message = "*password must have minimum 6 characters!")
 	private char[] password;
 
 	@NotEmpty(message = "*password can't be empty")
