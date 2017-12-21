@@ -198,7 +198,6 @@ public class RepositoryService {
 	}
 
 	/**
-	 * Private transactional method separated because clearing password after save in transaction brakes it. 
 	 *  Add new user if there is no user with same name
 	 * 
 	 * @param newUser
