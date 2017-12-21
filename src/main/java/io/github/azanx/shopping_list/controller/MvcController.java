@@ -242,7 +242,9 @@ public class MvcController {
 				attr.addFlashAttribute("registered", true);
 			}catch(DuplicateUserException de) {
 				LOGGER.debug("register(): duplicate user {}", newUser.getUserName());
-				binding.addError(new FieldError("newUser", "userName", "*There is already an user with this name"));
+				String[] codes = new String[1];
+				codes[0] = "DuplicateUser";
+				binding.addError(new FieldError("newUser", "userName", newUser.getUserName(), false, codes, null, "*There is already an user with this name"));
 				
 				attr.addFlashAttribute("org.springframework.validation.BindingResult.newUser", binding);
 				attr.addFlashAttribute("newUser", newUser);
