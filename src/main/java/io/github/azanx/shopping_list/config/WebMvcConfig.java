@@ -7,12 +7,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.view.JstlView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
+
+import io.github.azanx.shopping_list.controller.RedirectWhenAuthenticatedInterceptor;
 
 /**
  * Configuration class for Spring MVC
@@ -59,4 +62,12 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
 	}
+
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		//redirect to home page if authenticated user tries to access login or register pages
+		registry.addInterceptor(new RedirectWhenAuthenticatedInterceptor()).addPathPatterns("/login*", "/register*");
+	}
+	
+	
 }
