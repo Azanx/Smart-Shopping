@@ -75,7 +75,6 @@ public class MvcControllerRegistrationTest {
 									// different tests so need to reset it
 		//could've used @FixMethodOrder and multiple thenReturn in mock class,
 		//but better not to rely on test execution order
-//		when(repositoryService.addUser(any(AppUserDTO.class))).thenReturn(null);
 	}
 
 	/**
@@ -108,7 +107,6 @@ public class MvcControllerRegistrationTest {
 
 	@Test
 	public void registerForm_ForValidDataSucceeds() throws Exception {
-//		when(repositoryService.addUser(any(AppUserDTO.class))).thenReturn(null);
 		RequestBuilder request = preparePostForRegisterForm("userName", "validUserName");
 		request = performPostRedirect(request);
 		mockMvc.perform(request)//
@@ -117,7 +115,6 @@ public class MvcControllerRegistrationTest {
 				.andExpect(model().attributeHasNoErrors("newUser"))//
 				.andExpect(model().attributeExists("registered"))//
 				.andExpect(model().attribute("registered", true));
-		//TODO
 	}
 
 	@Test
@@ -157,7 +154,6 @@ public class MvcControllerRegistrationTest {
 	@Test
 	public void registerForm_ifDuplicateUserFails() throws Exception {
 		when(repositoryService.addUser(any())).thenThrow(new DuplicateUserException("test"));
-		//TODO
 		RequestBuilder request = preparePostForRegisterForm("userName", "validUserName");
 		request = performPostRedirect(request);
 		mockMvc.perform(request)//
