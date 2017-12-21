@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -45,7 +46,6 @@ public class MvcControllerSecurityTest {
 	
 	@Before
 	public void setup() {
-		
 		this.mockMvc = MockMvcBuilders//
 				.webAppContextSetup(webApplicationContext)//
 				.apply(springSecurity())
@@ -82,5 +82,58 @@ public class MvcControllerSecurityTest {
 		mockMvc.perform(get("/register"))//
 				.andDo(print())//
 				.andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/"));
+	}
+	
+	@Test
+	public void list_redirectsAnonymous() throws Exception {
+		mockMvc.perform(get("/list"))//
+				.andDo(print())//
+				.andExpect(status().is3xxRedirection())//
+				.andExpect(redirectedUrlPattern("**/login"));
+	}
+	
+	@Test
+	public void list_id_redirectsAnonymous() throws Exception {
+		mockMvc.perform(get("/list/2"))//
+				.andDo(print())//
+				.andExpect(status().is3xxRedirection())//
+				.andExpect(redirectedUrlPattern("**/login"));
+	}
+	
+	@Test
+	public void profile_redirectsAnonymous() throws Exception {
+		mockMvc.perform(get("/profile"))//
+				.andDo(print())//
+				.andExpect(status().is3xxRedirection())//
+				.andExpect(redirectedUrlPattern("**/login"));
+	}
+	
+/////////////////////////////////////////
+	
+	@Test
+	@WithMockUser
+	public void list_availableForLoggedUser() throws Exception {
+		mockMvc.perform(get("/list"))//
+				.andDo(print())//
+				.andExpect(status().isOk())//
+				.andExpect(view().name("showAllLists"));//
+	}
+	
+	@Test
+	@WithMockUser
+	public void list_id_availableForLoggedUser() throws Exception {
+		mockMvc.perform(get("/list/2"))//
+				.andDo(print())//
+				.andExpect(status().isOk())//
+				.andExpect(view().name("showList"));//
+	}
+	
+	@Test
+	@WithMockUser
+	public void profile_availableForLoggedUser() throws Exception {
+		mockMvc.perform(get("/profile"))//
+				.andDo(print())//
+				.andExpect(status().isOk())//
+				.andExpect(view().name("userProfile"));//
 	}
 }
