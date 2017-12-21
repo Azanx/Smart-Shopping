@@ -18,32 +18,18 @@
 			<div class=col-md-4></div>
 			<div class=col-md-4></div>
 			<div class=col align="right">
-				<c:choose>
-					<c:when test="${userName != 'Anonymous'}">
-						<c:import var="pageHeader" url="pageHeader.jsp" />
-						${pageHeader}
-					</c:when>
-					<c:otherwise>
 						<spring:url var="loginUrl" value="/login"/>
 						<a href="${loginUrl}">Sign in!</a>
-					</c:otherwise>
-				</c:choose>
 			</div>
 		</div>
 		<div class="row">
 			<div class=col-md-4></div>
 			<div class=col>
 				<c:choose>
-					<c:when test="${userName != 'Anonymous'}">
-						You are already registered.<br/>
-						<spring:url var="mainUrl" value="/index"/>
-						<a href="${mainUrl}">Go back to the main page</a>
-					</c:when>
 					<c:when test="${registered == true}">
 						You have succesfully registered! You can now <a href="${loginUrl}">log in</a>
 					</c:when>
 					<c:otherwise>
-					
 						<spring:url var="registerUrl" value="/register"/>
 						<form:form action="${registerUrl}" modelAttribute="newUser">
 							<form:label path="userName">Username:</form:label>
