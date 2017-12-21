@@ -9,16 +9,15 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import javax.servlet.ServletContext;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,6 +57,7 @@ public class MvcControllerRegistrationTest {
 	@Autowired
 	WebApplicationContext webApplicationContext;
 	
+	@Autowired
 	RepositoryService repositoryService;
 	
 	private MockMvc mockMvc;
@@ -68,8 +68,10 @@ public class MvcControllerRegistrationTest {
 		this.mockMvc = MockMvcBuilders//
 				.webAppContextSetup(webApplicationContext)//
 				.build();
-		
-		repositoryService = webApplicationContext.getBean(RepositoryService.class);
+	}
+	
+	@After
+	public void cleanup() {
 		reset(repositoryService); // RepositoryService Mock Bean is a singleton,
 									// I want addUser to behave differently in
 									// different tests so need to reset it
@@ -87,22 +89,6 @@ public class MvcControllerRegistrationTest {
 		assertNotNull(servletContext);
 		assertTrue(servletContext instanceof MockServletContext);
 		assertNotNull(webApplicationContext.getBean("mvcController"));
-	}
-
-	@Test
-	public void loginForm_availableforAnonymous() throws Exception {
-		mockMvc.perform(get("/login"))//
-				.andDo(print())//
-				.andExpect(view().name("login"));
-	}
-
-	@Test
-	public void registerForm_availableforAnonymous() throws Exception {
-		mockMvc.perform(get("/register"))//
-				.andDo(print())//
-				.andExpect(view().name("register"))//
-				.andExpect(status().isOk())//
-				.andExpect(model().attributeExists("newUser"));
 	}
 
 	@Test
