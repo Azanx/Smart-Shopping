@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
+import io.github.azanx.shopping_list.service.AppUserDetailsService;
 import io.github.azanx.shopping_list.service.RepositoryService;
 
 /**
@@ -24,5 +25,11 @@ public class ServiceMockProvider {
 	@Primary
 	public RepositoryService repositoryService() {
 		return Mockito.mock(RepositoryService.class);
+	}
+	
+	@Bean
+	@Primary
+	public AppUserDetailsService appUserDetailsService() {
+		return Mockito.mock(AppUserDetailsService.class);
 	}
 }
