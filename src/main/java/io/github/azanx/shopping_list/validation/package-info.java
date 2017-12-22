@@ -6,4 +6,4 @@
  * @author Kamil Piwowarski
  *
  */
-package io.github.azanx.shopping_list.domain.validation;
+package io.github.azanx.shopping_list.validation;

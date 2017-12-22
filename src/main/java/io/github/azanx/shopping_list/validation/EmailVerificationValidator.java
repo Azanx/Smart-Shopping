@@ -1,4 +1,4 @@
-package io.github.azanx.shopping_list.domain.validation;
+package io.github.azanx.shopping_list.validation;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

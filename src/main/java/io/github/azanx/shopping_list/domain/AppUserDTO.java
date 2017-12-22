@@ -7,8 +7,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-import io.github.azanx.shopping_list.domain.validation.EmailVerification;
-import io.github.azanx.shopping_list.domain.validation.FieldsVerification;
+import io.github.azanx.shopping_list.validation.EmailVerification;
+import io.github.azanx.shopping_list.validation.FieldsVerification;
 
 /**
  * @author Kamil Piwowarski

@@ -1,4 +1,4 @@
-package io.github.azanx.shopping_list.domain.validation;
+package io.github.azanx.shopping_list.validation;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
