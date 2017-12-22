@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.github.azanx.shopping_list.config;
+package io.github.azanx.shopping_list.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

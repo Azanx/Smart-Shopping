@@ -10,6 +10,8 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.DispatcherServlet;
 
+import io.github.azanx.shopping_list.config.security.WebSecurityConfig;
+
 /**
  * Configuration class for ServletContext
  * @author Kamil Piwowarski

@@ -26,7 +26,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.github.azanx.shopping_list.config.WebMvcConfig;
-import io.github.azanx.shopping_list.config.WebSecurityConfig;
+import io.github.azanx.shopping_list.config.security.WebSecurityConfig;
 
 /**
  * Tests if unlogged users have access only to login and register pages
