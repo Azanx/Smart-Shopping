@@ -29,6 +29,12 @@
 					<warSourceDirectory>WebContent</warSourceDirectory>
 				</configuration>
 			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.17</version>
+				<configuration>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -117,7 +123,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>6.0.5.Final</version>
+			<version>6.0.7.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-validator</groupId>
@@ -162,8 +168,27 @@
 			<version>1.4.196</version>
 			<scope>test</scope>
 		</dependency>
-
+<!-- 		below dependencies needed in test phase only as normally they are provided by application server -->
+		<!-- JSR 341 reference implementation -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.glassfish</groupId> -->
+		<!-- <artifactId>javax.el</artifactId> -->
+		<!-- <version>3.0.1-b08</version> -->
+		<!-- <scope>test</scope> -->
+		<!-- </dependency> -->
+		<dependency>
+			<!-- tomcat implementation -->
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-jasper-el</artifactId>
+			<version>9.0.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator-cdi</artifactId>
+			<version>6.0.7.Final</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
-
 	<name>Smart-Shopping</name>
 </project>
