@@ -15,13 +15,17 @@
 	<div class="container">
 		<div class="row">
 			<div class=col-md-4></div>
+			<div class=col-md-4></div>
 			<div class=col>
 				<c:import var="pageHeader" url="pageHeader.jsp" />
+				${pageHeader}
+			</div>
+		</div>
+		<div class="row">
+			<div class=col-md-4></div>
+			<div class=col>
 				<spring:url var="urlToLists" value="/list" />
 				<spring:url var="urlToCurrent" value="/list/${listId}" />
-				${pageHeader} <br /> Items in list: <b><c:out
-						value="${listItems.listName}" /></b> <br />
-
 				<c:forEach var="listItem" items="${listItems.listItems}">
 					<c:choose>
 						<c:when test="${listItem.bought}">
@@ -53,7 +57,8 @@
 						</div>
 						<div id="addItems" class="collapse">
 							<div class="card-body">
-								<form:form action="${urlToCurrent}" modelAttribute="shoppingList">
+								<form:form action="${urlToCurrent}"
+									modelAttribute="shoppingList">
 									<c:forEach items="${shoppingList.listItems}" varStatus="vs">
 										<form:input path="listItems[${vs.index}].itemName"
 											placeholder="New item" />
