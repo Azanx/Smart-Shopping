@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import io.github.azanx.shopping_list.domain.AppUserSecurityPrincipal;
+import io.github.azanx.shopping_list.config.AppUserSecurityPrincipal;
 import io.github.azanx.shopping_list.repository.AppUserRepository;
 
 /**

@@ -1,12 +1,16 @@
 /**
  * 
  */
-package io.github.azanx.shopping_list.domain;
+package io.github.azanx.shopping_list.config;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import io.github.azanx.shopping_list.domain.AppUser;
 
 /**
  * For usage by spring security
@@ -32,8 +36,11 @@ public class AppUserSecurityPrincipal implements UserDetails {
 	 */
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
+		Set<GrantedAuthority> authorities = new HashSet<>();
+		// currently all registered users have one role: USER
+		authorities.add(//
+				() -> "USER");//anonymous GrantedAuthority implementation
+		return authorities;
 	}
 
 	/* (non-Javadoc)
@@ -59,7 +66,6 @@ public class AppUserSecurityPrincipal implements UserDetails {
 	 */
 	@Override
 	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
@@ -68,7 +74,6 @@ public class AppUserSecurityPrincipal implements UserDetails {
 	 */
 	@Override
 	public boolean isAccountNonLocked() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
@@ -77,7 +82,6 @@ public class AppUserSecurityPrincipal implements UserDetails {
 	 */
 	@Override
 	public boolean isCredentialsNonExpired() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
@@ -86,7 +90,6 @@ public class AppUserSecurityPrincipal implements UserDetails {
 	 */
 	@Override
 	public boolean isEnabled() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
