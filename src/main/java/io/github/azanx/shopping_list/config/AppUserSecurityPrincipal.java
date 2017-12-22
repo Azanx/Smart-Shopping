@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import io.github.azanx.shopping_list.domain.AppUser;
@@ -39,7 +40,7 @@ public class AppUserSecurityPrincipal implements UserDetails {
 		Set<GrantedAuthority> authorities = new HashSet<>();
 		// currently all registered users have one role: USER
 		authorities.add(//
-				() -> "USER");//anonymous GrantedAuthority implementation
+				new SimpleGrantedAuthority("ROLE_USER"));
 		return authorities;
 	}
 
