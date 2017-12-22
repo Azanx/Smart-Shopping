@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,6 +86,7 @@ public class RepositoryService {
 	 * @throws UserNotFoundException
 	 *             if user with 'userName' doesn't exist
 	 */
+	@PreAuthorize("hasRole('USER')")
 	@Transactional(readOnly = true)
 	public AppUser getUser(String userName) {
 		return appUserRepository//
@@ -101,6 +103,7 @@ public class RepositoryService {
 	 * @return collection containing all of the ShoppingLists belonging to this
 	 *         user, or empty collection if user doesn't have any lists
 	 */
+	@PreAuthorize("hasRole('USER')")
 	@Transactional(readOnly = true)
 	public List<ShoppingList> getShoppingLists(String userName) {
 		List<ShoppingList> lists = shoppingListRepository.findByOwnerNameOrderByListNo(userName);
@@ -125,6 +128,7 @@ public class RepositoryService {
 	 * @throws ListNotFoundException
 	 *             if user doesn't have list with this ID
 	 */
+	@PreAuthorize("hasRole('USER')")
 	@Transactional(readOnly = true)
 	public List<ListItem> getListItems(String userName, Short listNo) {
 		LOGGER.debug("getItemsForUsersListNo: user: {}, listNo: {}", userName, listNo);
@@ -153,6 +157,7 @@ public class RepositoryService {
 	 * @throws ListNotFoundException
 	 *             if user doesn't have list with this ID
 	 */
+	@PreAuthorize("hasRole('USER')")
 	@Transactional(readOnly = true)
 	public List<ListItem> getListItems(String userName, Long listId) {
 		LOGGER.debug("getItemsForUsersListId: user: {}, listId: {}", userName, listId);
@@ -179,6 +184,7 @@ public class RepositoryService {
 	 * @throws ListNotFoundException
 	 *             if user doesn't have list with this ID
 	 */
+	@PreAuthorize("hasRole('USER')")
 	@Transactional(readOnly = true)
 	public ShoppingList getShoppingListWithItems(String userName, Long listId) {
 		LOGGER.debug("getShoppingListWithItemsForUsersListId: user: {}, listId: {}", userName, listId);
@@ -198,7 +204,7 @@ public class RepositoryService {
 	}
 
 	/**
-	 *  Add new user if there is no user with same name
+	 *  Add new user if there is no user with same name<br/>
 	 * 
 	 * @param newUser
 	 *            AppUser instance of the new user to create
@@ -252,6 +258,7 @@ public class RepositoryService {
 	 *             if user with given name doesn't exist
 	 * @throws ListTooLongException if size of the list containing ShoppingLists would exceed limit of Short type after adding new ShoppingList
 	 */
+	@PreAuthorize("hasRole('USER')")
 	@Transactional(readOnly = false)
 	public ShoppingList addShoppingListToUserByName(String userName, String newListName) {
 		LOGGER.debug("addShoppingListToUserByName: user: {}, listName: {}", userName, newListName);
@@ -278,6 +285,7 @@ public class RepositoryService {
 	 * @param listItems ShoppingListDTO containing list of items to add
 	 * @return ShoppingList populated with all current items
 	 */
+	@PreAuthorize("hasRole('USER')")
 	@Transactional(readOnly = false)
 	public List<ListItem> addItemsToShoppingList(String userName, ShoppingListDTO listWithNewItems) {
 		LOGGER.debug("addItemsToShoppingList: user: {}, listId: {}", listWithNewItems.getOwnerName(), listWithNewItems.getId());
@@ -320,6 +328,7 @@ public class RepositoryService {
 	 * @param listId Id of the list to remove
 	 * @throws ListNotFoundException
 	 */
+	@PreAuthorize("hasRole('USER')")
 	@Transactional(readOnly = false)
 	 public void removeShoppingList(String userName, Long listId) {
 		 LOGGER.debug("removeShoppingList: user: {}, list: {}", userName, listId);
@@ -352,6 +361,7 @@ public class RepositoryService {
 	 * @throws ListNotFoundException if given user doesn't have ShoppingList with Id set in item
 	 * @throws ItemNotFoundException if ShoppingList declared inside item doesn't contain item with this Id
 	 */
+	@PreAuthorize("hasRole('USER')")
 	@Transactional(readOnly = false)
 	public void switchItemBoughtStatus(String userName, ListItemDTO item) {
 		LOGGER.debug("switchItemBoughtStatus: user: {}, list: {}, item: {}", userName, item.getParentListId(), item.getId());
@@ -375,6 +385,7 @@ public class RepositoryService {
 	 * @return ShoppingList
 	 * @throws ListNotFoundException
 	 */
+	@PreAuthorize("hasRole('USER')")
 	private ShoppingList retrieveShoppingList(Long listId, String userName) {
 		return shoppingListRepository//
 					.findByIdAndOwnerName(listId, userName)//
