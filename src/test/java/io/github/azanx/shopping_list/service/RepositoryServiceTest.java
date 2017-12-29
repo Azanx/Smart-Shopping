@@ -309,9 +309,8 @@ public class RepositoryServiceTest {
 	@Test
 	public void removeShoppingList_RemovesAlsoItemsBelongingToList() {
 		ShoppingList list = userService.addShoppingListToUserByName(userName, "list");
-		ShoppingListDTO listDTO = new ShoppingListDTO(list);
-		listDTO.setListItems(new ArrayList<ListItemDTO>());
-		listDTO.getListItems().add(new ListItemDTO("item"));
+		ShoppingListDTO listDTO = createShoppingListDTO_populatedWithSingleListItemDTO(list);
+		
 		userService.addItemsToShoppingList(userName, listDTO);
 		
 		assertFalse(listItemRepository//
@@ -329,14 +328,11 @@ public class RepositoryServiceTest {
 	public void switchItemBoughtStatus_FailsIfListOwnedByAnotherUser() {
 		AppUser user2 = 
 		userService.addUser(new AppUserDTO("second", "password".toCharArray(), "email@test.com"));
-		
 		ShoppingListDTO listWithItems = //
 				new ShoppingListDTO(//
 						userService.addShoppingListToUserByName(user2.getUserName(), "some list"));
+		populateShoppingListDTO_withWithSingleListItemDTO(listWithItems);
 		
-		listWithItems.setListItems(new ArrayList<ListItemDTO>());
-		listWithItems.getListItems()//
-				.add(0, new ListItemDTO("item"));
 		List<ListItem> items = userService.addItemsToShoppingList(user2.getUserName(), listWithItems);
 		//there is only one element in the list so we are using index 0, new item defaults to Bought=false so we need to change status to true
 		listWithItems.getListItems().get(0).setId(items.get(0).getId());//setting item Id to one added during saving in DB
@@ -349,8 +345,8 @@ public class RepositoryServiceTest {
 	@Test(expected = ListNotFoundException.class)
 	public void switchItemBoughtStatus_FailsIfListDoesntExist() {
 		ShoppingListDTO listWithItems = new ShoppingListDTO(userName, 10000L, 2);
-		listWithItems.setListItems(new ArrayList<ListItemDTO>());
-		listWithItems.getListItems().add(new ListItemDTO("item"));
+		populateShoppingListDTO_withWithSingleListItemDTO(listWithItems);
+		
 		ListItemDTO item = listWithItems.getListItems().get(0);
 		item.setId(1L);
 		item.setParentListId(10000L);
@@ -362,9 +358,8 @@ public class RepositoryServiceTest {
 	@Test(expected = ItemNotFoundException.class)
 	public void switchItemBoughtStatus_FailsIfListDoesntHaveThisItem() {
 		ShoppingList list = userService.addShoppingListToUserByName(userName, "list");
-		ShoppingListDTO listWithItems = new ShoppingListDTO(list);
-		listWithItems.setListItems(new ArrayList<ListItemDTO>());
-		listWithItems.getListItems().add(new ListItemDTO("item"));
+		ShoppingListDTO listWithItems = createShoppingListDTO_populatedWithSingleListItemDTO(list);
+		
 		ListItemDTO item = listWithItems.getListItems().get(0);
 		item.setId(1L);
 		item.setParentListId(listWithItems.getId());
@@ -377,11 +372,9 @@ public class RepositoryServiceTest {
 		ShoppingList list = userService.addShoppingListToUserByName(userName, "list");
 		ShoppingListDTO listWithItems = new ShoppingListDTO(list);
 		listWithItems.setListItems(new ArrayList<ListItemDTO>());
-		
 		ShoppingList list2 = userService.addShoppingListToUserByName(userName, "list2");
-		ShoppingListDTO listWithItems2 = new ShoppingListDTO(list2);
-		listWithItems2.setListItems(new ArrayList<ListItemDTO>());
-		listWithItems2.getListItems().add(new ListItemDTO("item"));
+		ShoppingListDTO listWithItems2 = createShoppingListDTO_populatedWithSingleListItemDTO(list2);
+
 		List<ListItem> items = userService.addItemsToShoppingList(userName, listWithItems2);
 		
 		listWithItems.getListItems().add(new ListItemDTO(items.get(0)));	
@@ -396,12 +389,8 @@ public class RepositoryServiceTest {
 	@Test
 	public void switchItemBoughtStatus_SucceedsIfItemValid() {
 		ShoppingList list = userService.addShoppingListToUserByName(userName, "list");
-		ShoppingListDTO listWithItems = new ShoppingListDTO(list);
-		listWithItems.setListItems(new ArrayList<ListItemDTO>());
-		
-		listWithItems.getListItems().add(new ListItemDTO("item"));
+		ShoppingListDTO listWithItems = createShoppingListDTO_populatedWithSingleListItemDTO(list);
 		List<ListItem> items = userService.addItemsToShoppingList(userName, listWithItems);
-		
 		
 		listWithItems.setListItems(new ArrayList<ListItemDTO>());
 		listWithItems.getListItems().add(new ListItemDTO(items.get(0)));
@@ -414,5 +403,17 @@ public class RepositoryServiceTest {
 						findOne(item//
 								.getId())//
 									.getBought());
+	}
+	
+	private ShoppingListDTO createShoppingListDTO_populatedWithSingleListItemDTO(ShoppingList shoppingList) {
+		ShoppingListDTO listDTOWithItems = new ShoppingListDTO(shoppingList);
+		populateShoppingListDTO_withWithSingleListItemDTO(listDTOWithItems);
+		return listDTOWithItems;
+	}
+	
+	private void populateShoppingListDTO_withWithSingleListItemDTO(ShoppingListDTO shoppingListDTO) {
+		shoppingListDTO.setListItems(new ArrayList<ListItemDTO>());
+		shoppingListDTO.getListItems()//
+				.add(new ListItemDTO("item"));
 	}
 }
