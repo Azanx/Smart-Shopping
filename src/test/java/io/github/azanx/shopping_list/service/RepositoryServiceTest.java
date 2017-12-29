@@ -54,7 +54,6 @@ public class RepositoryServiceTest {
 	ListItemRepository listItemRepository;
 	@Autowired
 	ShoppingListRepository shoppingListRepository;
-	
 	PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	RepositoryService userService;
@@ -171,8 +170,6 @@ public class RepositoryServiceTest {
 	}
 
 	@Test
-	// @Transactional //LazyInitializationException thrown without it at second
-	// asssert
 	public void addShoppingListToUserByName_succeedsForExistingUser() {
 		ShoppingList list = userService.addShoppingListToUserByName(user.getUserName(), "LIST 1");
 		assertNotNull(list);
