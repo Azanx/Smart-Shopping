@@ -24,7 +24,6 @@ public class ListItemTest {
 		user = new AppUser("testUser", "password", "email@test.com");
 		user.setId(1L); // we have to set id manually as we are not writing to database!
 		list = user.addShoppingList("test list");
-//		list.setId(1L);; // we have to set id manually as we are not writing to database!
 	}
 
 	/**
