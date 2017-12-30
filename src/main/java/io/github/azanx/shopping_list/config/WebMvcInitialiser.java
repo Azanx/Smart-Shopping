@@ -5,6 +5,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 
+import org.springframework.core.annotation.Order;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
@@ -17,6 +18,7 @@ import io.github.azanx.shopping_list.config.security.WebSecurityConfig;
  * @author Kamil Piwowarski
  *
  */
+@Order(1)
 public class WebMvcInitialiser implements WebApplicationInitializer {
 
 	@Override
@@ -33,7 +35,8 @@ public class WebMvcInitialiser implements WebApplicationInitializer {
 		FilterRegistration.Dynamic filterRegistration = servletContext.addFilter("endcodingFilter", new CharacterEncodingFilter());
 		filterRegistration.setInitParameter("encoding", "UTF-8");
 		filterRegistration.setInitParameter("forceEncoding", "true");
-		filterRegistration.addMappingForUrlPatterns(null, true, "/*");
+		//make sure encodingFilter is matched first
+		filterRegistration.addMappingForUrlPatterns(null, false, "/*");
 		//disable appending jsessionid to the URL
 		filterRegistration = servletContext.addFilter("disableUrlSessionFilter", new DisableUrlSessionFilter());
 		filterRegistration.addMappingForUrlPatterns(null, true, "/*");
