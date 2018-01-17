@@ -21,6 +21,9 @@ import io.github.azanx.shopping_list.config.security.WebSecurityConfig;
 @Order(1)
 public class WebMvcInitialiser implements WebApplicationInitializer {
 
+	/**
+	 * time of inactivity after which session should be invalidated
+	 */
 	private static final int maxInactiveInterval = 60*60*2; //2 hours
 	
 	@Override
