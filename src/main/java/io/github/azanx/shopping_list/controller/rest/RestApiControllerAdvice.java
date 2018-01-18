@@ -1,4 +1,4 @@
-package io.github.azanx.shopping_list.controller;
+package io.github.azanx.shopping_list.controller.rest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,7 @@ import io.github.azanx.shopping_list.service.exception.ItemNotFoundException;
 import io.github.azanx.shopping_list.service.exception.ListNotFoundException;
 import io.github.azanx.shopping_list.service.exception.UserNotFoundException;
 
-@RestControllerAdvice(basePackageClasses = {io.github.azanx.shopping_list.controller.RestApiController.class})
+@RestControllerAdvice(basePackageClasses = {io.github.azanx.shopping_list.controller.rest.RestApiController.class})
 public class RestApiControllerAdvice {
 
 	@ExceptionHandler(UserNotFoundException.class)

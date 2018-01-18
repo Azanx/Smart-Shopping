@@ -1,4 +1,4 @@
-package io.github.azanx.shopping_list.controller;
+package io.github.azanx.shopping_list.controller.rest;
 
 import java.util.List;
 
