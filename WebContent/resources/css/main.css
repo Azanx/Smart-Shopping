@@ -9,17 +9,11 @@ body {
 }
 
 a.listField {
-	font-size: 1em;
 	text-decoration: none;
-	color: #000;
 }
 
-.bought {
-	text-decoration: line-through;
-}
-
-.unbought {
-	
+a.listField:hover {
+	text-decoration: none;
 }
 
 input[type="text"] {
@@ -27,6 +21,11 @@ input[type="text"] {
 	padding: 8px;
 	margin: 3px;
 	width: 10em;
+}
+
+input[type="text"].listField {
+	width: calc(100% - 2em - 4em);
+	cursor: pointer;
 }
 
 input[type="password"] {
@@ -44,6 +43,12 @@ input[type="submit"] {
 	margin: 3px;
 	font-size: 1em;
 	width: 8em;
+	cursor: pointer;
+}
+
+input[type="submit"].delete {
+	background-color: #CC0000;
+	width: auto;
 }
 
 input[disabled] {
@@ -56,4 +61,23 @@ input[readonly] {
 	border-style: solid;
 	background: transparent;
 	color: #000;
+}
+
+label.numbered {
+	width: 1em;
+}
+
+input[type="submit"].bought {
+	background-color: transparent;
+	border: 2pt solid #f1f1f1;
+	text-decoration: line-through;
+	color: green;
+	width: calc(100% - 2em);
+}
+
+input[type="submit"].unbought {
+	background-color: transparent;
+	border: 2pt solid #f1f1f1;
+	color:black;
+	width: calc(100% - 2em);
 }

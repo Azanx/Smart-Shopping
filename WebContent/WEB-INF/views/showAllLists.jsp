@@ -33,12 +33,14 @@
 						<tr>
 							<td><form:form action="${url}/delete"
 									modelAttribute="listToDelete">
-									<c:out value="${usersList.listNo}" />
-									<a href="${url}/${usersList.id}" class="listField"> <form:input
+									<form:label cssClass="numbered" path="listName"><c:out value="${usersList.listNo}" /></form:label>
+<%-- 									<c:out value="${usersList.listNo}" /> --%>
+									<a href="${url}/${usersList.id}" class="listField">
+										<form:input cssClass="listField"
 											path="listName" value="${usersList.listName}" readonly="true" />
 									</a>
 									<form:hidden path="id" value="${usersList.id}" />
-									<input type="submit" value="delete list" />
+									<input type="submit" class="delete" value="delete" />
 								</form:form></td>
 						</tr>
 					</c:forEach>

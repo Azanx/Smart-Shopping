@@ -40,12 +40,14 @@
 					<form:form action="${urlToCurrent}/setBought"
 						modelAttribute="listItemToModify">
 
-						<form:label path="itemName">${listItem.itemNo}</form:label>
-						<form:input path="itemName" value="${listItem.itemName}"
-							cssClass="${boughtStyle}" disabled="true" />
+						<form:label cssClass="numbered" path="itemName">${listItem.itemNo}</form:label>
+<%-- 						<form:input path="itemName" value="${listItem.itemName}" --%>
+<%-- 							cssClass="${boughtStyle}" disabled="true" /> --%>
 						<form:hidden path="id" value="${listItem.id}" />
 						<form:hidden path="bought" value="${not listItem.bought}" />
-						<input type="submit" value="${boughtButtonText}" />
+						<input type="submit" value="${listItem.itemName}"
+							class="${boughtStyle}" />
+<%-- 						<input type="submit" value="${boughtButtonText}" /> --%>
 					</form:form>
 				</c:forEach>
 				<br />
