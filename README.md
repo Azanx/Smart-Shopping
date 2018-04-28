@@ -16,6 +16,14 @@ For deployment:
 * Tomcat 9
 * MariaDB / MySQL database (I use MariaDB, but they're compatible)
 
+### Configure
+Configuration files can be found in src/main/resources<br/>
+You can configure database server and hibernate settings in the db.properties file.<br/>
+Remember to change db.username and db.password. Another important thing to remember is to set correct address in db.url (in dev settings inside the repository it's set to localhost)<br/>
+You might need also to change serverTimezone parameter in db.url to be the same as your server timezone (it was set to fix bug related to european summer time, if there is no summer time in your server timezone you can remove it altoghether)<br/>
+<br>
+Logger settings can be changed in log4j.properties file.
+
 ### Building
 1.Clone the repository:<br/>
 ```git clone git@github.com:Azanx/Smart-Shopping.git```<br/>
