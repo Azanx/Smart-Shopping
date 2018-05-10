@@ -49,6 +49,8 @@ Firstly you need to configure 'shopping_list' database and create user for datab
 ```scp shopping_list-x-x-x-SNAPSHOT.war server_ip:```<br/>
 2. Log into the machine with tomcat installed, and copy the .war file into `TOMCAT_DIR/webapps` directory<br/>
 
+You might also want to use the Tomcat Manager app for the deployment: <https://tomcat.apache.org/tomcat-9.0-doc/manager-howto.html>
+
 After a short while you're war file should be extracted and you should be able to access the application from your webbrowser under: `server_ip:8080/shopping_list-x-x-x-SNAPSHOT`
 
 ## Author
