@@ -1,4 +1,5 @@
-# Smart-Shopping
+
+# Smart-Shopping ![Build Status](https://jenkins.code-sword.pl/buildStatus/icon?job=Smart-Shopping "Current build status")
 ## About
 Simple Shopping List app to help with planning shopping and managing resulting shopping list. Supports separate lists per user<br/>
 Developed in Java8 and Spring Framework 4 (without Boot) with JPA / Hibernate DB support. Web frontend built with JSP and Bootstrap. Backing database used: MariaDB during deployment, H2 for testing.
