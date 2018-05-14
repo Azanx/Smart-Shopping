@@ -46,7 +46,7 @@ public class AccessDeniedHandlerCustomImpl implements AccessDeniedHandler {
 		
 		String userName = (auth == null) ? "anonymous" : auth.getName();
 		LOGGER.warn("User: {} attempted unauthorized access to URL: {} . message: {}", userName,
-				request.getRequestURL() + accessDeniedException.getMessage());
+				request.getRequestURL(), accessDeniedException.getMessage());
 		
 		if (!response.isCommitted()) {
 			if (errorPage != null) {
