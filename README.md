@@ -1,4 +1,5 @@
-# Smart-Shopping
+
+# Smart-Shopping ![Build Status](https://jenkins.code-sword.pl/buildStatus/icon?job=Smart-Shopping "Current build status")
 ## About
 Simple Shopping List app to help with planning shopping and managing resulting shopping list. Supports separate lists per user<br/>
 Developed in Java8 and Spring Framework 4 (without Boot) with JPA / Hibernate DB support. Web frontend built with JSP and Bootstrap. Backing database used: MariaDB during deployment, H2 for testing.
@@ -48,6 +49,8 @@ Firstly you need to configure 'shopping_list' database and create user for datab
 1. From inside the project directory, copy the "shopping_list-x-x-x-SNAPSHOT.war" into the machine running tomcat. If you are on linux and tomcat is on remote machine, you might use scp:<br/>
 ```scp shopping_list-x-x-x-SNAPSHOT.war server_ip:```<br/>
 2. Log into the machine with tomcat installed, and copy the .war file into `TOMCAT_DIR/webapps` directory<br/>
+
+You might also want to use the Tomcat Manager app for the deployment: <https://tomcat.apache.org/tomcat-9.0-doc/manager-howto.html>
 
 After a short while you're war file should be extracted and you should be able to access the application from your webbrowser under: `server_ip:8080/shopping_list-x-x-x-SNAPSHOT`
 
