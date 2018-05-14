@@ -109,7 +109,7 @@ public class MvcController {
 			attr.addFlashAttribute("org.springframework.validation.BindingResult.newList", binding);
 			attr.addFlashAttribute("newList", newList);
 			for(FieldError ferr:binding.getFieldErrors()) {
-				LOGGER.info("addList(): field error: " + ferr.getDefaultMessage());
+				LOGGER.info("addList(): field error: {}", ferr.getDefaultMessage());
 			}
 		}
 		
@@ -255,7 +255,7 @@ public class MvcController {
 			attr.addFlashAttribute("org.springframework.validation.BindingResult.newUser", binding);
 			attr.addFlashAttribute("newUser", newUser);
 			for(FieldError ferr:binding.getFieldErrors()) {
-				LOGGER.info("register(): field error: " + ferr.getDefaultMessage());
+				LOGGER.info("register(): field error: {}", ferr.getDefaultMessage());
 			}
 		}
 		return "redirect:/register";
