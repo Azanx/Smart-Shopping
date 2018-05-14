@@ -2,7 +2,6 @@ package io.github.azanx.shopping_list.config;
 
 import java.util.Properties;
 
-import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
