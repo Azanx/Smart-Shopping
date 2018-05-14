@@ -38,7 +38,7 @@ public class ShoppingListDTO {
 	 * @param capacity
 	 */
 	public ShoppingListDTO(int capacity) {
-		listItems = new ArrayList<ListItemDTO>(capacity);
+		listItems = new ArrayList<>(capacity);
 		while(listItems.size()<capacity)
 			listItems.add(new ListItemDTO());
 	}

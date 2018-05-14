@@ -24,7 +24,7 @@ public class WebMvcInitialiser implements WebApplicationInitializer {
 	/**
 	 * time of inactivity after which session should be invalidated
 	 */
-	private static final int maxInactiveInterval = 60*60*2; //2 hours
+	private static final int MAX_INACTIVE_INTERVAL = 60*60*2; //2 hours
 	
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
@@ -35,7 +35,7 @@ public class WebMvcInitialiser implements WebApplicationInitializer {
 		rootContext.register(WebSecurityConfig.class);
 		rootContext.register(ServiceConfig.class);
 		//set session timeout
-		servletContext.addListener(new SessionListener(maxInactiveInterval));
+		servletContext.addListener(new SessionListener(MAX_INACTIVE_INTERVAL));
 		//set dispatcher servlet and mapping
 		ServletRegistration.Dynamic dispatcher = servletContext.addServlet("dispatcher",
 				new DispatcherServlet(rootContext));
@@ -53,4 +53,3 @@ public class WebMvcInitialiser implements WebApplicationInitializer {
 		filterRegistration.addMappingForUrlPatterns(null, true, "/*");
 	}
 }
-;

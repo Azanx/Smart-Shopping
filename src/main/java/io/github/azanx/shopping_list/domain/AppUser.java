@@ -149,9 +149,7 @@ public class AppUser implements Serializable{
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = prime +  userName.hashCode(); //no need for null check as userName must be not null
-		//TODO readd nullchecks when finished - this method generally shouldn't throw exceptions
-		return result;
+		return prime +  userName.hashCode(); //no need for null check as userName must be not null
 	}
 
 	@Override

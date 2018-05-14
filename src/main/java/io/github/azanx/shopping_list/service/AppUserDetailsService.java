@@ -36,11 +36,10 @@ public class AppUserDetailsService implements UserDetailsService {
 	 */
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		AppUserSecurityPrincipal userPrincipal = new AppUserSecurityPrincipal(// 
+		return new AppUserSecurityPrincipal(// 
 				userRepository.findByUserName(username)//
 					.orElseThrow(//
 						() -> new UsernameNotFoundException(username)));//
-		return userPrincipal;
 	}
 
 }

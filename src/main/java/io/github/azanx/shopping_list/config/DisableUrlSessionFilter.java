@@ -29,7 +29,9 @@ public class DisableUrlSessionFilter implements Filter {
 			throws IOException, ServletException {
 		if(servletRequest instanceof HttpServletRequest) {
 			servletResponse= new HttpServletResponseWrapper((HttpServletResponse) servletResponse) {
+				@Override
 				public String encodeRedirectURL(String url) {return url;}
+				@Override
 				public String encodeURL(String url) {return url;}
 			};
 		}

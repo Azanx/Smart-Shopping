@@ -128,6 +128,7 @@ public class RepositoryService {
 	 * @throws ListNotFoundException
 	 *             if user doesn't have list with this ID
 	 */
+	@Deprecated
 	@PreAuthorize("hasRole('USER')")
 	@Transactional(readOnly = true)
 	public List<ListItem> getListItems(String userName, Short listNo) {
@@ -314,7 +315,6 @@ public class RepositoryService {
 		}
 		
 		listItemRepository.save(newItems);
-		//TODO check if it really saves values in batch
 		
 		newItems = listItemRepository.findByParentListIdOrderByItemNo(listWithNewItems.getId());
 		
@@ -350,7 +350,6 @@ public class RepositoryService {
 		 }
 		 
 		 shoppingListRepository.save(listsToReorder);
-		 //TODO check if saves by batch or in loop
 		 LOGGER.info("Reordered lists of user: {} with No greater than: {}", userName, list.getListNo());
 	 }
 

@@ -156,9 +156,8 @@ public class ShoppingList{
 		result = prime * result + ((listNo == null) ? 0 : listNo.hashCode());
 		//no need for null checks as owner cannot be null, if it is - better to get NullPointerException and fix it
 		//TODO readd nullchecks when finished - this method generally shouldn't throw exceptions
-		result = prime * result + ownerName.hashCode();
+		return prime * result + ownerName.hashCode();
 //		result = prime * result + ((ownerId == null) ? 0 : ownerId.hashCode());
-		return result;
 	}
 
 	@Override

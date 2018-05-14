@@ -76,7 +76,6 @@ public class ListItem {
 		this.itemName = itemName;
 		this.itemNo = itemNo;
 		this.parentList = parentList;
-		this.itemNo = itemNo;
 	}
 
 	public Long getId() {

@@ -4,6 +4,7 @@
 package io.github.azanx.shopping_list.domain.exception;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import io.github.azanx.shopping_list.controller.exception.MessageableException;
 
@@ -19,14 +20,14 @@ public class ListTooLongException  extends RuntimeException implements Messageab
 	 */
 	private static final long serialVersionUID = -4162895203034676713L;
 
-	public static enum listType {
+	public enum listType {
 		SHOPPING_LIST,
 		ITEM_LIST
 	}
 	
 	private final long listId; 
 	private final listType type;
-	private final HashMap<String, String> parameters;
+	private final Map<String, String> parameters;
 
 	public ListTooLongException(listType type, long listId) {
 		super("List too long! Requested list size is greater than maximum of '" + Short.MAX_VALUE +"' for '" + type + " with ID: '" + listId);
@@ -48,7 +49,7 @@ public class ListTooLongException  extends RuntimeException implements Messageab
 	}
 
 	@Override
-	public HashMap<String, String> getParameters() {
+	public Map<String, String> getParameters() {
 		return parameters;
 	}
 }

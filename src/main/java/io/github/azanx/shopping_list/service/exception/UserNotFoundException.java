@@ -1,6 +1,7 @@
 package io.github.azanx.shopping_list.service.exception;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import io.github.azanx.shopping_list.controller.exception.MessageableException;
 
@@ -33,7 +34,7 @@ public class UserNotFoundException extends RuntimeException implements Messageab
 	}
 
 	@Override
-	public HashMap<String, String> getParameters() {
+	public Map<String, String> getParameters() {
 		return this.parameters;
 	}
 }

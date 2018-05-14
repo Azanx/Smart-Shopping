@@ -46,7 +46,7 @@ public class JPAConfig {
 
 	@Bean
 	@Autowired
-	public PlatformTransactionManager transactionManager(EntityManagerFactory emf) throws NamingException {
+	public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
 		JpaTransactionManager jpaTransaction = new JpaTransactionManager();
 		jpaTransaction.setEntityManagerFactory(emf);
 		return jpaTransaction;

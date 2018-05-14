@@ -42,6 +42,15 @@ public class MvcController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MvcController.class);
 
 	private final RepositoryService repositoryService;
+	/**
+	 * key name of backing object for creating newUser
+	 */
+	private static final String NEW_USER_KEY = "newUser";
+
+	/**
+	 * key name of backing object for name of the new ShoppingList
+	 */
+	private static final String NEW_LIST_KEY = "newList";
 
 	/**
 	 * Initialize controller and it's repository service
@@ -87,8 +96,8 @@ public class MvcController {
 		ModelAndView mav = new ModelAndView("showAllLists", model.asMap());
 		List<ShoppingList> shoppingLists = repositoryService.getShoppingLists(principal.getName());
 		mav.addObject("shoppingLists", shoppingLists); //current ShoppingLists of the user to display
-		if(!model.containsAttribute("newList"))
-			mav.addObject("newList", new ShoppingListDTO()); //backing object for name of the new ShoppingList
+		if(!model.containsAttribute(NEW_LIST_KEY))
+			mav.addObject(NEW_LIST_KEY, new ShoppingListDTO()); //backing object for name of the new ShoppingList
 		mav.addObject("listToDelete", new ShoppingListDTO()); //backing object for ShoppingList to delete
 		return mav;
 	}
@@ -101,13 +110,13 @@ public class MvcController {
 	 *            include list name)
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
-	public String addList(Principal principal, @Valid @ModelAttribute("newList") ShoppingListDTO newList, BindingResult binding, RedirectAttributes attr, HttpSession session) {
+	public String addList(Principal principal, @Valid @ModelAttribute(NEW_LIST_KEY) ShoppingListDTO newList, BindingResult binding, RedirectAttributes attr, HttpSession session) {
 		LOGGER.debug("addList() method of MvcController called for user: {}", principal.getName());
 		if(!binding.hasErrors()) 
 			repositoryService.addShoppingListToUserByName(principal.getName(), newList.getListName());
 		else {
 			attr.addFlashAttribute("org.springframework.validation.BindingResult.newList", binding);
-			attr.addFlashAttribute("newList", newList);
+			attr.addFlashAttribute(NEW_LIST_KEY, newList);
 			for(FieldError ferr:binding.getFieldErrors()) {
 				LOGGER.info("addList(): field error: {}", ferr.getDefaultMessage());
 			}
@@ -224,8 +233,8 @@ public class MvcController {
 	public ModelAndView showRegistrationForm(Model model) {
 		LOGGER.debug("showRegistrationForm() called");
 		ModelAndView mav = new ModelAndView("register", model.asMap());
-		if(!model.containsAttribute("newUser"))
-			mav.addObject("newUser", new AppUserDTO());
+		if(!model.containsAttribute(NEW_USER_KEY))
+			mav.addObject(NEW_USER_KEY, new AppUserDTO());
 		return mav;
 	}
 	
@@ -244,16 +253,16 @@ public class MvcController {
 				LOGGER.debug("register(): duplicate user {}", newUser.getUserName());
 				String[] codes = new String[1];
 				codes[0] = "DuplicateUser";
-				binding.addError(new FieldError("newUser", "userName", newUser.getUserName(), false, codes, null, "*There is already an user with this name"));
+				binding.addError(new FieldError(NEW_USER_KEY, "userName", newUser.getUserName(), false, codes, null, "*There is already an user with this name"));
 				
 				attr.addFlashAttribute("org.springframework.validation.BindingResult.newUser", binding);
-				attr.addFlashAttribute("newUser", newUser);
+				attr.addFlashAttribute(NEW_USER_KEY, newUser);
 			}
 		} else
 		{
 			LOGGER.debug("register(): binding errors occured in the form: {}", newUser);
 			attr.addFlashAttribute("org.springframework.validation.BindingResult.newUser", binding);
-			attr.addFlashAttribute("newUser", newUser);
+			attr.addFlashAttribute(NEW_USER_KEY, newUser);
 			for(FieldError ferr:binding.getFieldErrors()) {
 				LOGGER.info("register(): field error: {}", ferr.getDefaultMessage());
 			}
