@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.azanx</groupId>
@@ -34,6 +35,11 @@
 				<version>2.17</version>
 				<configuration>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>3.4.0.905</version>
 			</plugin>
 		</plugins>
 	</build>
@@ -168,7 +174,8 @@
 			<version>1.4.196</version>
 			<scope>test</scope>
 		</dependency>
-<!-- 		below dependencies needed in test phase only as normally they are provided by application server -->
+		<!-- below dependencies needed in test phase only as normally they are 
+			provided by application server -->
 		<!-- JSR 341 reference implementation -->
 		<!-- <dependency> -->
 		<!-- <groupId>org.glassfish</groupId> -->
