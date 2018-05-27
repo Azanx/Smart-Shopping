@@ -44,7 +44,7 @@ Firstly you need to configure 'shopping_list' database and create user for datab
 ```CREATE DATABASE shopping_list default character set utf8 default collate utf8_bin;```<br/>
 3. Create database user for use by the application. User name and password can be configured in: `shopping_list/src/main/resources/db.properties` file.<br/>
 ```GRANT ALL PRIVILEGES ON shopping_list.* to devuser@'localhost' IDENTIFIED BY 'devuser'```<br/>
-4. You don't have to create the database schema, as it will be created automatically during app deployment. WARNING - with default settings present in the repository all data in the database will be dropped during every application startup! If you don't want this behaviour you have to change value of `hibernate.hbm2ddl.auto` property inside the `db.properties` file!<br/>
+4. If you wantt the database schema to be created automatically, change the `hibernate.hbm2ddl.auto` property inside `db.properties` file to `create`. WARNING - if you use the `create` setting, all the data in the database will be dropped during every application startup!</br> 
 #### Start the app
 1. From inside the project directory, copy the "shopping_list-x-x-x-SNAPSHOT.war" into the machine running tomcat. If you are on linux and tomcat is on remote machine, you might use scp:<br/>
 ```scp shopping_list-x-x-x-SNAPSHOT.war server_ip:```<br/>
