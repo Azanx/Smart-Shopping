@@ -24,144 +24,144 @@ import io.github.azanx.shopping_list.domain.exception.ListTooLongException;
 @Table(name = "list_item")
 public class ListItem {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-	@GenericGenerator(name = "native", strategy = "native")
-	private Long id;
-	
-	@Column(name = "parentList_Id", insertable=false, updatable=false)
-	private Long parentListId;
-	
-	@Column(nullable = false)
-	//number of the item inside of list, used for equals, hashcode. There rather won't be lists longer than 2^15-1 elements
-	private Short itemNo;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
+    private Long id;
 
-	@Column(name = "item_name", nullable = false)
-	private String itemName;
-	
-	private Boolean bought = false;
-	
-	@JsonIgnore
-	@ManyToOne
-	@JoinColumn(name="parentList_Id", referencedColumnName="id")
-	ShoppingList parentList;
+    @Column(name = "parentList_Id", insertable=false, updatable=false)
+    private Long parentListId;
 
-	protected ListItem() {
-	} 
+    @Column(nullable = false)
+    //number of the item inside of list, used for equals, hashcode. There rather won't be lists longer than 2^15-1 elements
+    private Short itemNo;
 
-	/**
-	 * if invoking this constructor directly remember to use parents {@link ShoppingList#addListItem(ListItem)} method immediately afterwards
-	 * @param itemname name of the new list item
-	 * @param parentList list owning this item
-	 */
-	public ListItem(String itemname, ShoppingList parentList) {
-		super();
-		this.itemName = itemname;
-		this.parentList = parentList;
-		//check if collection won't grow over allowed limit (max value for itemNo)  
-		if (parentList.getListItems().size()+1 > Short.MAX_VALUE) {
-			throw new ListTooLongException(ListTooLongException.listType.ITEM_LIST, parentList.getId());
-		} else
-		this.itemNo = (short) (parentList.getListItems().size()+1);
-		
-		//TODO reformat service to not use this constructor and delete it
-	}
-	
-	/**
-	 * @param itemName name of the new list item
-	 * @param parentList list owning this item
-	 * @param itemNo
-	 */
-	protected ListItem(String itemName, ShoppingList parentList, Short itemNo) {
-		this.itemName = itemName;
-		this.itemNo = itemNo;
-		this.parentList = parentList;
-	}
+    @Column(name = "item_name", nullable = false)
+    private String itemName;
 
-	public Long getId() {
-		return id;
-	}
+    private Boolean bought = false;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name="parentList_Id", referencedColumnName="id")
+    ShoppingList parentList;
 
-	public String getItemName() {
-		return itemName;
-	}
+    protected ListItem() {
+    }
 
-	public void setItemName(String itemname) {
-		this.itemName = itemname;
-	}
+    /**
+     * if invoking this constructor directly remember to use parents {@link ShoppingList#addListItem(ListItem)} method immediately afterwards
+     * @param itemname name of the new list item
+     * @param parentList list owning this item
+     */
+    public ListItem(String itemname, ShoppingList parentList) {
+        super();
+        this.itemName = itemname;
+        this.parentList = parentList;
+        //check if collection won't grow over allowed limit (max value for itemNo)
+        if (parentList.getListItems().size()+1 > Short.MAX_VALUE) {
+            throw new ListTooLongException(ListTooLongException.listType.ITEM_LIST, parentList.getId());
+        } else
+        this.itemNo = (short) (parentList.getListItems().size()+1);
 
-	public ShoppingList getParentList() {
-		return parentList;
-	}
+        //TODO reformat service to not use this constructor and delete it
+    }
 
-	public void setParentList(ShoppingList parentList) {
-		this.parentList = parentList;
-	}
-	
-	public Short getItemNo() {
-		return itemNo;
-	}
+    /**
+     * @param itemName name of the new list item
+     * @param parentList list owning this item
+     * @param itemNo
+     */
+    protected ListItem(String itemName, ShoppingList parentList, Short itemNo) {
+        this.itemName = itemName;
+        this.itemNo = itemNo;
+        this.parentList = parentList;
+    }
 
-	public void setItemNo(Short itemNo) {
-		this.itemNo = itemNo;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((itemNo == null) ? 0 : itemNo.hashCode());
-		//no need for null checks as parentList cannot be null, if it is - better to get NullPointerException
-		//TODO readd nullchecks when finished - this method generally shouldn't throw exceptions
-		result = prime * result + parentList.hashCode();
-		return result;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof ListItem))
-			return false;
-		ListItem other = (ListItem) obj;
-		if (itemNo == null) {
-			if (other.itemNo != null)
-				return false;
-		} else if (!itemNo.equals(other.itemNo))
-			return false;
-		if (parentList == null) {
-			if (other.parentList != null)
-				return false;
-		} else if (!parentList.equals(other.parentList))
-			return false;
-		return true;
-	}
+    public String getItemName() {
+        return itemName;
+    }
 
-	public Long getParentListId() {
-		return parentListId;
-	}
+    public void setItemName(String itemname) {
+        this.itemName = itemname;
+    }
 
-	public void setParentListId(Long parentListId) {
-		this.parentListId = parentListId;
-	}
+    public ShoppingList getParentList() {
+        return parentList;
+    }
 
-	public Boolean getBought() {
-		return bought;
-	}
+    public void setParentList(ShoppingList parentList) {
+        this.parentList = parentList;
+    }
 
-	public void setBought(Boolean bought) {
-		this.bought = bought;
-	}
+    public Short getItemNo() {
+        return itemNo;
+    }
 
-	@Override
-	public String toString() {
-		return "ListItem [id=" + id + ", parentListId=" + parentListId + ", itemNo=" + itemNo + ", itemName=" + itemName
-				+ ", bought=" + bought + "]";
-	}	
+    public void setItemNo(Short itemNo) {
+        this.itemNo = itemNo;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((itemNo == null) ? 0 : itemNo.hashCode());
+        //no need for null checks as parentList cannot be null, if it is - better to get NullPointerException
+        //TODO readd nullchecks when finished - this method generally shouldn't throw exceptions
+        result = prime * result + parentList.hashCode();
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof ListItem))
+            return false;
+        ListItem other = (ListItem) obj;
+        if (itemNo == null) {
+            if (other.itemNo != null)
+                return false;
+        } else if (!itemNo.equals(other.itemNo))
+            return false;
+        if (parentList == null) {
+            if (other.parentList != null)
+                return false;
+        } else if (!parentList.equals(other.parentList))
+            return false;
+        return true;
+    }
+
+    public Long getParentListId() {
+        return parentListId;
+    }
+
+    public void setParentListId(Long parentListId) {
+        this.parentListId = parentListId;
+    }
+
+    public Boolean getBought() {
+        return bought;
+    }
+
+    public void setBought(Boolean bought) {
+        this.bought = bought;
+    }
+
+    @Override
+    public String toString() {
+        return "ListItem [id=" + id + ", parentListId=" + parentListId + ", itemNo=" + itemNo + ", itemName=" + itemName
+                + ", bought=" + bought + "]";
+    }
 }

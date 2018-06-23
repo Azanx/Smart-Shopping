@@ -11,5 +11,5 @@ import io.github.azanx.shopping_list.domain.AppUser;
  *
  */
 public interface AppUserRepository extends CrudRepository<AppUser, Long> {
-	Optional<AppUser> findByUserName(String userName);
+    Optional<AppUser> findByUserName(String userName);
 }

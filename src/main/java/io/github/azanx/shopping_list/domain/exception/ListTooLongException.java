@@ -15,41 +15,41 @@ import io.github.azanx.shopping_list.controller.exception.MessageableException;
  */
 public class ListTooLongException  extends RuntimeException implements MessageableException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -4162895203034676713L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = -4162895203034676713L;
 
-	public enum listType {
-		SHOPPING_LIST,
-		ITEM_LIST
-	}
-	
-	private final long listId; 
-	private final listType type;
-	private final Map<String, String> parameters;
+    public enum listType {
+        SHOPPING_LIST,
+        ITEM_LIST
+    }
 
-	public ListTooLongException(listType type, long listId) {
-		super("List too long! Requested list size is greater than maximum of '" + Short.MAX_VALUE +"' for '" + type + " with ID: '" + listId);
-		this.listId = listId;
-		this.type = type;
-		parameters = new HashMap<>();
-		parameters.put("listId", Long.toString(listId));
-		parameters.put("listType", type.toString());
-		parameters.put("message", this.getMessage());
-		
-	}
-	
-	public long getListId() {
-		return listId;
-	}
+    private final long listId;
+    private final listType type;
+    private final Map<String, String> parameters;
 
-	public listType getType() {
-		return type;
-	}
+    public ListTooLongException(listType type, long listId) {
+        super("List too long! Requested list size is greater than maximum of '" + Short.MAX_VALUE +"' for '" + type + " with ID: '" + listId);
+        this.listId = listId;
+        this.type = type;
+        parameters = new HashMap<>();
+        parameters.put("listId", Long.toString(listId));
+        parameters.put("listType", type.toString());
+        parameters.put("message", this.getMessage());
 
-	@Override
-	public Map<String, String> getParameters() {
-		return parameters;
-	}
+    }
+
+    public long getListId() {
+        return listId;
+    }
+
+    public listType getType() {
+        return type;
+    }
+
+    @Override
+    public Map<String, String> getParameters() {
+        return parameters;
+    }
 }

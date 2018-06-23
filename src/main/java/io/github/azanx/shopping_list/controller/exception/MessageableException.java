@@ -13,9 +13,9 @@ import java.util.Map;
 
 public interface MessageableException {
 
-	/**
-	 * Get Parameters of this exception
-	 * @return Map of exception parameters and their values
-	 */
-	public Map<String,String> getParameters();
+    /**
+     * Get Parameters of this exception
+     * @return Map of exception parameters and their values
+     */
+    public Map<String,String> getParameters();
 }

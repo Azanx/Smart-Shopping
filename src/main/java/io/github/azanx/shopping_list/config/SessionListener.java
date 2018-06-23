@@ -16,26 +16,26 @@ import org.slf4j.LoggerFactory;
  */
 public class SessionListener implements HttpSessionListener{
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(SessionListener.class);
-	private final int maxInactiveInterval;
-	
-	
-	
-	public SessionListener(int maxInactiveInterval) {
-		this.maxInactiveInterval = maxInactiveInterval;
-	}
+    private static final Logger LOGGER = LoggerFactory.getLogger(SessionListener.class);
+    private final int maxInactiveInterval;
 
-	@Override
-	public void sessionCreated(HttpSessionEvent se) {
-		HttpSession session = se.getSession();
-		session.setMaxInactiveInterval(maxInactiveInterval);
-		LOGGER.debug("New session started, ID: {}, maxInactiveInterval (in seconds): {}", session.getId(), maxInactiveInterval);
-	}
 
-	@Override
-	public void sessionDestroyed(HttpSessionEvent se) {
-		HttpSession session = se.getSession();
-		LOGGER.debug("Session destroyed, ID: {}", session.getId());
-	}
+
+    public SessionListener(int maxInactiveInterval) {
+        this.maxInactiveInterval = maxInactiveInterval;
+    }
+
+    @Override
+    public void sessionCreated(HttpSessionEvent se) {
+        HttpSession session = se.getSession();
+        session.setMaxInactiveInterval(maxInactiveInterval);
+        LOGGER.debug("New session started, ID: {}, maxInactiveInterval (in seconds): {}", session.getId(), maxInactiveInterval);
+    }
+
+    @Override
+    public void sessionDestroyed(HttpSessionEvent se) {
+        HttpSession session = se.getSession();
+        LOGGER.debug("Session destroyed, ID: {}", session.getId());
+    }
 
 }

@@ -14,93 +14,93 @@ import javax.validation.constraints.NotBlank;
  */
 public class ShoppingListDTO {
 
-	private Long id;
-	
-	private String ownerName;
+    private Long id;
 
-	//number of the list inside of user, used for equals, hashcode. There rather won't be lists longer than 2^15-1 elements
-	private Short listNo;
-	
-	@NotBlank(message="*In order to add a list you must assign it a name!")
-	private String listName;
-	
-	//not using set as itemNo used for equality/hashCode will be assigned by @Service class, used to retrieve new items from form
-	private List<ListItemDTO> listItems;
-	
-	/**
-	 * Creates object without initialising listItems list
-	 */
-	public ShoppingListDTO() {
-	}
-	
-	/**
-	 * Creates object and initialise listItems list
-	 * @param capacity
-	 */
-	public ShoppingListDTO(int capacity) {
-		listItems = new ArrayList<>(capacity);
-		while(listItems.size()<capacity)
-			listItems.add(new ListItemDTO());
-	}
+    private String ownerName;
 
-	public ShoppingListDTO(String ownerName, int capacity) {
-		this(capacity);
-		this.ownerName = ownerName;
-	}
-	
-	public ShoppingListDTO(String ownerName, Long listId, int capacity) {
-		this(ownerName, capacity);
-		this.id = listId;
-	}
-	
-	/**
-	 * Converts ShoppingList into ShoppingListDTO. Doesn't initialize listItems!
-	 * @param list ShoppingList to convert into DTO
-	 */
-	public ShoppingListDTO(ShoppingList list) {
-		this.id = list.getId();
-		this.ownerName = list.getOwnerUserName();
-		this.listNo = list.getListNo();
-		this.listName = list.getListName();
-	}
+    //number of the list inside of user, used for equals, hashcode. There rather won't be lists longer than 2^15-1 elements
+    private Short listNo;
 
-	public Long getId() {
-		return id;
-	}
+    @NotBlank(message="*In order to add a list you must assign it a name!")
+    private String listName;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    //not using set as itemNo used for equality/hashCode will be assigned by @Service class, used to retrieve new items from form
+    private List<ListItemDTO> listItems;
 
-	public String getOwnerName() {
-		return ownerName;
-	}
+    /**
+     * Creates object without initialising listItems list
+     */
+    public ShoppingListDTO() {
+    }
 
-	public void setOwnerName(String ownerName) {
-		this.ownerName = ownerName;
-	}
+    /**
+     * Creates object and initialise listItems list
+     * @param capacity
+     */
+    public ShoppingListDTO(int capacity) {
+        listItems = new ArrayList<>(capacity);
+        while(listItems.size()<capacity)
+            listItems.add(new ListItemDTO());
+    }
 
-	public Short getListNo() {
-		return listNo;
-	}
+    public ShoppingListDTO(String ownerName, int capacity) {
+        this(capacity);
+        this.ownerName = ownerName;
+    }
 
-	public void setListNo(Short listNo) {
-		this.listNo = listNo;
-	}
+    public ShoppingListDTO(String ownerName, Long listId, int capacity) {
+        this(ownerName, capacity);
+        this.id = listId;
+    }
 
-	public String getListName() {
-		return listName;
-	}
+    /**
+     * Converts ShoppingList into ShoppingListDTO. Doesn't initialize listItems!
+     * @param list ShoppingList to convert into DTO
+     */
+    public ShoppingListDTO(ShoppingList list) {
+        this.id = list.getId();
+        this.ownerName = list.getOwnerUserName();
+        this.listNo = list.getListNo();
+        this.listName = list.getListName();
+    }
 
-	public void setListName(String listName) {
-		this.listName = listName;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public List<ListItemDTO> getListItems() {
-		return listItems;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setListItems(List<ListItemDTO> listItems) {
-		this.listItems = listItems;
-	}
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
+
+    public Short getListNo() {
+        return listNo;
+    }
+
+    public void setListNo(Short listNo) {
+        this.listNo = listNo;
+    }
+
+    public String getListName() {
+        return listName;
+    }
+
+    public void setListName(String listName) {
+        this.listName = listName;
+    }
+
+    public List<ListItemDTO> getListItems() {
+        return listItems;
+    }
+
+    public void setListItems(List<ListItemDTO> listItems) {
+        this.listItems = listItems;
+    }
 }

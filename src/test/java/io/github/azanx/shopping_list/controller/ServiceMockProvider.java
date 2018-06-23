@@ -21,15 +21,15 @@ import io.github.azanx.shopping_list.service.RepositoryService;
 @Configuration
 public class ServiceMockProvider {
 
-	@Bean
-	@Primary
-	public RepositoryService repositoryService() {
-		return Mockito.mock(RepositoryService.class);
-	}
-	
-	@Bean
-	@Primary
-	public AppUserDetailsService appUserDetailsService() {
-		return Mockito.mock(AppUserDetailsService.class);
-	}
+    @Bean
+    @Primary
+    public RepositoryService repositoryService() {
+        return Mockito.mock(RepositoryService.class);
+    }
+
+    @Bean
+    @Primary
+    public AppUserDetailsService appUserDetailsService() {
+        return Mockito.mock(AppUserDetailsService.class);
+    }
 }

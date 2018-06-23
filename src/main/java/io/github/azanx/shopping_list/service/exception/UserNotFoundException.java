@@ -12,29 +12,29 @@ import io.github.azanx.shopping_list.controller.exception.MessageableException;
  */
 public class UserNotFoundException extends RuntimeException implements MessageableException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -4321875051376072725L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = -4321875051376072725L;
 
-	private final String userName;
-	private final HashMap<String, String> parameters;
+    private final String userName;
+    private final HashMap<String, String> parameters;
 
-	public UserNotFoundException(String userName) {
-		super("Couldn't find user: '" + userName + "'");
-		this.userName = userName;
-		
-		parameters = new HashMap<>();
-		parameters.put("userName", userName);
-		parameters.put("message", this.getMessage());
-	}
+    public UserNotFoundException(String userName) {
+        super("Couldn't find user: '" + userName + "'");
+        this.userName = userName;
 
-	public String getUserName() {
-		return userName;
-	}
+        parameters = new HashMap<>();
+        parameters.put("userName", userName);
+        parameters.put("message", this.getMessage());
+    }
 
-	@Override
-	public Map<String, String> getParameters() {
-		return this.parameters;
-	}
+    public String getUserName() {
+        return userName;
+    }
+
+    @Override
+    public Map<String, String> getParameters() {
+        return this.parameters;
+    }
 }

@@ -21,22 +21,22 @@ import javax.servlet.http.HttpServletResponseWrapper;
  */
 public class DisableUrlSessionFilter implements Filter {
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
-	 */
-	@Override
-	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
-			throws IOException, ServletException {
-		if(servletRequest instanceof HttpServletRequest) {
-			servletResponse= new HttpServletResponseWrapper((HttpServletResponse) servletResponse) {
-				@Override
-				public String encodeRedirectURL(String url) {return url;}
-				@Override
-				public String encodeURL(String url) {return url;}
-			};
-		}
-		
-		filterChain.doFilter(servletRequest, servletResponse);
-	}
+    /* (non-Javadoc)
+     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
+     */
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+            throws IOException, ServletException {
+        if(servletRequest instanceof HttpServletRequest) {
+            servletResponse= new HttpServletResponseWrapper((HttpServletResponse) servletResponse) {
+                @Override
+                public String encodeRedirectURL(String url) {return url;}
+                @Override
+                public String encodeURL(String url) {return url;}
+            };
+        }
+
+        filterChain.doFilter(servletRequest, servletResponse);
+    }
 
 }

@@ -9,70 +9,70 @@ package io.github.azanx.shopping_list.domain;
  */
 public class ListItemDTO {
 
-	private Long id;
-	
-	//number of the item inside of list, used for equals, hashcode. There rather won't be lists longer than 2^15-1 elements
-	private Short itemNo;
+    private Long id;
 
-	private String itemName;
-	
-	private Long parentListId;
-	
-	private Boolean bought = false;
+    //number of the item inside of list, used for equals, hashcode. There rather won't be lists longer than 2^15-1 elements
+    private Short itemNo;
 
-	public ListItemDTO() {
-		itemName = "";
-	}
-	
-	public ListItemDTO(String itemName) {
-		this.itemName = itemName;
-	}
-	
-	public ListItemDTO(ListItem item) {
-		this.id = item.getId();
-		this.itemNo = item.getItemNo();
-		this.itemName = item.getItemName();
-		this.parentListId = item.getParentListId();
-		this.bought = item.getBought();
-	}
+    private String itemName;
 
-	public Long getId() {
-		return id;
-	}
+    private Long parentListId;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    private Boolean bought = false;
 
-	public Short getItemNo() {
-		return itemNo;
-	}
+    public ListItemDTO() {
+        itemName = "";
+    }
 
-	public void setItemNo(Short itemNo) {
-		this.itemNo = itemNo;
-	}
+    public ListItemDTO(String itemName) {
+        this.itemName = itemName;
+    }
 
-	public String getItemName() {
-		return itemName;
-	}
+    public ListItemDTO(ListItem item) {
+        this.id = item.getId();
+        this.itemNo = item.getItemNo();
+        this.itemName = item.getItemName();
+        this.parentListId = item.getParentListId();
+        this.bought = item.getBought();
+    }
 
-	public void setItemName(String itemName) {
-		this.itemName = itemName;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public Long getParentListId() {
-		return parentListId;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setParentListId(Long parentListId) {
-		this.parentListId = parentListId;
-	}
+    public Short getItemNo() {
+        return itemNo;
+    }
 
-	public Boolean getBought() {
-		return bought;
-	}
+    public void setItemNo(Short itemNo) {
+        this.itemNo = itemNo;
+    }
 
-	public void setBought(Boolean bought) {
-		this.bought = bought;
-	} 
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
+
+    public Long getParentListId() {
+        return parentListId;
+    }
+
+    public void setParentListId(Long parentListId) {
+        this.parentListId = parentListId;
+    }
+
+    public Boolean getBought() {
+        return bought;
+    }
+
+    public void setBought(Boolean bought) {
+        this.bought = bought;
+    }
 }

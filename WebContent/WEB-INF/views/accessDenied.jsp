@@ -10,10 +10,10 @@
 </head>
 <spring:url var="homeUrl" value="/" />
 <body>
-	<div align="center">
-		<h1>Error 403</h1>
-		<h2>You do not have permission to view this page</h2>
-		<a href="${homeUrl}">Go back to homepage</a>
-	</div>
+    <div align="center">
+        <h1>Error 403</h1>
+        <h2>You do not have permission to view this page</h2>
+        <a href="${homeUrl}">Go back to homepage</a>
+    </div>
 </body>
 </html>

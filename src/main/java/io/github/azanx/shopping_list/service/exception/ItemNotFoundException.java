@@ -12,45 +12,45 @@ import io.github.azanx.shopping_list.controller.exception.MessageableException;
  */
 public class ItemNotFoundException extends RuntimeException implements MessageableException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -4321875051376072725L;
-	private final String userName;
-	private final short itemNo; //-1 if there are no items
-	private final HashMap<String, String> parameters;
+    /**
+     *
+     */
+    private static final long serialVersionUID = -4321875051376072725L;
+    private final String userName;
+    private final short itemNo; //-1 if there are no items
+    private final HashMap<String, String> parameters;
 
-	public ItemNotFoundException(short itemNo, String userName) {
-		super("Couldn't find list '" + itemNo + "' for user: '" + userName + "'");
-		this.userName = userName;
-		this.itemNo = itemNo;
+    public ItemNotFoundException(short itemNo, String userName) {
+        super("Couldn't find list '" + itemNo + "' for user: '" + userName + "'");
+        this.userName = userName;
+        this.itemNo = itemNo;
 
-		parameters = new HashMap<>();
-		parameters.put("userName", userName);
-		parameters.put("listId", Short.toString(itemNo));
-		parameters.put("message", this.getMessage());
-	}
-	
-	public ItemNotFoundException(String userName) {
-		super("Couldn't find any list for user: '" + userName + "'");
-		this.userName = userName;
-		this.itemNo = -1;
-		parameters = new HashMap<>();
-		parameters.put("userName", userName);
-		parameters.put("listId", Short.toString(itemNo));
-		parameters.put("message", this.getMessage());
-	}
+        parameters = new HashMap<>();
+        parameters.put("userName", userName);
+        parameters.put("listId", Short.toString(itemNo));
+        parameters.put("message", this.getMessage());
+    }
 
-	public String getUserName() {
-		return userName;
-	}
+    public ItemNotFoundException(String userName) {
+        super("Couldn't find any list for user: '" + userName + "'");
+        this.userName = userName;
+        this.itemNo = -1;
+        parameters = new HashMap<>();
+        parameters.put("userName", userName);
+        parameters.put("listId", Short.toString(itemNo));
+        parameters.put("message", this.getMessage());
+    }
 
-	public long getItemNo() {
-		return itemNo;
-	}
+    public String getUserName() {
+        return userName;
+    }
 
-	@Override
-	public Map<String, String> getParameters() {
-		return this.parameters;
-	}
+    public long getItemNo() {
+        return itemNo;
+    }
+
+    @Override
+    public Map<String, String> getParameters() {
+        return this.parameters;
+    }
 }

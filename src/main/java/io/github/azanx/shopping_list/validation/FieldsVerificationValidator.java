@@ -15,29 +15,29 @@ import org.springframework.beans.BeanWrapperImpl;
  */
 public class FieldsVerificationValidator implements ConstraintValidator<FieldsVerification, Object> {
 
-	private String field;
-	private String fieldMatch;
+    private String field;
+    private String fieldMatch;
 
-	@Override
-	public void initialize(FieldsVerification constraintAnnotation) {
-		field = constraintAnnotation.field();
-		fieldMatch = constraintAnnotation.fieldMatch();
-	}
+    @Override
+    public void initialize(FieldsVerification constraintAnnotation) {
+        field = constraintAnnotation.field();
+        fieldMatch = constraintAnnotation.fieldMatch();
+    }
 
-	@Override
-	public boolean isValid(Object value, ConstraintValidatorContext context) {
-		Object fieldValue = new BeanWrapperImpl(value).getPropertyValue(field);
-		Object fieldMatchValue = new BeanWrapperImpl(value).getPropertyValue(fieldMatch);
-		boolean result = false;
-		
-		if(fieldValue != null)
-		{
-			//Passwords are kept as char arrays, other values mostly as Strings
-			if(fieldValue instanceof char[])
-				result =  Arrays.equals((char[])fieldValue, (char[])fieldMatchValue);
-			else result = fieldValue.equals(fieldMatchValue);
-		} else
-			result = fieldMatchValue == null;
-		return result;
-	}
+    @Override
+    public boolean isValid(Object value, ConstraintValidatorContext context) {
+        Object fieldValue = new BeanWrapperImpl(value).getPropertyValue(field);
+        Object fieldMatchValue = new BeanWrapperImpl(value).getPropertyValue(fieldMatch);
+        boolean result = false;
+
+        if(fieldValue != null)
+        {
+            //Passwords are kept as char arrays, other values mostly as Strings
+            if(fieldValue instanceof char[])
+                result =  Arrays.equals((char[])fieldValue, (char[])fieldMatchValue);
+            else result = fieldValue.equals(fieldMatchValue);
+        } else
+            result = fieldMatchValue == null;
+        return result;
+    }
 }

@@ -26,46 +26,46 @@ import io.github.azanx.shopping_list.service.AppUserDetailsService;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-	
-	@Autowired
-	private AppUserDetailsService userDetailsService;
-	
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
-	
-	@Bean
-	DaoAuthenticationProvider authenticationProvider() {
-		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-		authProvider.setUserDetailsService(userDetailsService);
-		authProvider.setPasswordEncoder(passwordEncoder());
-		return authProvider;
-	}
-	
-	@Bean
-	public AccessDeniedHandler accessDeniedHandler(){
-		AccessDeniedHandlerCustomImpl handler = new AccessDeniedHandlerCustomImpl();
-		handler.setErrorPage("/accessDenied");
-		return handler;
-	}
-	
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http//
-			.authorizeRequests()//
-				.antMatchers("/register", "/resources/**", "/login", "/accessDenied").permitAll()//
-				.anyRequest().authenticated()//
-				.and()//
-			.formLogin()//
-				.loginPage("/login")//
-				.usernameParameter("userName")//
-				.passwordParameter("password")//
-				.permitAll()//
-				.and()//
-			.exceptionHandling()//
-				.accessDeniedHandler(accessDeniedHandler())//
-				.and()//
-			.httpBasic();//
-	}
+
+    @Autowired
+    private AppUserDetailsService userDetailsService;
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler(){
+        AccessDeniedHandlerCustomImpl handler = new AccessDeniedHandlerCustomImpl();
+        handler.setErrorPage("/accessDenied");
+        return handler;
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http//
+            .authorizeRequests()//
+                .antMatchers("/register", "/resources/**", "/login", "/accessDenied").permitAll()//
+                .anyRequest().authenticated()//
+                .and()//
+            .formLogin()//
+                .loginPage("/login")//
+                .usernameParameter("userName")//
+                .passwordParameter("password")//
+                .permitAll()//
+                .and()//
+            .exceptionHandling()//
+                .accessDeniedHandler(accessDeniedHandler())//
+                .and()//
+            .httpBasic();//
+    }
 }

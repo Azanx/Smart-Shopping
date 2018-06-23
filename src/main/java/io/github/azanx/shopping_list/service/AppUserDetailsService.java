@@ -21,25 +21,25 @@ import io.github.azanx.shopping_list.repository.AppUserRepository;
 @Service
 public class AppUserDetailsService implements UserDetailsService {
 
-	private AppUserRepository userRepository;
+    private AppUserRepository userRepository;
 
-	@Autowired
-	public AppUserDetailsService(AppUserRepository userRepository) {
-		this.userRepository = userRepository;
-	}
+    @Autowired
+    public AppUserDetailsService(AppUserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.springframework.security.core.userdetails.UserDetailsService#
-	 * loadUserByUsername(java.lang.String)
-	 */
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		return new AppUserSecurityPrincipal(// 
-				userRepository.findByUserName(username)//
-					.orElseThrow(//
-						() -> new UsernameNotFoundException(username)));//
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.springframework.security.core.userdetails.UserDetailsService#
+     * loadUserByUsername(java.lang.String)
+     */
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return new AppUserSecurityPrincipal(//
+                userRepository.findByUserName(username)//
+                    .orElseThrow(//
+                        () -> new UsernameNotFoundException(username)));//
+    }
 
 }

@@ -19,29 +19,29 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
  */
 public class RedirectWhenAuthenticatedInterceptor extends HandlerInterceptorAdapter {
 
-	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-			throws Exception {
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws Exception {
 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		boolean isAuthenticated;
-		if (authentication != null) {
-			isAuthenticated = authentication instanceof AnonymousAuthenticationToken ? false
-					: authentication.isAuthenticated();
-			if (isAuthenticated) {
-				response.setContentType("text/plain");
-				sendRedirect(request, response);
-				return false; // no need to proceed with the chain as we already dealt with the response
-			}
-		}
-		return true;
-	}
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAuthenticated;
+        if (authentication != null) {
+            isAuthenticated = authentication instanceof AnonymousAuthenticationToken ? false
+                    : authentication.isAuthenticated();
+            if (isAuthenticated) {
+                response.setContentType("text/plain");
+                sendRedirect(request, response);
+                return false; // no need to proceed with the chain as we already dealt with the response
+            }
+        }
+        return true;
+    }
 
-	private void sendRedirect(HttpServletRequest request, HttpServletResponse response) {
+    private void sendRedirect(HttpServletRequest request, HttpServletResponse response) {
 
-		String encodedRedirectURL = response.encodeRedirectURL(request.getContextPath() + "/");
-		response.setStatus(HttpStatus.TEMPORARY_REDIRECT.value());
-		response.setHeader("Location", encodedRedirectURL);
-	}
+        String encodedRedirectURL = response.encodeRedirectURL(request.getContextPath() + "/");
+        response.setStatus(HttpStatus.TEMPORARY_REDIRECT.value());
+        response.setHeader("Location", encodedRedirectURL);
+    }
 
 }

@@ -54,154 +54,154 @@ import io.github.azanx.shopping_list.service.exception.DuplicateUserException;
 @WebAppConfiguration
 public class MvcControllerRegistrationTest {
 
-	@Autowired
-	WebApplicationContext webApplicationContext;
-	
-	@Autowired
-	RepositoryService repositoryService;
-	
-	private MockMvc mockMvc;
-	
-	@Before
-	public void setup() {
-		
-		this.mockMvc = MockMvcBuilders//
-				.webAppContextSetup(webApplicationContext)//
-				.build();
-	}
-	
-	@After
-	public void cleanup() {
-		reset(repositoryService); // RepositoryService Mock Bean is a singleton,
-									// I want addUser to behave differently in
-									// different tests so need to reset it
-		//could've used @FixMethodOrder and multiple thenReturn in mock class,
-		//but better not to rely on test execution order
-	}
+    @Autowired
+    WebApplicationContext webApplicationContext;
 
-	/**
-	 * checking if test configured properly
-	 */
-	@Test
-	public void webApplicationContext_ProvidesServletContextAndMvcController() {
-		ServletContext servletContext = webApplicationContext.getServletContext();
+    @Autowired
+    RepositoryService repositoryService;
 
-		assertNotNull(servletContext);
-		assertTrue(servletContext instanceof MockServletContext);
-		assertNotNull(webApplicationContext.getBean("mvcController"));
-	}
+    private MockMvc mockMvc;
 
-	@Test
-	public void registerForm_ForValidDataSucceeds() throws Exception {
-		RequestBuilder request = preparePostForRegisterForm("userName", "validUserName");
-		request = performPostRedirect(request);
-		mockMvc.perform(request)//
-				.andDo(print())//
-				.andExpect(status().isOk())//
-				.andExpect(model().attributeHasNoErrors("newUser"))//
-				.andExpect(model().attributeExists("registered"))//
-				.andExpect(model().attribute("registered", true));
-	}
+    @Before
+    public void setup() {
 
-	@Test
-	public void registerForm_tooShortUserNameFails() throws Exception {
-		registerForm_checkField("userName", "");
-		registerForm_checkField("userName", "1234");
-	}
+        this.mockMvc = MockMvcBuilders//
+                .webAppContextSetup(webApplicationContext)//
+                .build();
+    }
 
-	@Test
-	public void registerForm_notValidEmailFails() throws Exception {
-		registerForm_checkField("email", "");
-		registerForm_checkField("email", "test");
-		registerForm_checkField("email", "test@test");
-		registerForm_checkField("email", "test.pl");
-	}
+    @After
+    public void cleanup() {
+        reset(repositoryService); // RepositoryService Mock Bean is a singleton,
+                                    // I want addUser to behave differently in
+                                    // different tests so need to reset it
+        //could've used @FixMethodOrder and multiple thenReturn in mock class,
+        //but better not to rely on test execution order
+    }
 
-	@Test
-	public void registerForm_notValidPasswordFails() throws Exception {
-		registerForm_checkField("password", "");
-		registerForm_checkField("password", "12");
-	}
+    /**
+     * checking if test configured properly
+     */
+    @Test
+    public void webApplicationContext_ProvidesServletContextAndMvcController() {
+        ServletContext servletContext = webApplicationContext.getServletContext();
 
-	@Test
-	public void registerForm_differentPasswordsFails() throws Exception {
-		// preparePostForRegisterForm sets passwordValidation to 123456 so
-		// setting another valid value
-		RequestBuilder request = preparePostForRegisterForm("password", "01234567");
-		request = performPostRedirect(request);
-		mockMvc.perform(request)//
-				.andDo(print())//
-				.andExpect(status().isOk())//
-				.andExpect(globalBindingErrors().hasGlobalErrorCode("newUser", "FieldsVerification"))
-				//field and its verification field have different values
-				.andExpect(model().hasErrors());//
-	}
-	
-	@Test
-	public void registerForm_ifDuplicateUserFails() throws Exception {
-		when(repositoryService.addUser(any())).thenThrow(new DuplicateUserException("test"));
-		RequestBuilder request = preparePostForRegisterForm("userName", "validUserName");
-		request = performPostRedirect(request);
-		mockMvc.perform(request)//
-				.andDo(print())//
-				.andExpect(model().attributeHasFieldErrorCode("newUser", "userName", "DuplicateUser"));
-	}
+        assertNotNull(servletContext);
+        assertTrue(servletContext instanceof MockServletContext);
+        assertNotNull(webApplicationContext.getBean("mvcController"));
+    }
 
-	/**
-	 * Checks if posting register form for given field and value has validation
-	 * error
-	 * 
-	 * @param fieldName
-	 *            name of the AppUserDTO field under test
-	 * @param fieldValue
-	 *            value of the field
-	 */
-	private void registerForm_checkField(String fieldName, String fieldValue) throws Exception {
-		RequestBuilder request = preparePostForRegisterForm(fieldName, fieldValue);
-		request = performPostRedirect(request);
-		mockMvc.perform(request)//
-				.andDo(print())//
-				.andExpect(status().isOk())//
-				.andExpect(model().attributeHasFieldErrors("newUser", fieldName));
-	}
+    @Test
+    public void registerForm_ForValidDataSucceeds() throws Exception {
+        RequestBuilder request = preparePostForRegisterForm("userName", "validUserName");
+        request = performPostRedirect(request);
+        mockMvc.perform(request)//
+                .andDo(print())//
+                .andExpect(status().isOk())//
+                .andExpect(model().attributeHasNoErrors("newUser"))//
+                .andExpect(model().attributeExists("registered"))//
+                .andExpect(model().attribute("registered", true));
+    }
 
-	/**
-	 * Prepare post statement for registering user, prepopulates params with
-	 * valid data and changes one parameter to given value
-	 * 
-	 * @param paramName
-	 *            name of AppUserDTO property
-	 * @param paramValue
-	 *            value of given property
-	 * @return RequestBuilder
-	 */
-	private RequestBuilder preparePostForRegisterForm(String paramName, String paramValue) {
-		MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
-		parameters.set("userName", "test1");
-		parameters.set("email", "test@test.pl");
-		parameters.set("password", "123456");
-		parameters.set("passwordVerification", "123456");
+    @Test
+    public void registerForm_tooShortUserNameFails() throws Exception {
+        registerForm_checkField("userName", "");
+        registerForm_checkField("userName", "1234");
+    }
 
-		// replace value for parameter given in arguments
-		parameters.set(paramName, paramValue);
+    @Test
+    public void registerForm_notValidEmailFails() throws Exception {
+        registerForm_checkField("email", "");
+        registerForm_checkField("email", "test");
+        registerForm_checkField("email", "test@test");
+        registerForm_checkField("email", "test.pl");
+    }
 
-		return post("/register")//
-				.params(parameters);
-	}
+    @Test
+    public void registerForm_notValidPasswordFails() throws Exception {
+        registerForm_checkField("password", "");
+        registerForm_checkField("password", "12");
+    }
 
-	/**
-	 * Performs given requests, checks if it performs redirection, then returns
-	 * new request containing flashAttributes from the redirection for further
-	 * testing
-	 * 
-	 * @param request
-	 *            request containing flash attributes to redirect method
-	 * @return RequestBuilder
-	 */
-	private RequestBuilder performPostRedirect(RequestBuilder request) throws Exception {
-		MvcResult postResult = mockMvc.perform(request)//
-				.andDo(print()).andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/register"))
-				.andReturn();
-		return MockMvcRequestBuilders.get("/register").flashAttrs(postResult.getFlashMap());
-	}
+    @Test
+    public void registerForm_differentPasswordsFails() throws Exception {
+        // preparePostForRegisterForm sets passwordValidation to 123456 so
+        // setting another valid value
+        RequestBuilder request = preparePostForRegisterForm("password", "01234567");
+        request = performPostRedirect(request);
+        mockMvc.perform(request)//
+                .andDo(print())//
+                .andExpect(status().isOk())//
+                .andExpect(globalBindingErrors().hasGlobalErrorCode("newUser", "FieldsVerification"))
+                //field and its verification field have different values
+                .andExpect(model().hasErrors());//
+    }
+
+    @Test
+    public void registerForm_ifDuplicateUserFails() throws Exception {
+        when(repositoryService.addUser(any())).thenThrow(new DuplicateUserException("test"));
+        RequestBuilder request = preparePostForRegisterForm("userName", "validUserName");
+        request = performPostRedirect(request);
+        mockMvc.perform(request)//
+                .andDo(print())//
+                .andExpect(model().attributeHasFieldErrorCode("newUser", "userName", "DuplicateUser"));
+    }
+
+    /**
+     * Checks if posting register form for given field and value has validation
+     * error
+     *
+     * @param fieldName
+     *            name of the AppUserDTO field under test
+     * @param fieldValue
+     *            value of the field
+     */
+    private void registerForm_checkField(String fieldName, String fieldValue) throws Exception {
+        RequestBuilder request = preparePostForRegisterForm(fieldName, fieldValue);
+        request = performPostRedirect(request);
+        mockMvc.perform(request)//
+                .andDo(print())//
+                .andExpect(status().isOk())//
+                .andExpect(model().attributeHasFieldErrors("newUser", fieldName));
+    }
+
+    /**
+     * Prepare post statement for registering user, prepopulates params with
+     * valid data and changes one parameter to given value
+     *
+     * @param paramName
+     *            name of AppUserDTO property
+     * @param paramValue
+     *            value of given property
+     * @return RequestBuilder
+     */
+    private RequestBuilder preparePostForRegisterForm(String paramName, String paramValue) {
+        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
+        parameters.set("userName", "test1");
+        parameters.set("email", "test@test.pl");
+        parameters.set("password", "123456");
+        parameters.set("passwordVerification", "123456");
+
+        // replace value for parameter given in arguments
+        parameters.set(paramName, paramValue);
+
+        return post("/register")//
+                .params(parameters);
+    }
+
+    /**
+     * Performs given requests, checks if it performs redirection, then returns
+     * new request containing flashAttributes from the redirection for further
+     * testing
+     *
+     * @param request
+     *            request containing flash attributes to redirect method
+     * @return RequestBuilder
+     */
+    private RequestBuilder performPostRedirect(RequestBuilder request) throws Exception {
+        MvcResult postResult = mockMvc.perform(request)//
+                .andDo(print()).andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/register"))
+                .andReturn();
+        return MockMvcRequestBuilders.get("/register").flashAttrs(postResult.getFlashMap());
+    }
 }

@@ -34,41 +34,41 @@ import io.github.azanx.shopping_list.controller.RedirectWhenAuthenticatedInterce
  */
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
-	@Autowired
-	private RequestMappingHandlerAdapter requestMappingHandlerAdapter;
-	
-	@PostConstruct
-	public void init() {
-		//disable setting requestAttributes (and whole model) during redirects as default behaviour
-	    requestMappingHandlerAdapter.setIgnoreDefaultModelOnRedirect(true);
-	}
-	
-	@Bean
-	public UrlBasedViewResolver urlBasedViewResolver() {
-		UrlBasedViewResolver resolver = new UrlBasedViewResolver();
-		resolver.setPrefix("/WEB-INF/views/");
-		resolver.setSuffix(".jsp");
-		resolver.setViewClass(JstlView.class);
-		return resolver;
-	}
+    @Autowired
+    private RequestMappingHandlerAdapter requestMappingHandlerAdapter;
 
-	@Override
-	public void addViewControllers(ViewControllerRegistry registry) {
-		registry.addViewController("/").setViewName("index");
-		registry.addViewController("/login").setViewName("login");
-		registry.addViewController("/accessDenied").setViewName("accessDenied");
-	}
+    @PostConstruct
+    public void init() {
+        //disable setting requestAttributes (and whole model) during redirects as default behaviour
+        requestMappingHandlerAdapter.setIgnoreDefaultModelOnRedirect(true);
+    }
 
-	@Override
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
-	}
+    @Bean
+    public UrlBasedViewResolver urlBasedViewResolver() {
+        UrlBasedViewResolver resolver = new UrlBasedViewResolver();
+        resolver.setPrefix("/WEB-INF/views/");
+        resolver.setSuffix(".jsp");
+        resolver.setViewClass(JstlView.class);
+        return resolver;
+    }
 
-	@Override
-	public void addInterceptors(InterceptorRegistry registry) {
-		//redirect to home page if authenticated user tries to access login or register pages
-		registry.addInterceptor(new RedirectWhenAuthenticatedInterceptor()).addPathPatterns("/login*", "/register*");
-	}
-	
-	
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/").setViewName("index");
+        registry.addViewController("/login").setViewName("login");
+        registry.addViewController("/accessDenied").setViewName("accessDenied");
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        //redirect to home page if authenticated user tries to access login or register pages
+        registry.addInterceptor(new RedirectWhenAuthenticatedInterceptor()).addPathPatterns("/login*", "/register*");
+    }
+
+
 }

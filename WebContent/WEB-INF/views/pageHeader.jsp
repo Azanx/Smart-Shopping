@@ -3,8 +3,8 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 Logged as:
 <spring:url var="url" value="/profile"/>
-	<a href="${url}"><c:out value="${userName}"/></a>
+    <a href="${url}"><c:out value="${userName}"/></a>
 <spring:url var="logoutUrl" value="/logout"/>
 <form:form action="${logoutUrl}">
-	<input type="submit" value="Logout" />
+    <input type="submit" value="Logout" />
 </form:form>

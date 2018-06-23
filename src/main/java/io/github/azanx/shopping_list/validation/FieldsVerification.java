@@ -22,16 +22,16 @@ import javax.validation.Payload;
 @Constraint(validatedBy = FieldsVerificationValidator.class)
 public @interface FieldsVerification {
 
-	String message() default "*Field values do not match";
-	String field();
-	String fieldMatch();
+    String message() default "*Field values do not match";
+    String field();
+    String fieldMatch();
 
-	Class<?>[] groups() default {};
-	Class<? extends Payload>[] payload() default {};
+    Class<?>[] groups() default {};
+    Class<? extends Payload>[] payload() default {};
 
-	@Retention(RUNTIME)
-	@Target(ElementType.TYPE)
-	@interface List {
-		FieldsVerification[] value();
-	}
+    @Retention(RUNTIME)
+    @Target(ElementType.TYPE)
+    @interface List {
+        FieldsVerification[] value();
+    }
 }
