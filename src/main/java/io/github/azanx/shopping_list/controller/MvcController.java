@@ -3,26 +3,6 @@
  */
 package io.github.azanx.shopping_list.controller;
 
-import java.security.Principal;
-import java.util.List;
-
-import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import io.github.azanx.shopping_list.domain.AppUser;
 import io.github.azanx.shopping_list.domain.AppUserDTO;
 import io.github.azanx.shopping_list.domain.ListItemDTO;
@@ -30,6 +10,25 @@ import io.github.azanx.shopping_list.domain.ShoppingList;
 import io.github.azanx.shopping_list.domain.ShoppingListDTO;
 import io.github.azanx.shopping_list.service.RepositoryService;
 import io.github.azanx.shopping_list.service.exception.DuplicateUserException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import java.security.Principal;
+import java.util.List;
 
 /**
  * @author Kamil Piwowarski
@@ -54,7 +53,7 @@ public class MvcController {
 
 	/**
 	 * Initialize controller and it's repository service
-	 * @param repositoryService used to communicate with DB repositories 
+	 * @param repositoryService used to communicate with DB repositories
 	 */
 	@Autowired
 	public MvcController(RepositoryService userService) {
@@ -79,17 +78,17 @@ public class MvcController {
 	 * Send user to home page, currently just redirect to "list" page showing
 	 * all his list. May change in future
 	 */
-	@RequestMapping(method = RequestMethod.GET)
+	@GetMapping()
 	public String home(Principal principal, Model model) {
 		LOGGER.debug("home() method of MvcController called for user: {}", principal.getName());
-		
+
 		return "redirect:list";
 	}
 
 	/**
 	 * Send user to a page showing all his lists
 	 */
-	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	@GetMapping("/list")
 	public ModelAndView showLists(Principal principal, Model model) {
 		LOGGER.debug("home() method of MvcController called for user: {}", principal.getName());
 
@@ -104,15 +103,15 @@ public class MvcController {
 
 	/**
 	 * adds new shopping list for the current user
-	 * 
+	 *
 	 * @param newList
 	 *            ShoppingListDTO with basic information about new list (must
 	 *            include list name)
 	 */
-	@RequestMapping(value = "/list", method = RequestMethod.POST)
+	@PostMapping("/list")
 	public String addList(Principal principal, @Valid @ModelAttribute(NEW_LIST_KEY) ShoppingListDTO newList, BindingResult binding, RedirectAttributes attr, HttpSession session) {
 		LOGGER.debug("addList() method of MvcController called for user: {}", principal.getName());
-		if(!binding.hasErrors()) 
+		if(!binding.hasErrors())
 			repositoryService.addShoppingListToUserByName(principal.getName(), newList.getListName());
 		else {
 			attr.addFlashAttribute("org.springframework.validation.BindingResult.newList", binding);
@@ -121,7 +120,7 @@ public class MvcController {
 				LOGGER.info("addList(): field error: {}", ferr.getDefaultMessage());
 			}
 		}
-		
+
 		return "redirect:/list";
 	}
 
@@ -129,10 +128,10 @@ public class MvcController {
 	 * Delete given ShoppingList of the user
 	 * @param listToDelete ShoppingList to delete for this user
 	 */
-	@RequestMapping(value = "/list/delete", method = RequestMethod.POST)
+	@PostMapping("/list/delete")
 	public String deleteList(Principal principal, @ModelAttribute("listToDelete") ShoppingListDTO listToDelete) {
 		LOGGER.debug("deleteList() method of MvcController called for user: {} list: {}", principal.getName(), listToDelete.getId());
-		
+
 		repositoryService.removeShoppingList(principal.getName(), listToDelete.getId());
 		return "redirect:/list";
 	}
@@ -140,12 +139,12 @@ public class MvcController {
 	/**
 	 * Send user to a page showing all items in given list (if accessible by
 	 * current user)
-	 * 
+	 *
 	 * @param listId
 	 *            of the shopping list whose listItems to retrieve (listId -
 	 *            primary key from DB
 	 */
-	@RequestMapping(value = "/list/{listId}", method = RequestMethod.GET)
+	@GetMapping("/list/{listId}")
 	public ModelAndView showListWithId(Principal principal, @PathVariable Long listId) {
 		LOGGER.debug("showListsWithId() method of MvcController called for user: {}, and list: {}", principal.getName(), listId);
 
@@ -162,12 +161,12 @@ public class MvcController {
 
 	/**
 	 * adds new item to the given shopping list (if editable by current user)
-	 * 
+	 *
 	 * @param newList
 	 *            ShoppingListDTO with basic information about new list (must
 	 *            include list name)
 	 */
-	@RequestMapping(value = "/list/{listId}", method = RequestMethod.POST)
+	@PostMapping("/list/{listId}")
 	public String addItemToListWithId(Principal principal, @PathVariable Long listId,
 			@ModelAttribute("shoppingList") ShoppingListDTO newList) {
 		LOGGER.debug("addItemToListWithId() method of MvcController called for user: {}, and list: {}", principal.getName(),
@@ -185,19 +184,19 @@ public class MvcController {
 	/**
 	 * Change status of the given item "bought" field as specified in
 	 * ListItemDTO item
-	 * 
+	 *
 	 * @param listId
 	 *            of the shopping list whose listItems to retrieve (listId -
 	 *            primary key from DB
 	 * @param item
 	 *            ListItemDTO containing listId and new 'bought' value
 	 */
-	@RequestMapping(value = "/list/{listId}/setBought", method = RequestMethod.POST)
+	@PostMapping("/list/{listId}/setBought")
 	public String switchItemBoughtStatus(Principal principal, @PathVariable Long listId, @ModelAttribute ListItemDTO item) {
 		LOGGER.debug(
 				"switchItemBoughtStatus: method of MvcController called for user: {}, and listItem: {} from list: {}",
 				principal.getName(), item.getId(), listId);
-	
+
 		item.setParentListId(listId);
 		repositoryService.switchItemBoughtStatus(principal.getName(), item);
 		return "redirect:/list/" + listId;
@@ -206,7 +205,7 @@ public class MvcController {
 	/**
 	 * Send user to a page showing his profile (information about his account)
 	 */
-	@RequestMapping(value = "/profile", method = RequestMethod.GET)
+	@GetMapping("/profile")
 	public ModelAndView showUserProfile(Principal principal) {
 		LOGGER.debug("showUserProfile() method of MvcController called for user: {}", principal.getName());
 
@@ -217,19 +216,19 @@ public class MvcController {
 		// TODO add basic html5 side validation (for example input type="email")
 	}
 
-	@RequestMapping(value = "/profile", method = RequestMethod.POST)
+	@PostMapping("/profile")
 	public String editUserProfile(Principal principal, @ModelAttribute AppUserDTO appUser) {
 		LOGGER.debug("showUserProfile() method of MvcController called for user: {}", principal.getName());
 
 		// TODO implement
 		return "redirect:/profile";
 	}
-	
+
 	/**
 	 * Shows registration form for unlogged users, if user is logged shows message and link to the home page
 	 * @param model
 	 */
-	@RequestMapping(value = "/register", method = RequestMethod.GET)
+	@GetMapping("/register")
 	public ModelAndView showRegistrationForm(Model model) {
 		LOGGER.debug("showRegistrationForm() called");
 		ModelAndView mav = new ModelAndView("register", model.asMap());
@@ -237,12 +236,12 @@ public class MvcController {
 			mav.addObject(NEW_USER_KEY, new AppUserDTO());
 		return mav;
 	}
-	
+
 	/**
 	 * Registers given user if there is no user with this username and all data is valid
 	 * @param newUser AppUserDTO with details of the new user
 	 */
-	@RequestMapping(value="/register", method = RequestMethod.POST)
+	@PostMapping("/register")
 	public String register(@Valid @ModelAttribute AppUserDTO newUser, BindingResult binding, RedirectAttributes attr, HttpSession session) {
 		LOGGER.debug("register(): registering user: {}", newUser.getUserName());
 		if(!binding.hasErrors()) {
@@ -254,7 +253,7 @@ public class MvcController {
 				String[] codes = new String[1];
 				codes[0] = "DuplicateUser";
 				binding.addError(new FieldError(NEW_USER_KEY, "userName", newUser.getUserName(), false, codes, null, "*There is already an user with this name"));
-				
+
 				attr.addFlashAttribute("org.springframework.validation.BindingResult.newUser", binding);
 				attr.addFlashAttribute(NEW_USER_KEY, newUser);
 			}
