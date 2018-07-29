@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.github.azanx.shopping_list.controller;
+package io.github.azanx.shopping_list.controller.mvc;
 
 import static io.github.azanx.shopping_list.controller.GlobalErrorModelResultMatchers.globalBindingErrors;
 import static org.junit.Assert.assertNotNull;
@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import javax.servlet.ServletContext;
 
+import io.github.azanx.shopping_list.controller.ServiceMockProvider;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.github.azanx.shopping_list.controller;
+package io.github.azanx.shopping_list.controller.mvc;
 
 import io.github.azanx.shopping_list.domain.AppUser;
 import io.github.azanx.shopping_list.domain.AppUserDTO;

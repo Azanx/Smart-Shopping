@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.github.azanx.shopping_list.controller;
+package io.github.azanx.shopping_list.controller.mvc;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import io.github.azanx.shopping_list.controller.ServiceMockProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

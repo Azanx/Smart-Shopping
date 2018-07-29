@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -56,7 +57,8 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("index");
         registry.addViewController("/login").setViewName("login");
-        registry.addViewController("/accessDenied").setViewName("accessDenied");
+        registry.addViewController("/accessDenied").setStatusCode(HttpStatus.UNAUTHORIZED).setViewName("accessDenied");
+        registry.addViewController("/internalError").setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR).setViewName("500_InternalError");
     }
 
     @Override
